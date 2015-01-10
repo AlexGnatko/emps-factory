@@ -3,6 +3,8 @@
 class EMPS_Factory {
 	public $defaults;
 	
+	public $perpage = 25;
+	
 	public function load_defaults(){
 		global $emps;
 		
@@ -45,6 +47,50 @@ class EMPS_Factory {
 		}
 		
 		return $ra;
+	}
+	
+	public function explain_command($ra){
+		global $emps;
+		
+		if($ra['sdt']){
+			$ra['stime'] = $emps->form_time($ra['sdt']);
+		}
+		if($ra['edt']){
+			$ra['etime'] = $emps->form_time($ra['edt']);
+		}
+		$ra['ctime'] = $emps->form_time($ra['cdt']);
+
+		return $ra;
+	}
+	
+	public function list_commands(){
+		global $emps, $start, $perpage;
+		
+		$perpage = $this->perpage;
+		
+		$start = intval($start);
+		
+		$lst = array();
+		$r = $emps->db->query("select * from ".TP."ef_commands order by id desc limit $start, $perpage");
+		while($ra = $emps->db->fetch_named($r)){
+			$ra = $this->explain_command($ra);
+			$lst[] = $ra;
+		}
+		
+		return $lst;
+	}
+	
+	public function add_command($command){
+		global $emps, $SET;
+		
+		$SET = array();
+		$SET['command'] = $command;
+		$SET['user_id'] = $emps->auth->USER_ID;
+		$emps->db->sql_insert("ef_commands");
+		
+		$id = $emps->db->last_insert();
+		
+		return $id;
 	}
 }
 

@@ -14,7 +14,16 @@ body {
 	color:#AAAAAA;
 }
 
-.ef-code {
+.ef-code, .ef-command, .ef-response {
 	display:block;
 	padding:8px;
+}
+
+.ef-command {
+	margin:5px 0 3px 0;
+}
+.ef-response {
+	background-color:#EEEEEE;
+	color:#555555;
+	margin-left:15px;
 }

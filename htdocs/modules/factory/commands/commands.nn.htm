@@ -1,0 +1,28 @@
+<div class="page-header">
+<div class="pull-right">
+<a href="." class="btn btn-default">Reload</a>
+</div>
+<h1>Server Command Log</h1>
+</div>
+
+<form class="form" action="." method="post" style="margin-bottom:10px">
+<input type="hidden" name="post_add_command" value="1" />
+
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="df" name="command">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Add to Queue</button>
+      </span>
+    </div>
+
+</form>
+
+{{section name=i loop=$lst}}
+<code class="ef-command">{{if $lst[i].sdt}}<span class="grey">{{$lst[i].stime}}:</span> {{/if}}# <strong>{{$lst[i].command|escape:html}}</strong> <small class="pull-right">{{$lst[i].ctime}}</small>
+</code>
+{{if $lst[i].status > 0}}
+<code class="ef-response">{{$lst[i].response|escape:html}}
+Ended at {{$lst[i].etime}}
+</code>
+{{/if}}
+{{/section}}
