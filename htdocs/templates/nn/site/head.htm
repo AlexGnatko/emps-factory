@@ -1,0 +1,53 @@
+<body id="pagebg">
+<div class="container">
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container" >
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainmenu-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">EMPS Factory</a>
+    </div>    
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="mainmenu-collapse">
+      <ul class="nav navbar-nav">
+    {{assign var="menu" value=$menus.main}}    
+    {{section name=i loop=$menu}}
+          <li class="{{if $menu[i].sel}}active{{/if}} {{if $menu[i].sub}}dropdown{{/if}}">
+          <a href="{{$menu[i].link}}" class="{{if $menu[i].sub}}dropdown-toggle{{/if}}" {{if $menu[i].sub}}data-toggle="dropdown"{{/if}} id="{{$menu[i].id}}">{{$menu[i].dname}}</a>
+    
+    {{if $menu[i].sub}}      
+            <ul class="dropdown-menu">
+    {{assign var="smenu" value=$menu[i].sub}}        
+    {{section name=s loop=$smenu}}
+                <li><a href="{{$smenu[s].link}}">{{$smenu[s].dname}}</a></li>
+    {{/section}}
+            </ul>
+    {{/if}}        
+          </li>
+    {{/section}}
+      </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+    {{if !$login.status}}            
+            <li class="pull-right"><a data-toggle="modal" href="#mainLogin"><i class="glyphicon glyphicon-log-in"></i>&nbsp; Log In</a></li>
+    {{else}}
+          <li class="dropdown pull-right">
+            <a href="/admin/" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{$login.user.fullname}} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+{{if $AdminMode}}
+              <li><a href="/admin/">Admin Menu</a></li>
+			  <li class="divider"></li>
+{{/if}}
+              <li><a href="./?logout=1">Log Out</a></li>          
+            </ul>
+          </li>        
+    {{/if}}        
+
+        </ul>
+    </div><!-- /.navbar-collapse -->    
+  </div>
+</nav>

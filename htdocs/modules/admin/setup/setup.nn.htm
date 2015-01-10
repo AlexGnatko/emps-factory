@@ -1,0 +1,52 @@
+<div class="page-header">
+<div class="pull-right">
+<a href="." class="btn btn-default">Reload</a>
+</div>
+<h1>EMPS Factory Setup</h1>
+</div>
+
+<form action="." method="post" class="form">
+<input type="hidden" name="post_update" value="1" />
+<div class="row">
+<div class="col-md-3">
+<div class="form-group">
+<label>Main Path:</label>
+<input type="text" class="form-control" name="main_path" value="{{$data.main_path|escape:html}}" placeholder="/srv/www"/>
+</div>
+</div>
+<div class="col-md-3">
+<div class="form-group">
+<label>Lighttpd Config:</label>
+<input type="text" class="form-control" name="lighttpd_conf_path" value="{{$data.lighttpd_conf_path|escape:html}}" placeholder="/etc/lighttpd"/>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="form-group">
+<label>Git Path:</label>
+<input type="text" class="form-control" name="git_path" value="{{$data.git_path|escape:html}}" placeholder="/opt/git"/>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="form-group">
+<label>WWW group:</label>
+<input type="text" class="form-control" name="www_group" value="{{$data.www_group|escape:html}}" placeholder="www-data"/>
+</div>
+</div>
+
+</div>
+
+<div class="row">
+<div class="col-md-3">
+<label>Hostname (for git):</label>
+<input type="text" class="form-control" name="hostname" value="{{$data.hostname|escape:html}}" placeholder="emps-f.website.com"/>
+
+</div>
+</div>
+
+<p class="text-right">
+<button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+</p>
+
+</form>

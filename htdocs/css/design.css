@@ -1,0 +1,20 @@
+/* CSS Document */
+@import url("design-default.css");
+
+body {
+	overflow-Y:auto;
+}
+
+.btn-inline {
+	margin-bottom:6px;
+	margin-right:3px;
+}
+
+.grey {
+	color:#AAAAAA;
+}
+
+.ef-code {
+	display:block;
+	padding:8px;
+}

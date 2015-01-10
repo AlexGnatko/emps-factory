@@ -1,0 +1,74 @@
+<form action="." method="post" class="form" role="form" id="main_form">
+<input type="hidden" name="post_save" value="1" />
+
+<div class="row">
+<div class="col-md-7">
+
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
+<label>Username:</label>
+<input type="text" name="username" value="{{$row.username|escape:html}}" class="form-control" placeholder="johndoe"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>Change Password:</label>
+<input type="password" name="password" value="" class="form-control" autocomplete="off"/>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
+<label>First Name:</label>
+<input type="text" name="firstname" value="{{$row.firstname|escape:html}}" class="form-control" placeholder="John"/>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>Last Name:</label>
+<input type="text" name="lastname" value="{{$row.lastname|escape:html}}" class="form-control" placeholder="Doe"/>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
+<label>Home Directory:</label>
+<input type="text" name="userdir" value="{{$row.userdir|escape:html}}" class="form-control" placeholder="/home/{{$row.username}}"/>
+<span class="help-block">Leave blank to use the defaults!</span>
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>Websites Directory:</label>
+<input type="text" name="www_dir" value="{{$row.www_dir|escape:html}}" class="form-control" placeholder="{{$ef_defaults.main_path}}/{{$row.username}}"/>
+</div>
+</div>
+</div>
+
+</div>
+
+<div class="col-md-5">
+<div style="margin-bottom:-6px">
+<label>Actions:</label>
+<div class="form-group">
+<button class="btn btn-success btn-inline">Ensure Linux User</button>
+<button class="btn btn-danger btn-inline">Log In as {{$row.username}}</button>
+<button class="btn btn-info btn-inline">User Profile</button>
+<a href="/factory-websites/?sd={{$row.id}}" class="btn btn-success btn-inline">View Websites</a>
+</div>
+</div>
+
+<label>Latest Log Records:</label>
+
+</div>
+
+</div>
+
+<p><button type="submit" class="btn btn-primary btn-lg">Save Changes</button></p>
+
+</form>
