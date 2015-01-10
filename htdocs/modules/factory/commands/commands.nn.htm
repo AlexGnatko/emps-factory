@@ -18,10 +18,10 @@
 </form>
 
 {{section name=i loop=$lst}}
-<code class="ef-command">{{if $lst[i].sdt}}<span class="grey">{{$lst[i].stime}}:</span> {{/if}}# <strong>{{$lst[i].command|escape:html}}</strong> <small class="pull-right">{{$lst[i].ctime}}</small>
+<code class="ef-command">{{if $lst[i].sdt}}<span class="grey">{{$lst[i].stime}}:</span> {{/if}}# <strong>{{$lst[i].command|escape:html|nl2br}}</strong> <small class="pull-right">{{$lst[i].ctime}}</small>
 </code>
 {{if $lst[i].status > 0}}
-<code class="ef-response">{{$lst[i].response|escape:html}}
+<code class="ef-response">{{$lst[i].response|escape:html|nl2br}}
 Ended at {{$lst[i].etime}}
 </code>
 {{/if}}
