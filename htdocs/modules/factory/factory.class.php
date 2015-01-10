@@ -15,6 +15,19 @@ class EMPS_Factory {
 		$rv['self'] = $_SERVER['HTTP_HOST'];
 		$rv['self_ip'] = $_SERVER['SERVER_ADDR'];
 		
+		if(!$rv['main_path']){
+			$rv['main_path'] = '/srv/www';
+		}
+		if(!$rv['lighttpd_conf_path']){
+			$rv['lighttpd_conf_path'] = '/etc/lighttpd';
+		}
+		if(!$rv['git_path']){
+			$rv['git_path'] = '/opt/git';
+		}
+		if(!$rv['www_group']){
+			$rv['www_group'] = 'www-data';
+		}
+		
 		$this->defaults = $rv;
 		
 		return $rv;
