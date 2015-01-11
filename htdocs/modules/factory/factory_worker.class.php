@@ -12,6 +12,16 @@ class EMPS_FactoryWorker
 		return $rv;
 	}
 	
+	public function file_chown($file, $owner){
+		global $ef;
+		exec("chown ".$owner.":".$ef->defaults['www_group']." ".$file);
+	}
+	
+	public function file_chmod($file, $rights){
+		global $ef;
+		exec("chmod ".sprintf("%o", $rights)." ".$file);
+	}	
+	
 	public function install_local_php($data, $ra){
 		global $emps;
 		
@@ -27,8 +37,8 @@ class EMPS_FactoryWorker
 		if(!is_dir($target_dir)){
 			$this->say("Creating ".$target_dir."...");
 			mkdir($target_dir, 0666, true);
-			chown($target_dir, $owner);
-			chmod($target_dir, 666);
+			$this->file_chown($target_dir, $owner);
+			$this->file_chmod($target_dir, 0666);
 		}
 		$this->move_file($file_path, $target_path, 0644, $owner);
 		return true;
@@ -38,32 +48,32 @@ class EMPS_FactoryWorker
 		$this->say("Moving ".$file_path." to ".$target_path."...");
 		rename($file_path, $target_path);
 		$this->say("Setting owner ".$owner.", chmod ".sprintf("0%o", $rights)."...");
-		chown($target_path, $owner);						
-		chmod($target_path, $rights);
+		$this->file_chown($target_path, $owner);
+		$this->file_chmod($target_path, $rights);
 	}
 	
 	public function create_dir($target_dir, $rights, $owner){
 		$this->say("Creating directory ".$target_dir.", chmod ".sprintf("0%o", $rights)."...");
 		mkdir($target_dir, $rights, true);
 		$this->say("Setting owner ".$owner);
-		chown($target_dir, $owner);
-		chmod($target_path, $rights);
+		$this->file_chown($target_dir, $owner);
+		$this->file_chmod($target_dir, $rights);
 	}
 	
 	public function put_file($file_name, $rights, $owner, $data){
 		$this->say("Creating file ".$file_name."...");
 		file_put_contents($file_name, $data);
 		$this->say("Setting owner ".$owner.", chmod ".sprintf("0%o", $rights)."...");
-		chown($file_name, $owner);
-		chmod($file_name, $rights);
+		$this->file_chown($file_name, $owner);
+		$this->file_chmod($file_name, $rights);
 	}
 	
 	public function copy_file($source_name, $file_name, $rights, $owner){
 		$this->say("Copying ".$source_name." to ".$file_name."...");
 		copy($source_name, $file_name);
 		$this->say("Setting owner ".$owner.", chmod ".sprintf("0%o", $rights)."...");
-		chown($file_name, $owner);
-		chmod($file_name, $rights);
+		$this->file_chown($file_name, $owner);
+		$this->file_chmod($file_name, $rights);
 	}
 	
 	public function init_project($data, $ra){
