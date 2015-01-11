@@ -28,6 +28,9 @@ while(true){
 	if(time() > $off_time){
 		break;
 	}
+	if($GLOBALS['die_now']){
+		break;
+	}
 	sleep(3);
 }
 ?>

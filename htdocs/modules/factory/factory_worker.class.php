@@ -225,6 +225,10 @@ class EMPS_FactoryWorker
 		case 'ensure-linux-user':
 			$this->ensure_linux_user($data, $ra);
 			break;
+		case 'restart':
+			$GLOBALS['die_now'] = true;
+			$this->say("OK, going to restart...");
+			break;
 		}
 		
 		$rv = ob_get_clean();
@@ -268,6 +272,10 @@ class EMPS_FactoryWorker
 			$emps->db->free($r);
 			
 			gc_collect_cycles();
+			
+			if($GLOBALS['die_now']){
+				break;
+			}
 		}
 	}
 }
