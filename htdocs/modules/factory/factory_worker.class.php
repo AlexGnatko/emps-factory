@@ -117,7 +117,7 @@ class EMPS_FactoryWorker
 			exec("echo ".$username.":".$password." | chpasswd");
 		}else{
 			// user does not exist
-			$this->echo_shell("useradd -b ".$def['home']." -f -1 -G ".$ef->defaults['www_group']." -m -U ".$username);
+			$this->echo_shell("useradd -b ".$ef->defaults['home']." -f -1 -G ".$ef->defaults['www_group']." -m -U ".$username);
 			sleep(1);
 			
 			$rc = shell_exec("grep -c '^".$username.":' /etc/passwd");
