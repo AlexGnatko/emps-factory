@@ -28,6 +28,7 @@ class EMPS_FactoryWorker
 			$this->say("Creating ".$target_dir."...");
 			mkdir($target_dir, 0666, true);
 			chown($target_dir, $owner);
+			chmod($target_dir, 666);
 		}
 		$this->move_file($file_path, $target_path, 0644, $owner);
 		return true;
@@ -46,6 +47,7 @@ class EMPS_FactoryWorker
 		mkdir($target_dir, $rights, true);
 		$this->say("Setting owner ".$owner);
 		chown($target_dir, $owner);
+		chmod($target_path, $rights);
 	}
 	
 	public function put_file($file_name, $rights, $owner, $data){
