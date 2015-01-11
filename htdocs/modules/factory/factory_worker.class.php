@@ -26,10 +26,10 @@ class EMPS_FactoryWorker
 
 		if(!is_dir($target_dir)){
 			$this->say("Creating ".$target_dir."...");
-			mkdir($target_dir, 0777, true);
+			mkdir($target_dir, 0666, true);
 			chown($target_dir, $owner);
 		}
-		$this->move_file($file_path, $target_path, 0744, $owner);
+		$this->move_file($file_path, $target_path, 0644, $owner);
 		return true;
 	}
 	
@@ -91,34 +91,34 @@ class EMPS_FactoryWorker
 		$this->say("WWW Dir: ".$www_dir);
 		
 		if(!is_dir($htdocs)){
-			$this->create_dir($htdocs, 0744, $owner);
+			$this->create_dir($htdocs, 0644, $owner);
 		}
 		
 		$target_dir = $htdocs.'/local';
 		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0744, $owner);
+			$this->create_dir($target_dir, 0644, $owner);
 		}
 		$target_dir = $htdocs.'/local/upload';
 		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0766, $owner);
+			$this->create_dir($target_dir, 0666, $owner);
 		}
 		$target_dir = $htdocs.'/local/temp_c';
 		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0766, $owner);
+			$this->create_dir($target_dir, 0666, $owner);
 		}
 		
 		$htaccess = $smarty->fetch("db:_factory/temps,htaccess");
 		$file_name = $htdocs.'/.htaccess';
 		
 		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0744, $owner, $htaccess);
+			$this->put_file($file_name, 0644, $owner, $htaccess);
 		}
 		
 		$gitignore = $smarty->fetch("db:_factory/temps,gitignore");
 		$file_name = $www_dir.'/.gitignore';
 		
 		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0744, $owner, $gitignore);
+			$this->put_file($file_name, 0644, $owner, $gitignore);
 		}
 		
 		$file_name = $htdocs.'/index.php';
@@ -127,7 +127,7 @@ class EMPS_FactoryWorker
 			$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
 			$source_name = stream_resolve_include_path($fn);
 	
-			$this->copy_file($source_name, $file_name, 0744, $owner);
+			$this->copy_file($source_name, $file_name, 0644, $owner);
 		}
 
 		$this->say("All done!");
