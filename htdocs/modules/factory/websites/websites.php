@@ -20,6 +20,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 	
 	public $pads = array(
 		'info'=>'General Info',
+		'cfg'=>'Setup local.php',
 		'props'=>'Properties',
 		);
 		

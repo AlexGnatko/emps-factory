@@ -1,0 +1,94 @@
+// EMPS PROJECT CONFIGURATION SCRIPT
+
+// hostname / URL configuration
+if(!defined('EMPS_HOST_NAME')){
+	define('EMPS_HOST_NAME', '{{$cfg.hostname}}');
+}
+
+{{if $cfg.force_hostname}}
+$emps_force_hostname = true;
+{{else}}
+$emps_force_hostname = false;
+{{/if}}
+
+define('EMPS_SCRIPT_WEB', 'http://'.EMPS_HOST_NAME);
+define('EMPS_SCRIPT_URL_FOLDER', '');
+
+// file paths configuration
+define('EMPS_SCRIPT_PATH', '{{$cfg.path}}');
+// always have the include paths separated by : (even on Windows)
+define('EMPS_INCLUDE_PATH', '{{$cfg.include_path}}'); 
+
+if(!defined('EMPS_WEBSITE_SCRIPT_PATH')){
+	define('EMPS_WEBSITE_SCRIPT_PATH', EMPS_SCRIPT_PATH);
+}
+
+// timezone correction configuration
+define('EMPS_TZ_CORRECT', 0);
+define('EMPS_TZ', '{{if $cfg.tz}}{{$cfg.tz}}{{else}}Asia/Irkutsk{{/if}}');
+
+define('EMPS_DT_FORMAT', '{{if $cfg.dt_format}}{{$cfg.dt_format}}{{else}}%d.%m.%Y %H:%M{{/if}}');
+
+define('EMPS_UPLOAD_SUBFOLDER', '/local/upload/');
+
+define('EMPS_MIN_WATERMARKED', {{if $cfg.min_watermarked}}{{$cfg.min_watermarked}}{{else}}600{{/if}});
+
+// script timing configuration
+define('EMPS_TIMING', false);
+define('EMPS_SHOW_TIMING', false);
+define('EMPS_SHOW_SQL_ERRORS', false);
+
+// session cookie parameters
+define('EMPS_SESSION_COOKIE_LIFETIME', 3600*24*7);
+
+define('EMPS_DISPLAY_ERRORS', 1);
+
+define('CURRENT_LANG', 1);
+define('PHOTOSET_WATERMARK', false);
+
+define('EMPS_PHOTO_SIZE', '1200x1200|100x100|inner');
+
+define("EMPS_FONTS", "{{$cfg.server_fonts}}");
+
+// database configuration. This object will be destroyed upon connection to the database for security reasons.
+$emps_db_config = array(
+	'host' => '{{$cfg.db.host}}',
+	'database' => '{{$cfg.db.database}}',
+	'user' => '{{$cfg.db.user}}',
+	'password' => '{{$cfg.db.password}}',
+	'charset' => 'utf8');
+
+define('TP', {{if $cfg.table_prefix}}{{$cfg.table_prefix}}{{else}}'c_'{{/if}});	// table name prefix
+
+// URL variable tracking configuration
+// Variables watch list
+define('EMPS_VARS', 'aact,pp,act,key,t,ss,start,start2,start3,start4,sk,dlist,sd,sm,cmd,sx,sy,sz');
+
+// Variable/Path mapping string. Variables listed in the order that is used
+// to retrieve them from URLs.
+define('EMPS_URL_VARS', 'pp,key,start,ss,sd,sk,sm,sx,sy');
+
+// language configuration
+$emps_lang = '{{if $cfg.default_lang}}{{$cfg.default_lang}}{{else}}nn{{/if}}';								// default language setting
+$emps_lang_map = array('' => 'nn', 'en' => 'en');		// subdomain mapping for language settings
+
+// configuration of SMTP email box for sending messages from the website
+$emps_default_smtp_params = array(
+	'From' => 'info@ag38.ru',
+	'Reply-To' => 'info@ag38.ru',
+	'Content-Type' => 'text/html; charset=utf-8',
+);
+
+$emps_default_smtp_data = array(
+	'host' => 'shadowburner.org',
+	'port' => '25',
+	'auth' => true,
+	'username' => 'info@ag38.ru',
+	'password' => '1qazxsw23edc',
+);
+
+// initialize the global SMTP vars with the default values
+$emps_smtp_params = $emps_default_smtp_params;
+$emps_smtp_data = $emps_default_smtp_data;
+
+{{$cfg.other_settings}}

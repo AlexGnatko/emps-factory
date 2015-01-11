@@ -1,0 +1,139 @@
+<h5 class="subhead">Enter the settings and create the local.php config file</h5>
+
+<form action="." method="post" class="form-horizontal" role="form" id="main_form">
+<input type="hidden" name="post_save" value="1" />
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Custom Hostname</label>
+    <div class="col-sm-7">
+      <input type="text" name="cfg[hostname]" class="form-control" placeholder="{{$row.hostname}}" value="{{$row.cfg.hostname|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block">Leave blank to use the main hostname</span>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Script Path</label>
+    <div class="col-sm-7">
+      <input type="text" name="cfg[path]" class="form-control" placeholder="{{$row.www_dir}}/{{$row.htdocs}}" value="{{$row.cfg.path|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block">Leave blank to use the default</span>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Include Path</label>
+    <div class="col-sm-7">
+      <input type="text" name="cfg[path]" class="form-control" placeholder="{{$ef_defaults.main_path}}/lib" value="{{$row.cfg.path|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block">Leave blank if not needed</span>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Local Timezone</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[tz]" class="form-control" placeholder="Asia/Irkutsk" value="{{$row.cfg.tz|escape:html}}">
+    </div>
+    <label class="col-sm-1 control-label">Format</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[dt_format]" class="form-control" placeholder="%d.%m.%Y %H:%M" value="{{$row.cfg.dt_format|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block">Leave blank to use the defaults</span>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Language Code</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[default_lang]" class="form-control" placeholder="en" value="{{$row.cfg.default_lang|escape:html}}">
+    </div>
+    <div class="col-sm-6">
+    <span class="help-block">Please specify <strong>en</strong> if you want English. EMPS is Russian by default.</span>
+    </div>
+  </div>
+  
+<h5 class="subhead">MySQL Database Setup:</h5>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">MySQL Host</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[db][host]" class="form-control" placeholder="localhost" value="{{$row.cfg.db.host|escape:html}}">
+    </div>
+    <label class="col-sm-1 control-label">Database</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[db][database]" class="form-control" placeholder="{{$row.user.username}}_{{$row.db_suggested_name}}" value="{{$row.cfg.db.database|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block"></span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-sm-2 control-label">MySQL User</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[db][user]" class="form-control" placeholder="{{$row.user.username}}" value="{{$row.cfg.db.user|escape:html}}">
+    </div>
+    <label class="col-sm-1 control-label">Password</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[db][password]" class="form-control" placeholder="" value="{{$row.cfg.db.password|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block"></span>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Table Name Prefix</label>
+    <div class="col-sm-3">
+      <input type="text" name="cfg[table_prefix]" class="form-control" placeholder="c_" value="{{$row.cfg.table_prefix|escape:html}}">
+    </div>
+    <div class="col-sm-6">
+    </div>
+  </div>
+
+
+<h5 class="subhead">Extra local.php Code:</h5>
+
+  <div class="form-group">
+    <div class="col-sm-12">
+    <textarea class="form-control ef-mono" name="cfg[other_settings]" rows="12">{{$row.cfg.other_settings|escape:html}}</textarea>
+    </div>
+
+  </div>
+
+
+<div class="pull-right">
+<a class="btn btn-success btn-lg" data-target="#installInfo" data-toggle="modal">Install</a>
+<a class="btn btn-default btn-lg" href="./?preview_local_php=1" target="_blank">Preview</a>
+</div>
+<p><button type="submit" class="btn btn-primary btn-lg">Save Changes</button></p>
+    
+</form>
+
+  <div class="move-modal modal fade" id="installInfo" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog">
+<form action="." method="post" class="form" role="form">
+<input type="hidden" name="install_local_php" value="1" />
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Install local.php</h4>
+        </div>
+        <div class="modal-body">
+<p>This will install the current <strong>local.php</strong> to the project website directory.</p>
+<p>If the project directory does not exist yet, it will be created and initialized.</p>
+		</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Install</button>
+        </div>
+      </div>
+</form>
+    </div>
+  </div>  

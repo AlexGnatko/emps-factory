@@ -27,3 +27,12 @@ body {
 	color:#555555;
 	margin-left:15px;
 }
+
+.subhead {
+	margin-left:-11px;
+	margin-right:-11px;
+}
+
+.ef-mono {
+	font-family:"Courier New", Courier, monospace;
+}
