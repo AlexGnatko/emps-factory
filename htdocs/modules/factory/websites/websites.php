@@ -20,7 +20,8 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 	
 	public $pads = array(
 		'info'=>'General Info',
-		'cfg'=>'Setup local.php',
+		'cfg'=>'Config',
+		'install'=>'Installation',
 		'props'=>'Properties',
 		);
 		
@@ -36,6 +37,37 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		
 		return parent::handle_row($ra);
 	}
+}
+
+if($_POST['install_local_php'] && $key){
+	$row = $ef->load_website(intval($key));
+		
+	$data = array();
+	if($_POST['overwrite']){
+		$data['overwrite'] = true;
+	}else{
+		$data['overwrite'] = false;
+	}
+	
+	$ef->custom_command("init-project", $row['id'], json_encode($data));
+	$ef->set_status($row['context_id'], array("init_project"=>"started"));
+	
+	$cfg = $ef->site_defaults($row);
+	$smarty->assign("cfg", $cfg);
+	$text = $smarty->fetch("db:_factory/temps,local_php");
+	
+	$text = '<'.'?'."php\r\n".$text."\r\n?".'>';
+	
+	$file_name = $ef->temporary_file("local.php-".$row['id'], $text);
+	
+	$data = array();
+	$data['file_name'] = $file_name;
+	$data['htdocs'] = $cfg['path'];
+	$data['owner'] = $row['user']['username'];
+	
+	$ef->custom_command("install-local-php", $row['id'], json_encode($data));
+	$ef->set_status($row['context_id'], array("local_php"=>"started"));
+	$emps->redirect_elink();exit();
 }
 
 $ited = new EMPS_WebsitesEditor;

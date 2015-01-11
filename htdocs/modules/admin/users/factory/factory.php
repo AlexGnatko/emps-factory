@@ -29,11 +29,31 @@ class EMPS_UsersEditor extends EMPS_ImprovedTableEditor {
 	}	
 		
 	public function handle_row($ra){
-		global $emps,$ss,$key;
+		global $emps,$ss,$key,$ef;
 		
-		return parent::handle_row($ra);
+		$ra = parent::handle_row($ra);
+		
+		$ra = $ef->explain_user($ra);
+		
+		return $ra;
 	}
 }
+
+if($_POST['ensure_linux_user'] && $key){
+	$row = $ef->load_user(intval($key));
+	
+	if($row){
+		$data = array();
+	
+		$data['user_id'] = $row['id'];
+	
+		$ef->custom_command("ensure-linux-user", 0, json_encode($data));
+	
+		$emps->redirect_elink();exit();
+	}
+}
+
+$emps->page_property("autoarray", 1);
 
 $ited = new EMPS_UsersEditor;
 

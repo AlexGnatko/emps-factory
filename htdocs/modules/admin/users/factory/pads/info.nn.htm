@@ -13,7 +13,7 @@
 </div>
 <div class="col-sm-6">
 <div class="form-group">
-<label>Change Password:</label>
+<label>Change Factory Password:</label>
 <input type="password" name="password" value="" class="form-control" autocomplete="off"/>
 </div>
 </div>
@@ -37,8 +37,30 @@
 <div class="row">
 <div class="col-sm-6">
 <div class="form-group">
+<label>Linux Password:</label>
+<div class="input-group">
+<input type="text" name="cfg[linux_password]" id="linux_password" value="{{$row.cfg.linux_password|escape:html}}" class="form-control pwd-hide" placeholder="" autocomplete="off"/>
+<span class="input-group-addon pwd-reveal" data-for="linux_password"><i class="glyphicon glyphicon-eye-open"></i></span>
+</div>
+
+</div>
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+<label>MySQL Password:</label>
+<div class="input-group">
+<input type="text" name="cfg[mysql_password]" value="{{$row.cfg.mysql_password|escape:html}}" id="mysql_password" class="form-control pwd-hide" placeholder="" autocomplete="off"/>
+<span class="input-group-addon pwd-reveal" data-for="mysql_password"><i class="glyphicon glyphicon-eye-open"></i></span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
 <label>Home Directory:</label>
-<input type="text" name="userdir" value="{{$row.userdir|escape:html}}" class="form-control" placeholder="/home/{{$row.username}}"/>
+<input type="text" name="userdir" value="{{$row.userdir|escape:html}}" class="form-control" placeholder="{{$ef_defaults.home}}/{{$row.username}}"/>
 <span class="help-block">Leave blank to use the defaults!</span>
 </div>
 </div>
@@ -56,16 +78,39 @@
 <div style="margin-bottom:-6px">
 <label>Actions:</label>
 <div class="form-group">
-<button class="btn btn-success btn-inline">Ensure Linux User</button>
+<a class="btn btn-success btn-inline" data-target="#ensureLinuxUser" data-toggle="modal">Ensure Linux User</a>
+<button class="btn btn-success btn-inline">Ensure MySQL User</button>
+<br />
+
 <button class="btn btn-danger btn-inline">Log In as {{$row.username}}</button>
 <button class="btn btn-info btn-inline">User Profile</button>
 <a href="/factory-websites/?sd={{$row.id}}" class="btn btn-success btn-inline">View Websites</a>
 </div>
 </div>
 
-<label>Latest Log Records:</label>
 
 </div>
+
+</div>
+
+<div class="form-group">
+<label>Authorized SSH Keys:</label>
+<div style="display:none" id="keys_list">
+<div class="form-group">
+<input class="form-control" type="text" name="authorized_keys" value="" autocomplete="off">
+</div>
+</div>
+
+<script>
+$("#keys_list").EMPSAutoArray({'id':'keyslist'});
+{{if $row.authorized_keys_idx}}
+$("#keys_list").EMPSAutoArray('compact',true);
+{{section name=i loop=$row.authorized_keys_idx}}
+$("#keys_list").EMPSAutoArray('add_line',{'authorized_keys':'{{$row.authorized_keys_idx[i]}}'});
+{{/section}}
+$("#keys_list").EMPSAutoArray('ensure_line');
+{{/if}}
+</script>
 
 </div>
 

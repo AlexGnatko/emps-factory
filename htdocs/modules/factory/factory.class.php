@@ -2,12 +2,36 @@
 
 define('DT_EF_WEBSITE', 10010);
 
-define('P_EF_WEBSITE', 'local_cfg:t');
+define('P_EF_WEBSITE', 'local_cfg:t,status_data:t');
 
 class EMPS_Factory {
 	public $defaults;
 	
 	public $perpage = 25;
+	
+	public function save_setting($context_id, $code, $value){
+		global $emps;
+		$x = explode(':', $code);
+		$name = $x[0];
+		$a = array($name=>$value);
+		$emps->p->save_properties($a, $context_id, $code);
+	}
+	
+	public function set_status($context_id, $arr){
+		global $emps;
+	
+		$ra = $emps->p->read_properties(array(), $context_id);	
+		
+		if($ra['status_data']){
+			$data = json_decode($ra['status_data'], true);
+		}else{
+			$data = array();
+		}
+				
+		$data = array_merge($data, $arr);
+		
+		$this->save_setting($context_id, "status_data", json_encode($data));
+	}
 	
 	public function load_defaults(){
 		global $emps;
@@ -36,6 +60,32 @@ class EMPS_Factory {
 		
 		return $rv;
 	}
+
+	public function explain_user($ra){
+		global $emps;
+		
+		$ra['context_id'] = $emps->p->get_context(DT_USER, 1, $ra['id']);
+		$ra = $emps->p->read_properties($ra, $ra['context_id']);
+		
+		if($ra['cfg']){
+			$ra['cfg'] = json_decode($ra['cfg'], true);
+		}
+		
+		return $ra;
+		
+	}
+	
+	public function load_user($id){
+		global $emps;
+		
+		$user = $emps->auth->load_user(intval($id));
+		if($user){
+			$user = $this->explain_user($user);
+			return $user;	
+		}else{
+			return false;
+		}
+	}
 	
 	public function explain_website($ra){
 		global $emps;
@@ -44,7 +94,10 @@ class EMPS_Factory {
 		$ra = $emps->p->read_properties($ra, $ra['context_id']);
 		
 		if($ra['user_id']){
-			$ra['user'] = $emps->auth->load_user(intval($ra['user_id']));
+			$user = $emps->auth->load_user(intval($ra['user_id']));
+			if($user){
+				$ra['user'] = $this->explain_user($user);
+			}
 		}
 		
 		if(!$ra['www_dir']){
@@ -65,6 +118,10 @@ class EMPS_Factory {
 		
 		if($ra['local_cfg']){
 			$ra['cfg'] = json_decode($ra['local_cfg'], true);
+		}
+		
+		if($ra['status_data']){
+			$ra['sd'] = json_decode($ra['status_data'], true);		
 		}
 		
 		return $ra;
@@ -158,6 +215,19 @@ class EMPS_Factory {
 		}
 		
 		return $cfg;
+	}
+	
+	public function user_defaults($ra){
+		global $emps;
+
+		if(!$ra['home']){
+			$ra['home'] = $this->defaults['home'].'/'.$ra['username'];
+		}
+		if(!$ra['www_dir']){
+			$ra['www_dir'] = $this->defaults['main_path'].'/'.$ra['username'];			
+		}
+	
+		return $ra;
 	}
 	
 	public function temporary_file($name_prefix, $content){

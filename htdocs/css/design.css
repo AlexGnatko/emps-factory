@@ -36,3 +36,20 @@ body {
 .ef-mono {
 	font-family:"Courier New", Courier, monospace;
 }
+
+.alert-lg {
+	font-size:20px;
+	padding:10px;
+}
+
+.pwd-hide {
+	color:rgba(0,0,0,0);
+}
+
+.pwd-open {
+	color:rgba(0,0,0,1);
+}
+
+.pwd-reveal {
+	cursor:pointer;
+}

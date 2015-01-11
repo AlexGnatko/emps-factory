@@ -23,7 +23,15 @@ class EMPS_FactoryWorker
 	}	
 	
 	public function install_local_php($data, $ra){
-		global $emps;
+		global $emps, $ef;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't init project: you have to select a website!");
+			return false;
+		}
+				
+		$website = $ef->load_website($website_id);
 		
 		$this->say("Installing local.php...");
 		
@@ -41,6 +49,10 @@ class EMPS_FactoryWorker
 			$this->file_chmod($target_dir, 0666);
 		}
 		$this->move_file($file_path, $target_path, 0644, $owner);
+		
+		$this->say("Done!");
+		
+		$ef->set_status($website['context_id'], array("local_php"=>"done"));		
 		return true;
 	}
 	
@@ -74,6 +86,53 @@ class EMPS_FactoryWorker
 		$this->say("Setting owner ".$owner.", chmod ".sprintf("0%o", $rights)."...");
 		$this->file_chown($file_name, $owner);
 		$this->file_chmod($file_name, $rights);
+	}
+	
+	public function ensure_linux_user($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$user_id = intval($data['user_id']);
+		if(!$user_id){
+			$this->say("Can't ensure user: you have to specify a user!");
+			return false;
+		}
+		
+		$user = $ef->load_user(intval($user_id));
+			
+		if(!$user){
+			$this->say("ERROR: No such user!");
+			return false;
+		}
+		
+		$username = $user['username'];
+		$password = $user['cfg']['linux_password'];
+		
+		$def = $ef->user_defaults($user);
+		
+		$fail = false;
+		$rc = shell_exec("grep -c '^".$username.":' /etc/passwd");
+		if(intval($rc) == 1){
+			// user exists
+			$this->say("Setting new password...");
+			exec("echo ".$username.":".$password." | chpasswd");
+		}else{
+			// user does not exist
+			exec("useradd -b ".$def['home']." -f -1 -G ".$ef->defaults['www_group']." -m -U ".$username);
+			sleep(1);
+			
+			$rc = shell_exec("grep -c '^".$username.":' /etc/passwd");
+			if(intval($rc) == 1){
+				$this->say("Setting new password...");
+				exec("echo ".$username.":".$password." | chpasswd");
+			}else{
+				$this->say("Failure!");
+				$fail = true;
+			}
+		}
+		
+		if(!$fail){
+			$this->say("Done!");
+		}
 	}
 	
 	public function init_project($data, $ra){
@@ -142,6 +201,7 @@ class EMPS_FactoryWorker
 			$this->copy_file($source_name, $file_name, 0644, $owner);
 		}
 
+		$ef->set_status($website['context_id'], array("init_project"=>"done"));
 		$this->say("All done!");
 	}
 	
@@ -161,6 +221,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'init-project':
 			$this->init_project($data, $ra);
+			break;
+		case 'ensure-linux-user':
+			$this->ensure_linux_user($data, $ra);
 			break;
 		}
 		

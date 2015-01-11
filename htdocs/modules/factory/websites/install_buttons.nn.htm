@@ -1,0 +1,8 @@
+{{if $value_done eq 1}}
+<p>In progress...<br />
+<a href="." class="btn btn-default">Reload</a></p>
+{{elseif $value_done eq 10}}
+<p><a class="btn btn-default btn-lg" data-target="#installInfo" data-toggle="modal">Install Again</a></p>
+{{else}}
+<p><a class="btn btn-success btn-lg" data-target="#installInfo" data-toggle="modal">Install</a></p>
+{{/if}}
