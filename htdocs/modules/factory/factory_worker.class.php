@@ -240,6 +240,48 @@ class EMPS_FactoryWorker
 			$this->say("Done!");
 		}
 	}
+
+	public function setup_project_git($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't init project: you have to select a website!");
+			return false;
+		}
+		
+		$website = $ef->load_website($website_id);
+		$cfg = $website['cfg'];
+		$owner = $website['user']['username'];
+		
+		$htdocs = $cfg['path'];
+		
+		$www_dir = $website['www_dir'];
+		
+		$this->say("WWW Dir: ".$www_dir);
+		
+		$hostname = $cfg['hostname'];
+		
+		$git_repo_path = $ef->defaults['git_path'].'/'.$owner.'/'.$hostname.'.git';
+
+		if(!is_dir($git_repo_path)){
+			$this->create_dir($git_repo_path, 0644, $owner);
+		}
+		
+		$fail = false;
+		if(file_exists($git_repo_path.'/config')){
+			$this->say("Git Repository exists. Nothing to do!");
+			$fail = true;
+		}else{
+			$this->echo_shell("cd ".$git_repo_path." && sudo -u ".$owner." git --bare init ".
+			"&& sudo -u ".$owner." git add .gitignore && sudo -u ".$owner." git add htdocs ".
+			"&& sudo -u ".$owner." git commit -m \"EMPS Factory Init\"");
+		}
+		
+		if(!$false){
+			$this->say("Done!");
+		}
+	}
 	
 	public function init_project($data, $ra){
 		global $emps, $ef, $smarty;
@@ -302,6 +344,14 @@ class EMPS_FactoryWorker
 			$this->put_file($file_name, 0644, $owner, $gitignore);
 		}
 		
+		$smarty->assign("dir", $www_dir);
+		$post_checkout = $smarty->fetch("db:_factory/temps,post_checkout");
+		$file_name = $www_dir.'/post-checkout.sh';
+		
+		if(!file_exists($file_name) || $overwrite){
+			$this->put_file($file_name, 0744, $owner, $post_checkout);
+		}
+		
 		$file_name = $htdocs.'/index.php';
 		
 		if(!file_exists($file_name) || $overwrite){		
@@ -340,6 +390,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'install-ssh-keys':
 			$this->install_ssh_keys($data, $ra);
+			break;
+		case 'setup-project-git':
+			$this->setup_project_git($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;

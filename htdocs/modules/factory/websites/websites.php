@@ -70,6 +70,21 @@ if($_POST['install_local_php'] && $key){
 	$emps->redirect_elink();exit();
 }
 
+if($_POST['setup_git'] && $key){
+	$row = $ef->load_website(intval($key));
+	
+	if($row){
+		$data = array();
+	
+		$data['website_id'] = $row['id'];
+	
+		$ef->custom_command("setup-project-git", 0, json_encode($data));
+		$ef->set_status($row['context_id'], array("setup_git"=>"started"));
+	
+		$emps->redirect_elink();exit();
+	}
+}
+
 $ited = new EMPS_WebsitesEditor;
 
 $ited->ref_id = $key;

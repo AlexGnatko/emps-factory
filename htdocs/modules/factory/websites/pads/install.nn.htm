@@ -19,7 +19,31 @@
 <p>Create the main directory of the project, put the default files, including the <strong>local.php</strong> file.</p>
 </div>
 <div class="col-sm-2">
-{{include file="db:_factory/websites,install_buttons" value_done=$init_done}}
+{{include file="db:_factory/websites,install_buttons" value_done=$init_done modal="installInfo"}}
+</div>
+</div>
+<hr size="1" />
+
+<div class="row">
+<div class="col-sm-3">
+{{assign var="git_done" value="0"}}
+{{if $row.sd.setup_git == "started"}}
+{{assign var="git_done" value="1"}}
+{{/if}}
+{{if $row.sd.setup_git == "done"}}
+{{assign var="git_done" value="10"}}
+{{include file="db:_factory/websites/marker,complete"}}
+{{else}}
+{{include file="db:_factory/websites/marker,incomplete"}}
+{{/if}}
+
+</div>
+<div class="col-sm-7">
+<h4>Git Repository</h4>
+<p>Setup a new bare Git repository, setup the config file, hooks, and post-receive scripts.</p>
+</div>
+<div class="col-sm-2">
+{{include file="db:_factory/websites,install_buttons" value_done=$git_done modal="installGit"}}
 </div>
 </div>
 <hr size="1" />
