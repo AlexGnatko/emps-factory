@@ -1,5 +1,5 @@
 #!/bin/sh
 git checkout -f
-chmod 0754 {{$dir}}/post_checkout.sh
-ssh -t -t {{$username}}@localhost "{{$dir}}/post_checkout.sh"
+chmod 0754 {{$worktree}}/post_checkout.sh
+ssh -t -t {{$username}}@localhost "{{$worktree}}/post_checkout.sh"
 

@@ -274,13 +274,25 @@ class EMPS_FactoryWorker
 		}
 		
 		$fail = false;
-		if(file_exists($git_repo_path.'/config')){
+		$config_file = $git_repo_path.'/config';
+		if(file_exists($config_file)){
 			$this->say("Git Repository exists. Nothing to do!");
 			$fail = true;
 		}else{
 			$this->echo_shell("cd ".$git_repo_path." && git --bare init ".
 			"&& git add .gitignore && git add htdocs ".
 			"&& git commit -m \"EMPS Factory Init\"");
+			if(file_exists($config_file)){
+				$smarty->assign("worktree", $www_dir);
+				$config = $smarty->fetch("db:_factory/temps,git_config");
+				$this->put_file($config_file, 0744, $owner, $config);
+				$smarty->assign("username", $owner);
+				$receive = $smarty->fetch("db:_factory/temps,git_receive");
+				$this->put_file($git_repo_path.'/hooks/post-receive', 0755, $owner, $receive);
+			}else{
+				$this->say("ERROR: Could not create the repository");
+				$fail = true;
+			}
 		}
 		
 		if(!$false){
