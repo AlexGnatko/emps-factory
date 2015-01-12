@@ -44,9 +44,9 @@ class EMPS_FactoryWorker
 
 		if(!is_dir($target_dir)){
 			$this->say("Creating ".$target_dir."...");
-			mkdir($target_dir, 0666, true);
+			mkdir($target_dir, 0766, true);
 			$this->file_chown($target_dir, $owner);
-			$this->file_chmod($target_dir, 0666);
+			$this->file_chmod($target_dir, 0766);
 		}
 		$this->move_file($file_path, $target_path, 0644, $owner);
 		
@@ -294,6 +294,8 @@ class EMPS_FactoryWorker
 					"&& git commit -m \"EMPS Factory Init\"");
 				
 				$this->echo_shell("chown -R ".$owner.":git ".$git_repo_path);
+				$this->echo_shell("chmod 0755 ".$www_dir);
+				
 			}else{
 				$this->say("ERROR: Could not create the repository");
 				$fail = true;
@@ -335,38 +337,38 @@ class EMPS_FactoryWorker
 		$this->say("WWW Dir: ".$www_dir);
 
 		if(!is_dir($www_dir)){
-			$this->create_dir($www_dir, 0644, $owner);
+			$this->create_dir($www_dir, 0755, $owner);
 		}
 				
 		if(!is_dir($htdocs)){
-			$this->create_dir($htdocs, 0644, $owner);
+			$this->create_dir($htdocs, 0744, $owner);
 		}
 		
 		$target_dir = $htdocs.'/local';
 		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0644, $owner);
+			$this->create_dir($target_dir, 0744, $owner);
 		}
 		$target_dir = $htdocs.'/local/upload';
 		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0666, $owner);
+			$this->create_dir($target_dir, 0766, $owner);
 		}
 		$target_dir = $htdocs.'/local/temp_c';
 		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0666, $owner);
+			$this->create_dir($target_dir, 0766, $owner);
 		}
 		
 		$htaccess = $smarty->fetch("db:_factory/temps,htaccess");
 		$file_name = $htdocs.'/.htaccess';
 		
 		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0644, $owner, $htaccess);
+			$this->put_file($file_name, 0744, $owner, $htaccess);
 		}
 		
 		$gitignore = $smarty->fetch("db:_factory/temps,gitignore");
 		$file_name = $www_dir.'/.gitignore';
 		
 		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0644, $owner, $gitignore);
+			$this->put_file($file_name, 0744, $owner, $gitignore);
 		}
 		
 		$smarty->assign("dir", $www_dir);
@@ -383,7 +385,7 @@ class EMPS_FactoryWorker
 			$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
 			$source_name = stream_resolve_include_path($fn);
 	
-			$this->copy_file($source_name, $file_name, 0644, $owner);
+			$this->copy_file($source_name, $file_name, 0744, $owner);
 		}
 
 		$ef->set_status($website['context_id'], array("init_project"=>"done"));
