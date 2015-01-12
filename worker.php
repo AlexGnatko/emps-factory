@@ -1,6 +1,8 @@
 <?php
 // this script is supposed to be ran as root
 
+// test gnatko
+
 $emps_start_time = microtime(true);
 
 set_time_limit(0);
