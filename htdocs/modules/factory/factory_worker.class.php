@@ -264,7 +264,7 @@ class EMPS_FactoryWorker
 		
 		$git_user_path = $ef->defaults['git_path'].'/'.$owner;
 		if(!is_dir($git_user_path)){
-			$this->create_dir($git_user_path, 0644, $owner);
+			$this->create_dir($git_user_path, 0666, $owner);
 		}
 		
 		$git_repo_path = $ef->defaults['git_path'].'/'.$owner.'/'.$hostname.'.git';
