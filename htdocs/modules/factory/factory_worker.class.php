@@ -289,6 +289,8 @@ class EMPS_FactoryWorker
 				$smarty->assign("username", $owner);
 				$receive = $smarty->fetch("db:_factory/temps,git_receive");
 				$this->put_file($git_repo_path.'/hooks/post-receive', 0755, $owner, $receive);
+				
+				$this->echo_shell("chown -R ".$owner.":git ".$git_repo_path);
 			}else{
 				$this->say("ERROR: Could not create the repository");
 				$fail = true;
