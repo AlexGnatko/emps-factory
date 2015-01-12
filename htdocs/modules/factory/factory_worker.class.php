@@ -466,6 +466,7 @@ class EMPS_FactoryWorker
 			$emps->db->free($r);
 			
 			gc_collect_cycles();
+			clearstatcache();
 			
 			if($GLOBALS['die_now']){
 				break;
