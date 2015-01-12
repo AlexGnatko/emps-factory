@@ -78,7 +78,7 @@ if($_POST['setup_git'] && $key){
 	
 		$data['website_id'] = $row['id'];
 	
-		$ef->custom_command("setup-project-git", 0, json_encode($data));
+		$ef->custom_command("setup-project-git", $row['id'], json_encode($data));
 		$ef->set_status($row['context_id'], array("setup_git"=>"started"));
 	
 		$emps->redirect_elink();exit();

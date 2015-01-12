@@ -279,7 +279,10 @@ class EMPS_FactoryWorker
 		}
 		
 		if(!$false){
+			$ef->set_status($website['context_id'], array("setup_git"=>"done"));
 			$this->say("Done!");
+		}else{
+			$ef->set_status($website['context_id'], array("setup_git"=>"failed"));
 		}
 	}
 	
