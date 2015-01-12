@@ -1,7 +1,7 @@
 <?php
 // this script is supposed to be ran as root
 
-// test gnatko
+// testing checkout under gnatko
 
 $emps_start_time = microtime(true);
 
