@@ -206,7 +206,11 @@ class EMPS_FactoryWorker
 		$www_dir = $website['www_dir'];
 		
 		$this->say("WWW Dir: ".$www_dir);
-		
+
+		if(!is_dir($www_dir)){
+			$this->create_dir($www_dir, 0644, $owner);
+		}
+				
 		if(!is_dir($htdocs)){
 			$this->create_dir($htdocs, 0644, $owner);
 		}
