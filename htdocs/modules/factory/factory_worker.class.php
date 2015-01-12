@@ -265,7 +265,7 @@ class EMPS_FactoryWorker
 		$git_user_path = $ef->defaults['git_path'].'/'.$owner;
 		if(!is_dir($git_user_path)){
 			$this->create_dir($git_user_path, 0664, $owner);
-			$this->echo_shell("chown ".$owner.":git ".$git_repo_path);
+			$this->echo_shell("chown ".$owner.":git ".$git_user_path);
 		}
 		
 		$git_repo_path = $ef->defaults['git_path'].'/'.$owner.'/'.$hostname.'.git';
@@ -281,9 +281,7 @@ class EMPS_FactoryWorker
 			$this->say("Git Repository exists. Nothing to do!");
 			$fail = true;
 		}else{
-			$this->echo_shell("cd ".$git_repo_path." && git --bare init ".
-			"&& git add .gitignore && git add htdocs ".
-			"&& git commit -m \"EMPS Factory Init\"");
+			$this->echo_shell("cd ".$git_repo_path." && git --bare init");
 			if(file_exists($config_file)){
 				$smarty->assign("worktree", $www_dir);
 				$config = $smarty->fetch("db:_factory/temps,git_config");
@@ -291,6 +289,9 @@ class EMPS_FactoryWorker
 				$smarty->assign("username", $owner);
 				$receive = $smarty->fetch("db:_factory/temps,git_receive");
 				$this->put_file($git_repo_path.'/hooks/post-receive', 0755, $owner, $receive);
+				
+				$this->echo_shell("cd ".$git_repo_path." && git add .gitignore && git add htdocs ".
+					"&& git commit -m \"EMPS Factory Init\"");
 				
 				$this->echo_shell("chown -R ".$owner.":git ".$git_repo_path);
 			}else{
