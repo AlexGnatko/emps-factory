@@ -263,17 +263,14 @@ class EMPS_FactoryWorker
 		$hostname = $cfg['hostname'];
 		
 		$git_user_path = $ef->defaults['git_path'].'/'.$owner;
-		if(!is_dir($git_user_path)){
-			$this->create_dir($git_user_path, 0766, $owner);
-			$this->echo_shell("chown ".$owner.":git ".$git_user_path);
-		}
-		
 		$git_repo_path = $ef->defaults['git_path'].'/'.$owner.'/'.$hostname.'.git';
 
 		if(!is_dir($git_repo_path)){
 			$this->create_dir($git_repo_path, 0764, $owner);
 			$this->echo_shell("chown ".$owner.":git ".$git_repo_path);
-		}
+			$this->echo_shell("chmod 0755 ".$git_repo_path);
+			$this->echo_shell("chown ".$owner.":git ".$git_user_path);
+			$this->echo_shell("chmod 0755 ".$git_user_path);
 		
 		$fail = false;
 		$config_file = $git_repo_path.'/config';
