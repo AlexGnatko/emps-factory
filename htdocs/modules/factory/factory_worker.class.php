@@ -278,9 +278,9 @@ class EMPS_FactoryWorker
 			$this->say("Git Repository exists. Nothing to do!");
 			$fail = true;
 		}else{
-			$this->echo_shell("cd ".$git_repo_path." && sudo -u ".$owner." git --bare init ".
-			"&& sudo -u ".$owner." git add .gitignore && sudo -u ".$owner." git add htdocs ".
-			"&& sudo -u ".$owner." git commit -m \"EMPS Factory Init\"");
+			$this->echo_shell("cd ".$git_repo_path." && git --bare init ".
+			"&& git add .gitignore && git add htdocs ".
+			"&& git commit -m \"EMPS Factory Init\"");
 		}
 		
 		if(!$false){
