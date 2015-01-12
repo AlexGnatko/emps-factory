@@ -55,6 +55,28 @@
 </form>
     </div>
   </div> 
+  
+  <div class="move-modal modal fade" id="authorizedKeys" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog">
+<form action="." method="post" class="form" role="form">
+<input type="hidden" name="authorized_keys" value="1" />
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Install Authorized SSH Keys</h4>
+        </div>
+        <div class="modal-body">
+<p>This will copy the SSH keys you entered here to <strong>{{$row.username}}</strong>'s ~/.ssh/authorized_keys.</p>
+		</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Proceed</button>
+        </div>
+      </div>
+</form>
+    </div>
+  </div> 
 
 {{else}}
 <div class="page-header">

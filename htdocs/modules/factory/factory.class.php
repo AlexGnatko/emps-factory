@@ -220,9 +220,12 @@ class EMPS_Factory {
 	public function user_defaults($ra){
 		global $emps;
 
-		if(!$ra['home']){
-			$ra['home'] = $this->defaults['home'].'/'.$ra['username'];
+		if(!$ra['userdir']){
+			$ra['userdir'] = $this->defaults['home'].'/'.$ra['username'];
 		}
+		
+		$ra['home'] = $ra['userdir'];
+		
 		if(!$ra['www_dir']){
 			$ra['www_dir'] = $this->defaults['main_path'].'/'.$ra['username'];			
 		}

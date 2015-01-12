@@ -87,6 +87,64 @@ class EMPS_FactoryWorker
 		$this->file_chown($file_name, $owner);
 		$this->file_chmod($file_name, $rights);
 	}
+	
+	public function install_ssh_keys($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$user_id = intval($data['user_id']);
+		if(!$user_id){
+			$this->say("Can't ensure user: you have to specify a user!");
+			return false;
+		}
+		
+		$user = $ef->load_user(intval($user_id));
+			
+		if(!$user){
+			$this->say("ERROR: No such user!");
+			return false;
+		}
+		
+		$username = $user['username'];
+		
+		$owner = $username;
+		
+		$this->say("User: ".$username);
+		
+		$keys = $user['authorized_keys_idx'];
+		
+		$text = "";
+		foreach($keys as $v){
+			$v = trim($v);
+			if($v){
+				$text .= $v."\r\n";
+			}
+		}
+//		$text .= "\r\n";
+		
+		$def = $ef->user_defaults($user);
+		
+		$home = $def['home'];
+		
+		$fail = false;
+		
+		if(!$home){
+			$this->say("No home dir!");
+			$fail = true;
+		}else{
+			$ssh_dir = $home.'/.ssh';
+			if(!is_dir($ssh_dir)){
+				$this->create_dir($ssh_dir, 0644, $owner);
+			}
+			$file_name = $ssh_dir.'/authorized_keys';
+			file_put_contents($file_name, $text);
+			exec("chown ".$owner." ".$file_name);
+			$this->file_chmod($file_name, 0644);
+		}
+	
+		if(!$fail){
+			$this->say("Done!");
+		}	
+	}
 
 	public function ensure_mysql_user($data, $ra){
 		global $emps, $ef, $smarty;
@@ -105,6 +163,7 @@ class EMPS_FactoryWorker
 		}
 		
 		$username = $user['username'];
+		$this->say("User: ".$username);
 		$password = $user['cfg']['mysql_password'];
 		
 		$fail = false;
@@ -151,6 +210,7 @@ class EMPS_FactoryWorker
 		}
 		
 		$username = $user['username'];
+		$this->say("User: ".$username);
 		$password = $user['cfg']['linux_password'];
 		
 		$def = $ef->user_defaults($user);
@@ -277,6 +337,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'ensure-mysql-user':
 			$this->ensure_mysql_user($data, $ra);
+			break;
+		case 'install-ssh-keys':
+			$this->install_ssh_keys($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;
