@@ -19,10 +19,33 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Insure Linux User</h4>
+          <h4 class="modal-title">Ensure Linux User</h4>
         </div>
         <div class="modal-body">
 <p>This will make sure that the user exists in the Linux OS.</p>
+		</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Proceed</button>
+        </div>
+      </div>
+</form>
+    </div>
+  </div> 
+  
+  <div class="move-modal modal fade" id="ensureMySQLUser" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog">
+<form action="." method="post" class="form" role="form">
+<input type="hidden" name="ensure_mysql_user" value="1" />
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Ensure MySQL User</h4>
+        </div>
+        <div class="modal-body">
+<p>This will make sure that the user exists on the MySQL server.</p>
+<p>All privileges will be granted to <strong>{{$row.username}}</strong> on all tables (existing and new) with names starting with "<strong>{{$row.username}}_</strong>".</p>
 		</div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>

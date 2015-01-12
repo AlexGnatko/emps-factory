@@ -53,6 +53,20 @@ if($_POST['ensure_linux_user'] && $key){
 	}
 }
 
+if($_POST['ensure_mysql_user'] && $key){
+	$row = $ef->load_user(intval($key));
+	
+	if($row){
+		$data = array();
+	
+		$data['user_id'] = $row['id'];
+	
+		$ef->custom_command("ensure-mysql-user", 0, json_encode($data));
+	
+		$emps->redirect_elink();exit();
+	}
+}
+
 $emps->page_property("autoarray", 1);
 
 $ited = new EMPS_UsersEditor;

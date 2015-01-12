@@ -9,6 +9,8 @@ ini_set('memory_limit', -1);
 
 error_reporting(E_ERROR);
 
+$emps_worker_mode = true;
+
 require_once "htdocs/local/local.php";								// local settings for configuration
 
 require_once "EMPS/4.5/emps_worker_bootstrap.php";			// The bootstrap script for worker daemons

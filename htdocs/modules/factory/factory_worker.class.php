@@ -87,6 +87,52 @@ class EMPS_FactoryWorker
 		$this->file_chown($file_name, $owner);
 		$this->file_chmod($file_name, $rights);
 	}
+
+	public function ensure_mysql_user($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$user_id = intval($data['user_id']);
+		if(!$user_id){
+			$this->say("Can't ensure user: you have to specify a user!");
+			return false;
+		}
+		
+		$user = $ef->load_user(intval($user_id));
+			
+		if(!$user){
+			$this->say("ERROR: No such user!");
+			return false;
+		}
+		
+		$username = $user['username'];
+		$password = $user['cfg']['mysql_password'];
+		
+		$fail = false;
+		
+		$r = $emps->db->query("select exists(select 1 from mysql.user where user = '".$username."')");
+		$ra = $emps->db->fetch_row($r);
+		if($ra){
+			if($ra[0] == 1){
+				// user exists
+				$this->say("User already exists!");
+			}else{
+				// user does not exist
+				$emps->db->query("create user '".$username."'@'%' identified by '".$password."';");
+				$q = "grant all privileges on `".$username."\_%`.* to '".$username."'@'%'";
+//				$this->say($q);
+				$emps->db->query($q);
+//				$this->say($emps->db->sql_error());
+				$this->say("User created! Privileges granted!");
+			}
+		}else{
+			$this->say("ERROR: Wrong answer from MySQL!");
+			$fail = true;
+		}
+		
+		if(!$fail){
+			$this->say("Done!");
+		}
+	}
 	
 	public function ensure_linux_user($data, $ra){
 		global $emps, $ef, $smarty;
@@ -224,6 +270,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'ensure-linux-user':
 			$this->ensure_linux_user($data, $ra);
+			break;
+		case 'ensure-mysql-user':
+			$this->ensure_mysql_user($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;
