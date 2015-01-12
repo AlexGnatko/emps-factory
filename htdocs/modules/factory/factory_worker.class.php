@@ -271,6 +271,7 @@ class EMPS_FactoryWorker
 			$this->echo_shell("chmod 0755 ".$git_repo_path);
 			$this->echo_shell("chown ".$owner.":git ".$git_user_path);
 			$this->echo_shell("chmod 0755 ".$git_user_path);
+		}
 		
 		$fail = false;
 		$config_file = $git_repo_path.'/config';
