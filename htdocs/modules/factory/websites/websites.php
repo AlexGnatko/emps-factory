@@ -21,8 +21,9 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 	public $pads = array(
 		'info'=>'General Info',
 		'cfg'=>'Config',
+		'ssl'=>'SSL',
 		'install'=>'Installation',
-		'props'=>'Properties',
+//		'props'=>'Properties',
 		);
 		
 
@@ -68,6 +69,22 @@ if($_POST['install_local_php'] && $key){
 	$ef->custom_command("install-local-php", $row['id'], json_encode($data));
 	$ef->set_status($row['context_id'], array("local_php"=>"started"));
 	$emps->redirect_elink();exit();
+}
+
+if($_POST['post_pem'] && $key){
+	$row = $ef->load_website(intval($key));
+	
+	if($row){
+		$file_name = $ef->temporary_file("pemfile-".$row['id'], $_POST['pemfile']);
+		$data = array();
+		$data['file_name'] = $file_name;
+		$data['website_id'] = $row['id'];
+		
+		$ef->custom_command("install-pemfile", $row['id'], json_encode($data));
+		$ef->set_status($row['context_id'], array("pemfile"=>"started"));
+		
+		$emps->redirect_elink();exit();
+	}
 }
 
 if($_POST['setup_git'] && $key){

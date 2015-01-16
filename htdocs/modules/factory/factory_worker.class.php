@@ -240,6 +240,60 @@ class EMPS_FactoryWorker
 			$this->say("Done!");
 		}
 	}
+	
+	public function install_pemfile($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't install pemfile: you have to select a website!");
+			return false;
+		}
+		
+		$website = $ef->load_website($website_id);
+		$cfg = $website['cfg'];
+		$owner = $website['user']['username'];
+		$wwwdata = $ef->defaults['www_group'];
+		
+		$htdocs = $cfg['path'];
+		
+		$www_dir = $website['www_dir'];
+		
+		$failed = false;
+		
+		$file_name = $data['file_name'];
+		
+		$conf_path = $ef->defaults['lighttpd_conf_path'];
+		
+		$hostname = $cfg['hostname'];		
+		
+		$certs_path = $conf_path.'/certs';
+		
+		if(!is_dir($certs_path)){
+			$this->create_dir($certs_path, 0600, $wwwdata);
+		}
+		
+		$pem_path = $certs_path.'/'.$hostname.'.pem';
+		
+		$results = shell_exec("openssl verify -CAfile ".$file_name." ".$file_name);
+		$x = explode(": ", $results, 2);
+		if(trim($x[1]) == "OK"){
+			$this->say("openssl verify - OK");
+			$this->move_file($file_name, $pem_path, 0600, $wwwdata);
+		}else{
+			$failed = true;
+			$this->say("ERROR: openssl verify failed for this pemfile!");
+		}
+
+		$ef->set_status($website['context_id'], array("pemfile_time"=>$emps->form_time(time())));	
+		if(!$failed){
+			$ef->set_status($website['context_id'], array("pemfile"=>"done"));
+			$this->say("Done!");
+		}else{
+			$ef->set_status($website['context_id'], array("pemfile"=>"failed"));
+			$ef->set_status($website['context_id'], array("ssl_mode"=>false));
+		}
+	}
 
 	public function setup_project_git($data, $ra){
 		global $emps, $ef, $smarty;
@@ -300,7 +354,7 @@ class EMPS_FactoryWorker
 			}
 		}
 		
-		if(!$false){
+		if(!$failed){
 			$ef->set_status($website['context_id'], array("setup_git"=>"done"));
 			$this->say("Done!");
 		}else{
@@ -418,6 +472,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'setup-project-git':
 			$this->setup_project_git($data, $ra);
+			break;
+		case 'install-pemfile':
+			$this->install_pemfile($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;

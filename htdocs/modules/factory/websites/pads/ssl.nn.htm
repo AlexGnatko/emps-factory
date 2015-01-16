@@ -1,0 +1,47 @@
+<h5 class="subhead">SSL Certificate, HTTPS Mode</h5>
+<div class="row">
+<div class="col-md-7">
+{{if $row.sd.pemfile == "failed"}}
+<p class="alert alert-danger">Failed to install the PEM file at {{$row.sd.pemfile_time}}</p>
+{{/if}}
+{{if $row.sd.pemfile == "done"}}
+<p class="alert alert-success">Successfully installed the PEM file at {{$row.sd.pemfile_time}}</p>
+{{/if}}
+{{if $row.sd.pemfile == "started"}}
+<p class="alert alert-warning">Pemfile installation pending...
+&nbsp;
+<a class="btn btn-default btn-xs" href="./">Reload</a></p>
+{{/if}}
+<form action="." method="post" class="form">
+<input type="hidden" name="post_pem" value="1" />
+<div class="form-group">
+<label>New PEM File Contents:</label>
+<span class="help-block">Post new contents here. If you posted here before, the contents should be in the appropriate folder on the server.
+The empty input box doesn't mean the current PEM file is empty!
+</span>
+<span class="help-block">For security reasons, it is not possible to view the current contents of the PEM file.</span>
+</span>
+<textarea class="form-control" rows="10" name="pemfile"></textarea>
+</div>
+<p><button type="submit" class="btn btn-primary btn-lg">Send</button></p>
+</form>
+</div>
+<div class="col-md-5">
+{{if $row.sd.ssl_mode}}
+<h4 class="alert alert-success" style="margin-top:0">HTTPS mode is Enabled</h4>
+<p class="text-right"><a href="./?disable_https=1" class="btn btn-warning">Disable HTTPS</a></p>
+{{if $row.sd.pemfile == "done"}}
+<p class="well well-sm">If you've just enabled the HTTPS mode, you also need to re-do the Webserver Configuration!</p>
+{{/if}}
+{{if $row.sd.pemfile == "failed"}}
+<p class="well well-sm">The PEM file is invalid, so the Webserver's default will be used.</p>
+{{/if}}
+{{else}}
+<h4 class="alert alert-danger" style="margin-top:0">HTTPS mode is Disabled</h4>
+<p class="text-right"><a href="./?enable_https=1" class="btn btn-success">Enable HTTPS</a></p>
+<p class="well well-sm">The server's default SSL PEM file will be used in case you don't provide your own PEM file or your file contains errors!</p>
+<p class="well well-sm">"Disabled" doesn't mean the https:// is not working for this website, it only means that no PEM file will be listed in the Webserver Config file. The server's default self-issued SSL certificate will be used for HTTPS.</p>
+
+{{/if}}
+</div>
+</div>
