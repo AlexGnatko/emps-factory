@@ -219,6 +219,9 @@ class EMPS_Factory {
 		if(!$cfg['db']['password']){
 			$cfg['db']['password'] = $ra['user']['cfg']['mysql_password'];
 		}
+		if(!$cfg['db']['host']){
+			$cfg['db']['host'] = 'localhost';
+		}
 		
 		return $cfg;
 	}
