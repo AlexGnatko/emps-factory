@@ -102,6 +102,21 @@ if($_POST['setup_git'] && $key){
 	}
 }
 
+if($_POST['install_httpd'] && $key){
+	$row = $ef->load_website(intval($key));
+	
+	if($row){
+		$data = array();
+	
+		$data['website_id'] = $row['id'];
+	
+		$ef->custom_command("configure-httpd", $row['id'], json_encode($data));
+		$ef->set_status($row['context_id'], array("setup_httpd"=>"started"));
+	
+		$emps->redirect_elink();exit();
+	}
+}
+
 $ited = new EMPS_WebsitesEditor;
 
 $ited->ref_id = $key;

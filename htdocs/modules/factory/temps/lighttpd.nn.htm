@@ -5,7 +5,7 @@ $HTTP["host"] =~ "(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host
 	)
 	server.document-root = "{{$htdocs}}"
 	accesslog.filename = "/var/log/lighttpd/{{$hostname}}.log"
-	compress.cache-dir = "/srv/www/cache/{{$hostname}}/"
+	compress.cache-dir = "/srv/www/cache/{{$hostname}}"
 {{if $ssl}}
 	ssl.pemfile = "/etc/lighttpd/certs/{{$hostname}}.pem"
 {{/if}}

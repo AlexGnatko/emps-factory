@@ -241,6 +241,56 @@ class EMPS_FactoryWorker
 		}
 	}
 	
+	public function regex_escape($txt){
+		$txt = str_replace(".", "\.", $txt);
+		$txt = str_replace("-", "\-", $txt);
+		return $txt;
+	}
+	
+	public function configure_httpd($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't install pemfile: you have to select a website!");
+			return false;
+		}
+		
+		$website = $ef->load_website($website_id);
+		$cfg = $website['cfg'];
+		$owner = $website['user']['username'];
+		$wwwdata = $ef->defaults['www_group'];
+		
+		$htdocs = $cfg['path'];
+		
+		$www_dir = $website['www_dir'];
+		
+		$failed = false;
+		
+		$hostname = $cfg['hostname'];
+		$x = explode(".", $hostname);
+		array_pop($x);
+		$hostname_part = implode(".", $x);
+
+		$smarty->assign("hostname", $hostname);
+		$smarty->assign("hostname_escaped", $this->regex_escape($hostname));
+		$smarty->assign("upper_host", $this->regex_escape($ef->defaults['hostname_short']));
+		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
+		$smarty->assign("htdocs", $www_dir.'/htdocs');
+		
+		$config_file = $ef->defaults['lighttpd_conf_path'].'/vhosts.d/'.$hostname.'.conf';
+		
+		$text = $smarty->fetch("db:_factory/temps,lighttpd");
+		$this->put_file($config_file, 0644, $wwwdata, $text);
+
+		if(!$failed){
+			$ef->set_status($website['context_id'], array("setup_httpd"=>"done"));
+			$this->say("Done!");
+		}else{
+			$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
+		}
+	}
+	
 	public function install_pemfile($data, $ra){
 		global $emps, $ef, $smarty;
 		
@@ -475,6 +525,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'install-pemfile':
 			$this->install_pemfile($data, $ra);
+			break;
+		case 'configure-httpd':
+			$this->configure_httpd($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;
