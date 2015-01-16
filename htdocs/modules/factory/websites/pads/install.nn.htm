@@ -48,6 +48,29 @@
 </div>
 <hr size="1" />
 
+<div class="row">
+<div class="col-sm-3">
+{{assign var="mysql_done" value="0"}}
+{{if $row.sd.setup_mysql == "started"}}
+{{assign var="mysql_done" value="1"}}
+{{/if}}
+{{if $row.sd.setup_mysql == "done"}}
+{{assign var="mysql_done" value="10"}}
+{{include file="db:_factory/websites/marker,complete"}}
+{{else}}
+{{include file="db:_factory/websites/marker,incomplete"}}
+{{/if}}
+
+</div>
+<div class="col-sm-7">
+<h4>Configure MySQL Database</h4>
+<p>Make sure the project's database exists on the MySQL server.</p>
+</div>
+<div class="col-sm-2">
+{{include file="db:_factory/websites,install_buttons" value_done=$mysql_done modal="installMySQL"}}
+</div>
+</div>
+<hr size="1" />
 
 <div class="row">
 <div class="col-sm-3">

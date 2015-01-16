@@ -247,12 +247,47 @@ class EMPS_FactoryWorker
 		return $txt;
 	}
 	
+	public function install_database($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't install database: you have to select a website!");
+			return false;
+		}
+		
+		$website = $ef->load_website($website_id);
+		
+		$cfg = $ef->site_defaults($website);
+		
+		$database_name = $cfg['db']['database'];
+		
+		$failed = false;
+		
+		$this->say("Trying to create if not exists: ".$database_name);
+		$r = $emps->db->query("create database if not exists ".$database_name);
+		
+		$r = $emps->db->query("show databases like '".$database_name."'");
+		$ra = $emps->db->fetch_named($r);
+		if(!$ra){
+			$this->say("ERROR: Could not create the database!");
+			$failed = true;
+		}
+		
+		if(!$failed){
+			$ef->set_status($website['context_id'], array("setup_mysql"=>"done"));
+			$this->say("Done!");
+		}else{
+			$ef->set_status($website['context_id'], array("setup_mysql"=>"failed"));
+		}
+	}
+	
 	public function configure_httpd($data, $ra){
 		global $emps, $ef, $smarty;
 		
 		$website_id = $ra['ef_website_id'];
 		if(!$website_id){
-			$this->say("Can't install pemfile: you have to select a website!");
+			$this->say("Can't configure httpd: you have to select a website!");
 			return false;
 		}
 		
@@ -529,6 +564,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'configure-httpd':
 			$this->configure_httpd($data, $ra);
+			break;
+		case 'install-database':
+			$this->install_database($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;
