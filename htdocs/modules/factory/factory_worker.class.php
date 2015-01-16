@@ -44,11 +44,11 @@ class EMPS_FactoryWorker
 
 		if(!is_dir($target_dir)){
 			$this->say("Creating ".$target_dir."...");
-			mkdir($target_dir, 0766, true);
+			mkdir($target_dir, 0777, true);
 			$this->file_chown($target_dir, $owner);
-			$this->file_chmod($target_dir, 0766);
+			$this->file_chmod($target_dir, 0777);
 		}
-		$this->move_file($file_path, $target_path, 0644, $owner);
+		$this->move_file($file_path, $target_path, 0755, $owner);
 		
 		$this->say("Done!");
 		
