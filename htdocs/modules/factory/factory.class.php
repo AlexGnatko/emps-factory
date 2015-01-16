@@ -217,7 +217,7 @@ class EMPS_Factory {
 			$cfg['db']['user'] = $ra['user']['username'];
 		}
 		if(!$cfg['db']['password']){
-			$cfg['db']['password'] = $ra['user']['mysql_password'];
+			$cfg['db']['password'] = $ra['user']['cfg']['mysql_password'];
 		}
 		
 		return $cfg;
