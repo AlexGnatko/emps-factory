@@ -213,6 +213,12 @@ class EMPS_Factory {
 		if(!$cfg['path']){
 			$cfg['path'] = $ra['www_dir'].'/'.$ra['htdocs'];
 		}
+		if(!$cfg['db']['user']){
+			$cfg['db']['user'] = $ra['user']['username'];
+		}
+		if(!$cfg['db']['password']){
+			$cfg['db']['password'] = $ra['user']['mysql_password'];
+		}
 		
 		return $cfg;
 	}
