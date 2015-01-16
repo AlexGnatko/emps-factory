@@ -286,6 +286,7 @@ class EMPS_FactoryWorker
 		if(!$failed){
 			$ef->set_status($website['context_id'], array("setup_httpd"=>"done"));
 			$this->say("Done!");
+			$ef->add_command("service lighttpd reload");
 		}else{
 			$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
 		}
