@@ -50,6 +50,8 @@ define('EMPS_PHOTO_SIZE', '1200x1200|100x100|inner');
 
 define("EMPS_FONTS", "{{$cfg.server_fonts}}");
 
+$emps_custom_session_handler = true;
+
 // database configuration. This object will be destroyed upon connection to the database for security reasons.
 $emps_db_config = array(
 	'host' => '{{$cfg.db.host}}',

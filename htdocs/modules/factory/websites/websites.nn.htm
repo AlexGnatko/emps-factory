@@ -149,6 +149,31 @@ If you messed up something here, you'll have to fix in a different way.
 </form>
     </div>
   </div> 
+  
+  <div class="move-modal modal fade" id="setupAWStats" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog">
+<form action="." method="post" class="form" role="form">
+<input type="hidden" name="setup_awstats" value="1" />
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Configure AWStats</h4>
+        </div>
+        <div class="modal-body">
+<p>This will simply add the configuration file to AWStats.</p>
+<p><strong>This will not create an AWStats password!</strong></p>
+		</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Install</button>
+        </div>
+      </div>
+</form>
+    </div>
+  </div> 
+  
+  
 
 {{else}}
 <div class="page-header">

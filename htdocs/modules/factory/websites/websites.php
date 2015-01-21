@@ -147,6 +147,21 @@ if($_POST['init_website'] && $key){
 	}
 }
 
+if($_POST['setup_awstats'] && $key){
+	$row = $ef->load_website(intval($key));
+	
+	if($row){
+		$data = array();
+	
+		$data['website_id'] = $row['id'];
+	
+		$ef->custom_command("setup-awstats", $row['id'], json_encode($data));
+		$ef->set_status($row['context_id'], array("setup_awstats"=>"started"));
+	
+		$emps->redirect_elink();exit();
+	}
+}
+
 $ited = new EMPS_WebsitesEditor;
 
 $ited->ref_id = $key;

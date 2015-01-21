@@ -328,6 +328,54 @@ class EMPS_FactoryWorker
 		}
 	}
 	
+	public function setup_awstats($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't setup AWStats: you have to select a website!");
+			return false;
+		}
+		
+		$wwwdata = $ef->defaults['www_group'];
+		
+		$website = $ef->load_website($website_id);
+		
+		$cfg = $ef->site_defaults($website);
+		
+		$user = $ef->load_user(intval($website['user_id']));
+
+		$failed = false;
+					
+		if(!$user){
+			$this->say("ERROR: No such user!");
+			$failed = true;
+		}else{
+		
+			$username = $user['username'];
+			$this->say("User: ".$username);
+			
+			$hostname = $cfg['hostname'];
+			
+			$smarty->assign("hostname", $hostname);
+			
+			$text = $smarty->fetch("db:_factory/temps,awstats");
+			
+			$config_file = "/etc/awstats/awstats.".$hostname.".conf";
+			
+			$this->put_file($config_file, 0644, $wwwdata, $text);
+			
+			$this->echo_shell("/usr/lib/cgi-bin/awstats.pl -config=".$hostname." -update");
+			
+			if(!$failed){
+				$ef->set_status($website['context_id'], array("setup_awstats"=>"done"));
+				$this->say("Done!");
+			}else{
+				$ef->set_status($website['context_id'], array("setup_awstats"=>"failed"));
+			}
+		}
+	}
+	
 	public function configure_httpd($data, $ra){
 		global $emps, $ef, $smarty;
 		
@@ -616,6 +664,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'init-website':
 			$this->init_website($data, $ra);
+			break;
+		case 'setup-awstats':
+			$this->setup_awstats($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;
