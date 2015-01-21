@@ -41,6 +41,10 @@
 <div class="col-sm-7">
 <h4>Git Repository</h4>
 <p>Setup a new bare Git repository, setup the config file, hooks, and post-receive scripts.</p>
+{{if $git_done}}
+<p>Clone the repository from this Git URL:</p>
+<code class="ef-code">git clone <strong>{{$row.git_repo}}</strong></code></p>
+{{/if}}
 </div>
 <div class="col-sm-2">
 {{include file="db:_factory/websites,install_buttons" value_done=$git_done modal="installGit"}}
