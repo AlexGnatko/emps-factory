@@ -315,9 +315,9 @@ class EMPS_FactoryWorker
 			
 			$this->say("Using hostname: ".$hostname_short);
 			
-			$data = file_get_contents($hostname_short."/sqlsync/");
-			$data = file_get_contents($hostname_short."/ensure_root/".$password);
-			$data = file_get_contents($hostname_short."/init_settings/");
+			$data = file_get_contents("http://".$hostname_short."/sqlsync/");
+			$data = file_get_contents("http://".$hostname_short."/ensure_root/".$password);
+			$data = file_get_contents("http://".$hostname_short."/init_settings/");
 			
 			if(!$failed){
 				$ef->set_status($website['context_id'], array("init_website"=>"done"));
