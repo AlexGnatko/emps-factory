@@ -282,6 +282,50 @@ class EMPS_FactoryWorker
 		}
 	}
 	
+	public function init_website($data, $ra){
+		global $emps, $ef, $smarty;
+		
+		$website_id = $ra['ef_website_id'];
+		if(!$website_id){
+			$this->say("Can't init website: you have to select a website!");
+			return false;
+		}
+		
+		$website = $ef->load_website($website_id);
+		
+		$cfg = $ef->site_defaults($website);
+		
+		$user = $ef->load_user(intval($website['user_id']));
+
+		$failed = false;
+					
+		if(!$user){
+			$this->say("ERROR: No such user!");
+			$failed = true;
+		}else{
+		
+			$username = $user['username'];
+			$this->say("User: ".$username);
+			$password = $user['cfg']['linux_password'];
+			
+			$hostname = $cfg['hostname'];
+			$x = explode(".", $hostname);
+			array_pop($x);
+			$hostname_short = implode(".", $x).'.'.$ef->defaults['hostname_short'];
+			
+			$data = file_get_contents($hostname_short."/sqlsync/");
+			$data = file_get_contents($hostname_short."/ensure_root/".$password);
+			$data = file_get_contents($hostname_short."/init_settings/");
+			
+			if(!$failed){
+				$ef->set_status($website['context_id'], array("init_website"=>"done"));
+				$this->say("Done!");
+			}else{
+				$ef->set_status($website['context_id'], array("init_website"=>"failed"));
+			}
+		}
+	}
+	
 	public function configure_httpd($data, $ra){
 		global $emps, $ef, $smarty;
 		
@@ -567,6 +611,9 @@ class EMPS_FactoryWorker
 			break;
 		case 'install-database':
 			$this->install_database($data, $ra);
+			break;
+		case 'init-website':
+			$this->init_website($data, $ra);
 			break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;

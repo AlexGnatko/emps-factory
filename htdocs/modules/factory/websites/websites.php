@@ -132,6 +132,21 @@ if($_POST['install_mysql'] && $key){
 	}
 }
 
+if($_POST['init_website'] && $key){
+	$row = $ef->load_website(intval($key));
+	
+	if($row){
+		$data = array();
+	
+		$data['website_id'] = $row['id'];
+	
+		$ef->custom_command("init-website", $row['id'], json_encode($data));
+		$ef->set_status($row['context_id'], array("init_website"=>"started"));
+	
+		$emps->redirect_elink();exit();
+	}
+}
+
 $ited = new EMPS_WebsitesEditor;
 
 $ited->ref_id = $key;

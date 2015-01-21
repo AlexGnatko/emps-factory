@@ -121,6 +121,34 @@ If you messed up something here, you'll have to fix in a different way.
 </form>
     </div>
   </div> 
+  
+  <div class="move-modal modal fade" id="initWebsite" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog">
+<form action="." method="post" class="form" role="form">
+<input type="hidden" name="init_website" value="1" />
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Initialize Website</h4>
+        </div>
+        <div class="modal-body">
+<p>This will:</p>
+<ul>
+<li>Do the <strong>sqlsync</strong> procedure to create database tables.</li>
+<li>Create the <strong>root</strong> user with your current password.</li>
+<li>Create basic website settings.</li>
+<li>Create the admin menu.</li>
+</ul>
+		</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Install</button>
+        </div>
+      </div>
+</form>
+    </div>
+  </div> 
 
 {{else}}
 <div class="page-header">

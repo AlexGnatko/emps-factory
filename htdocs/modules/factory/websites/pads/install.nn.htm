@@ -95,3 +95,35 @@
 </div>
 </div>
 <hr size="1" />
+
+<div class="row">
+<div class="col-sm-3">
+{{assign var="init_web_done" value="0"}}
+{{if $row.sd.init_website == "started"}}
+{{assign var="init_web_done" value="1"}}
+{{/if}}
+
+{{if $row.sd.init_project == "done"}}
+{{if $row.sd.setup_mysql == "done"}}
+{{if $row.sd.setup_httpd == "done"}}
+{{if $row.sd.init_website == "done"}}
+{{assign var="init_web_done" value="10"}}
+{{include file="db:_factory/websites/marker,complete"}}
+{{else}}
+{{include file="db:_factory/websites/marker,incomplete"}}
+{{/if}}
+{{/if}}
+{{/if}}
+{{/if}}
+
+</div>
+<div class="col-sm-7">
+<h4>Initialize Website</h4>
+<p>Create the database tables, create the <strong>root</strong> user, set the basic parameters.</p>
+<p>This can be done only after you've set up the website directory, created the MySQL database, and configured the webserver!</p>
+</div>
+<div class="col-sm-2">
+{{include file="db:_factory/websites,install_buttons" value_done=$init_web_done modal="initWebsite"}}
+</div>
+</div>
+<hr size="1" />
