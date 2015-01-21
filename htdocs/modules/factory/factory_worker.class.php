@@ -313,6 +313,8 @@ class EMPS_FactoryWorker
 			array_pop($x);
 			$hostname_short = implode(".", $x).'.'.$ef->defaults['hostname_short'];
 			
+			$this->say("Using hostname: ".$hostname_short);
+			
 			$data = file_get_contents($hostname_short."/sqlsync/");
 			$data = file_get_contents($hostname_short."/ensure_root/".$password);
 			$data = file_get_contents($hostname_short."/init_settings/");
