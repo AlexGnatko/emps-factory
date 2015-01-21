@@ -36,6 +36,8 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		
 		$ra = $ef->explain_website($ra);
 		
+		$ra['cfg'] = $ef->site_defaults($ra);
+		
 		return parent::handle_row($ra);
 	}
 }

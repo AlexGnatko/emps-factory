@@ -223,6 +223,10 @@ class EMPS_Factory {
 			$cfg['db']['host'] = 'localhost';
 		}
 		
+		if(!$cfg['awstats_url']){
+			$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/awstats/awstats.pl?config=".$cfg['hostname'];
+		}
+		
 		return $cfg;
 	}
 	
