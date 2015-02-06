@@ -619,7 +619,7 @@ class EMPS_FactoryWorker
 		
 		if($parent_website){
 			$smarty->assign("hostname", $website['hostname']);
-			$smarty->assign("htdocs", $parent_website['www_dir']);
+			$smarty->assign("htdocs", $parent_website['www_dir'].'/htdocs');
 			$index_php = $smarty->fetch("db:_factory/temps,slave_index");
 			
 			if(!file_exists($file_name) || $overwrite){
