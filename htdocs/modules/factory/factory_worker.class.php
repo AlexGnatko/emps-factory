@@ -564,6 +564,8 @@ class EMPS_FactoryWorker
 		$cfg = $website['cfg'];
 		$owner = $website['user']['username'];
 		
+		$parent_website = $ef->load_website($website['parent_website_id']);
+		
 		$htdocs = $cfg['path'];
 		
 		$www_dir = $website['www_dir'];
@@ -615,11 +617,21 @@ class EMPS_FactoryWorker
 		
 		$file_name = $htdocs.'/index.php';
 		
-		if(!file_exists($file_name) || $overwrite){		
-			$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
-			$source_name = stream_resolve_include_path($fn);
-	
-			$this->copy_file($source_name, $file_name, 0755, $owner);
+		if($parent_website){
+			$smarty->assign("hostname", $website['hostname']);
+			$smarty->assign("htdocs", $parent_website['www_dir']);
+			$index_php = $smarty->fetch("db:_factory/temps,slave_index");
+			
+			if(!file_exists($file_name) || $overwrite){
+				$this->put_file($file_name, 0755, $owner, $index_php);
+			}
+		}else{
+			if(!file_exists($file_name) || $overwrite){		
+				$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
+				$source_name = stream_resolve_include_path($fn);
+		
+				$this->copy_file($source_name, $file_name, 0755, $owner);
+			}
 		}
 
 		$ef->set_status($website['context_id'], array("init_project"=>"done"));
