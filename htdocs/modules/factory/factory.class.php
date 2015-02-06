@@ -2,7 +2,7 @@
 
 define('DT_EF_WEBSITE', 10010);
 
-define('P_EF_WEBSITE', 'local_cfg:t,status_data:t');
+define('P_EF_WEBSITE', 'local_cfg:t,status_data:t,prefix:c');
 
 class EMPS_Factory {
 	public $defaults;
@@ -225,6 +225,12 @@ class EMPS_Factory {
 		
 		if(!$cfg['awstats_url']){
 			$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/awstats/awstats.pl?config=".$cfg['hostname'];
+		}
+		
+		$cfg['prefix'] = $ra['prefix'];
+		
+		if(!$cfg['prefix']){
+			$cfg['prefix'] = '00';
 		}
 		
 		return $cfg;

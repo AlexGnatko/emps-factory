@@ -407,7 +407,9 @@ class EMPS_FactoryWorker
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');
 		
-		$config_file = $ef->defaults['lighttpd_conf_path'].'/vhosts.d/'.$hostname.'.conf';
+		$prefix = $cfg['prefix'];
+		
+		$config_file = $ef->defaults['lighttpd_conf_path'].'/vhosts.d/'.$prefix.'-'.$hostname.'.conf';
 		
 		$text = $smarty->fetch("db:_factory/temps,lighttpd");
 		$this->put_file($config_file, 0644, $wwwdata, $text);

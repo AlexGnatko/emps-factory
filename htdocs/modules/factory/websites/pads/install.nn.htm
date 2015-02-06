@@ -1,5 +1,14 @@
 <h5 class="subhead">Installation Commands</h5>
 
+{{if $row.parent_website_id}}
+{{assign var="SlaveMode" value="1"}}
+{{/if}}
+
+{{if $SlaveMode}}
+<h4>Installation of a Slave EMPS Website</h4>
+<p>Some of the installation procedures are skipped here: they <a href="/factory-websites/{{$row.parent_website_id}}/-/install/">should be done on the master website</a> (MySQL, initialization).</p>
+{{/if}}
+
 <div class="row">
 <div class="col-sm-3">
 {{assign var="init_done" value="0"}}
@@ -53,6 +62,7 @@
 </div>
 <hr size="1" />
 
+{{if !$SlaveMode}}
 <div class="row">
 <div class="col-sm-3">
 {{assign var="mysql_done" value="0"}}
@@ -77,6 +87,7 @@
 </div>
 
 <hr size="1" />
+{{/if}}
 
 <div class="row">
 <div class="col-sm-3">
@@ -132,6 +143,8 @@
 
 <hr size="1" />
 
+{{if !$SlaveMode}}
+
 <div class="row">
 <div class="col-sm-3">
 {{assign var="init_web_done" value="0"}}
@@ -159,7 +172,14 @@
 <p>This can be done only after you've set up the website directory, created the MySQL database, and configured the webserver!</p>
 </div>
 <div class="col-sm-2">
+{{if $row.sd.init_project == "done"}}
+{{if $row.sd.setup_mysql == "done"}}
+{{if $row.sd.setup_httpd == "done"}}
 {{include file="db:_factory/websites,install_buttons" value_done=$init_web_done modal="initWebsite"}}
+{{/if}}
+{{/if}}
+{{/if}}
 </div>
 </div>
 <hr size="1" />
+{{/if}}

@@ -2,7 +2,7 @@
 <input type="hidden" name="post_save" value="1" />
 
 <div class="row">
-<div class="col-md-7">
+<div class="col-lg-9">
 
 <div class="form-group">
 <label>Owner: </label>
@@ -10,10 +10,30 @@
 </div>
 
 <div class="form-group">
+<label>Master Website: </label>
+{{include file="db:picker/singleinput" selector="/pick-select/" nolink=1 descriptor="/pick-describe/" typename="Websites" id="website" type="ef_websites|user_id=`$row.user_id`" name="parent_website_id" value=$row.parent_website_id width="100%"}}
+<span class="help-block">For master websites, keep this field blank. Adding this parameter will make this website a slave EMPS website to the selected
+master website. An EMPS slave website will have a different index.php file.</span>
+</div>
+
+<div class="row">
+<div class="col-md-10">
+
+<div class="form-group">
 <label>Hostname (NOT URL!): </label>
 <input type="text" name="hostname" value="{{$row.hostname|escape:html}}" class="form-control" placeholder="website.com"/>
 <span class="help-block">Lowercase!</span>
 </div>
+
+</div>
+<div class="col-md-2">
+<div class="form-group">
+<label>Cfg Prefix: </label>
+<input type="text" name="prefix" value="{{$row.prefix|escape:html}}" class="form-control" placeholder="00"/>
+</div>
+
+</div>
+</div>{{*row*}}
 
 <p><strong>WWW Path:</strong><br/>
 <code class="ef-code">{{$row.www_dir}}/{{$row.htdocs}}</code></p>
@@ -28,18 +48,7 @@
 
 </div>
 
-<div class="col-md-5">
-<div style="margin-bottom:-6px">
-<label>Actions:</label>
-<div class="form-group">
-<button class="btn btn-success btn-inline">Ensure Linux User</button>
-<button class="btn btn-danger btn-inline">Log In as {{$row.username}}</button>
-<button class="btn btn-info btn-inline">User Profile</button>
-<a href="/factory-websites/?sd={{$row.id}}" class="btn btn-success btn-inline">View Websites</a>
-</div>
-</div>
-
-<label>Latest Log Records:</label>
+<div class="col-lg-3">
 
 </div>
 

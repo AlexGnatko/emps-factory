@@ -164,6 +164,10 @@ if($_POST['setup_awstats'] && $key){
 	}
 }
 
+if($_POST['hostname']){
+	$_REQUEST['name'] = $_POST['hostname'];
+}
+
 $ited = new EMPS_WebsitesEditor;
 
 $ited->ref_id = $key;

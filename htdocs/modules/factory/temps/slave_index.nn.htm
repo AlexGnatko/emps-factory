@@ -1,0 +1,10 @@
+<?php
+define('EMPS_WEBSITE_SCRIPT_PATH', dirname(__FILE__));
+define('EMPS_HOST_NAME','{{$hostname}}');
+
+{{$extra}}
+
+chdir("{{$htdocs}}");
+
+include("{{$htdocs}}/index.php");
+?>
