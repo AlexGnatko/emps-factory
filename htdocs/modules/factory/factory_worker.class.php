@@ -402,7 +402,11 @@ class EMPS_FactoryWorker
 		$hostname_part = implode(".", $x);
 
 		$smarty->assign("hostname", $hostname);
-		$smarty->assign("hostname_escaped", $this->regex_escape($hostname));
+		$host_regex = $cfg['hostname_regex'];
+		if(!$host_regex){
+			$host_regex = $this->regex_escape($hostname);
+		}
+		$smarty->assign("hostname_escaped", $host_regex);
 		$smarty->assign("upper_host", $this->regex_escape($ef->defaults['hostname_short']));
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');

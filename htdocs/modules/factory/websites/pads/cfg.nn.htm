@@ -14,6 +14,16 @@
   </div>
   
   <div class="form-group">
+    <label class="col-sm-2 control-label">Hostname Regex</label>
+    <div class="col-sm-7">
+      <input type="text" name="cfg[hostname_regex]" class="form-control" placeholder="{{$row.hostname_regex}}" value="{{$row.cfg.hostname_regex|escape:html}}">
+    </div>
+    <div class="col-sm-3">
+    <span class="help-block">Leave blank to use the default</span>
+    </div>
+  </div>
+  
+  <div class="form-group">
     <label class="col-sm-2 control-label">Script Path</label>
     <div class="col-sm-7">
       <input type="text" name="cfg[path]" class="form-control" placeholder="{{$row.www_dir}}/{{$row.htdocs}}" value="{{$row.cfg.path|escape:html}}">

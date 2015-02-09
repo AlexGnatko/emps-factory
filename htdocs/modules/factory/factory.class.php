@@ -17,6 +17,12 @@ class EMPS_Factory {
 		$emps->p->save_properties($a, $context_id, $code);
 	}
 	
+	public function regex_escape($txt){
+		$txt = str_replace(".", "\.", $txt);
+		$txt = str_replace("-", "\-", $txt);
+		return $txt;
+	}
+	
 	public function set_status($context_id, $arr){
 		global $emps;
 	
@@ -231,6 +237,10 @@ class EMPS_Factory {
 		
 		if(!$cfg['prefix']){
 			$cfg['prefix'] = '00';
+		}
+		
+		if(!$cfg['hostname_regex']){
+			$cfg['hostname_regex'] = $this->regex_escape($cfg['hostname']);
 		}
 		
 		return $cfg;
