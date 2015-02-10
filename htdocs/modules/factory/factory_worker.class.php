@@ -604,6 +604,10 @@ class EMPS_FactoryWorker
 			$this->put_file($file_name, 0755, $owner, $htaccess);
 		}
 		
+		if($parent_website){
+			$smarty->assign("slave", 1);
+		}
+		
 		$gitignore = $smarty->fetch("db:_factory/temps,gitignore");
 		$file_name = $www_dir.'/.gitignore';
 		
