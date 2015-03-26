@@ -1,19 +1,19 @@
 {{capture name="common"}}
-	server_name		~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
+    server_name		~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
     root 			{{$htdocs}}/;
     
-	index index.php;
-
+    index index.php;
+    
     access_log		/var/log/nginx/{{$hostname}}.log awstats;
     error_log		/var/log/nginx/{{$hostname}}.error.log error;
     
-	include /etc/nginx/rewrite.conf;
+    include /etc/nginx/rewrite.conf;
     
-	include /etc/nginx/gzip.conf;
+    include /etc/nginx/gzip.conf;
 {{/capture}}
 
 server {
-	listen			80;
+    listen			80;
     {{$smarty.capture.common}}
 }
 

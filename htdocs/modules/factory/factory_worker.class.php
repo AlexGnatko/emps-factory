@@ -429,7 +429,7 @@ class EMPS_FactoryWorker
 				$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
 			}
 		}elseif($server_type == "nginx"){
-			$config_file = $ef->defaults['nginx_conf_path'].'/sites-available/'.$prefix.'-'.$hostname.'.conf';
+			$config_file = $ef->defaults['nginx_conf_path'].'/sites-enabled/'.$prefix.'-'.$hostname.'.conf';
 			
 			$text = $smarty->fetch("db:_factory/temps,nginx");
 			$this->put_file($config_file, 0644, $wwwdata, $text);
