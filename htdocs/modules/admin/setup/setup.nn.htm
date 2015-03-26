@@ -16,6 +16,19 @@
 </div>
 <div class="col-md-3">
 <div class="form-group">
+<label>Server Type:</label>
+<input type="text" class="form-control" name="server_type" value="{{$data.server_type|escape:html}}" placeholder="nginx"/>
+</div>
+</div>
+<div class="col-md-3">
+<div class="form-group">
+<label>Nginx Config:</label>
+<input type="text" class="form-control" name="nginx_conf_path" value="{{$data.nginx_conf_path|escape:html}}" placeholder="/etc/nginx"/>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="form-group">
 <label>Lighttpd Config:</label>
 <input type="text" class="form-control" name="lighttpd_conf_path" value="{{$data.lighttpd_conf_path|escape:html}}" placeholder="/etc/lighttpd"/>
 </div>
@@ -35,20 +48,23 @@
 </div>
 </div>
 
-</div>
-
-<div class="row">
 <div class="col-md-3">
+<div class="form-group">
 <label>Hostname (for git):</label>
 <input type="text" class="form-control" name="hostname" value="{{$data.hostname|escape:html}}" placeholder="emps-f.website.com"/>
 </div>
+</div>
 <div class="col-md-3">
+<div class="form-group">
 <label>Hostname (short):</label>
 <input type="text" class="form-control" name="hostname_short" value="{{$data.hostname_short|escape:html}}" placeholder="ef.ws.com"/>
 </div>
+</div>
 <div class="col-md-3">
+<div class="form-group">
 <label>Home Directory:</label>
 <input type="text" class="form-control" name="home" value="{{$data.home|escape:html}}" placeholder="/home"/>
+</div>
 </div>
 </div>
 

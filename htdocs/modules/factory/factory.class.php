@@ -55,6 +55,12 @@ class EMPS_Factory {
 		if(!$rv['lighttpd_conf_path']){
 			$rv['lighttpd_conf_path'] = '/etc/lighttpd';
 		}
+		if(!$rv['nginx_conf_path']){
+			$rv['nginx_conf_path'] = '/etc/nginx';
+		}
+		if(!$rv['server_type']){
+			$rv['server_type'] = 'nginx';
+		}
 		if(!$rv['git_path']){
 			$rv['git_path'] = '/opt/git';
 		}

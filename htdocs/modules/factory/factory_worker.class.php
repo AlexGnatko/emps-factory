@@ -390,6 +390,8 @@ class EMPS_FactoryWorker
 		$owner = $website['user']['username'];
 		$wwwdata = $ef->defaults['www_group'];
 		
+		$server_type = $ef->defaults['server_type'];
+		
 		$htdocs = $cfg['path'];
 		
 		$www_dir = $website['www_dir'];
@@ -413,16 +415,34 @@ class EMPS_FactoryWorker
 		
 		$prefix = $cfg['prefix'];
 		
-		$config_file = $ef->defaults['lighttpd_conf_path'].'/vhosts.d/'.$prefix.'-'.$hostname.'.conf';
-		
-		$text = $smarty->fetch("db:_factory/temps,lighttpd");
-		$this->put_file($config_file, 0644, $wwwdata, $text);
-
-		if(!$failed){
-			$ef->set_status($website['context_id'], array("setup_httpd"=>"done"));
-			$this->say("Done!");
-			$ef->add_command("service lighttpd reload");
+		if($server_type == "lighttpd"){
+			$config_file = $ef->defaults['lighttpd_conf_path'].'/vhosts.d/'.$prefix.'-'.$hostname.'.conf';
+			
+			$text = $smarty->fetch("db:_factory/temps,lighttpd");
+			$this->put_file($config_file, 0644, $wwwdata, $text);
+	
+			if(!$failed){
+				$ef->set_status($website['context_id'], array("setup_httpd"=>"done"));
+				$this->say("Done!");
+				$ef->add_command("service lighttpd reload");
+			}else{
+				$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
+			}
+		}elseif($server_type == "nginx"){
+			$config_file = $ef->defaults['nginx_conf_path'].'/sites-available/'.$prefix.'-'.$hostname.'.conf';
+			
+			$text = $smarty->fetch("db:_factory/temps,nginx");
+			$this->put_file($config_file, 0644, $wwwdata, $text);
+	
+			if(!$failed){
+				$ef->set_status($website['context_id'], array("setup_httpd"=>"done"));
+				$this->say("Done!");
+				$ef->add_command("service nginx reload");
+			}else{
+				$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
+			}
 		}else{
+			$this->say("Unknown server type!");
 			$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
 		}
 	}
