@@ -133,12 +133,12 @@ class EMPS_FactoryWorker
 		}else{
 			$ssh_dir = $home.'/.ssh';
 			if(!is_dir($ssh_dir)){
-				$this->create_dir($ssh_dir, 0644, $owner);
+				$this->create_dir($ssh_dir, 0700, $owner);
 			}
 			$file_name = $ssh_dir.'/authorized_keys';
 			file_put_contents($file_name, $text);
 			exec("chown ".$owner." ".$file_name);
-			$this->file_chmod($file_name, 0644);
+			$this->file_chmod($file_name, 0700);
 		}
 	
 		if(!$fail){
