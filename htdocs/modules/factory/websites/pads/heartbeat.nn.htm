@@ -1,0 +1,24 @@
+<h5 class="subhead">Heartbeat Settings</h5>
+<p>Heartbeat is a solution to run the website's service scripts (such as sending e-mails or calculating scores).</p>
+<p>The EMPS Factory will open the website's <strong>/heartbeat/</strong> page at pre-set intervals (default is 60 seconds).</p>
+
+{{if !$hb}}
+<h4 class="alert alert-danger">No heartbeat is enabled for this website!</h4>
+<p><a href="./?enable=1" class="btn btn-primary">Enable Heartbeat</a></p>
+{{else}}
+<h4 class="alert alert-success">Heartbeat is enabled!</h4>
+{{if $hb.nedt}}
+<p>Next heartbeat time: <strong>{{$hb.ntime}}</strong></p>
+{{/if}}
+<form action="." method="post" class="form form-inline" role="form" id="main_form">
+<input type="hidden" name="post_save" value="1" />
+
+<p>
+<label>Interval, seconds:</label><br/>
+<input type="text" name="heartbeat_interval" value="{{$row.cfg.heartbeat_interval}}" class="form-control" style="width:100px"/>
+(if not set, default is 60 seconds)
+</p>
+
+<p><button type="submit" class="btn btn-primary">Save Changes</button></p>
+</form>
+{{/if}}

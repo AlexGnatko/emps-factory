@@ -36,3 +36,19 @@ CREATE TEMPORARY TABLE `temp_ef_commands` (
   KEY `edt` (`edt`),    
   KEY `cdt` (`cdt`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- table
+CREATE TEMPORARY TABLE `temp_ef_heartbeat` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL DEFAULT '0',
+  `ef_website_id` bigint NOT NULL DEFAULT '0',
+  `status` int NOT NULL,
+  `nedt` bigint NOT NULL,  
+  `cdt` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `ef_website_id` (`ef_website_id`),
+  KEY `status` (`status`),
+  KEY `nedt` (`nedt`),    
+  KEY `cdt` (`cdt`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

@@ -376,6 +376,13 @@ class EMPS_FactoryWorker
 		}
 	}
 	
+	public function hostname_part($hostname){
+		$x = explode(".", $hostname);
+		array_pop($x);
+		$hostname_part = implode(".", $x);
+		return $hostname_part;
+	}
+	
 	public function configure_httpd($data, $ra){
 		global $emps, $ef, $smarty;
 		
@@ -399,9 +406,8 @@ class EMPS_FactoryWorker
 		$failed = false;
 		
 		$hostname = $cfg['hostname'];
-		$x = explode(".", $hostname);
-		array_pop($x);
-		$hostname_part = implode(".", $x);
+		
+		$hostname_part = $this->hostname_part($hostname);
 
 		$smarty->assign("hostname", $hostname);
 		$host_regex = $cfg['hostname_regex'];
@@ -738,8 +744,33 @@ class EMPS_FactoryWorker
 		unset($rv);
 	}
 	
+	public function heartbeat_cycle(){
+		global $ef, $emps;
+		
+		$dt = time();
+		$r = $emps->db->query("select * from ".TP."ef_heartbeat where status = 10 and nedt <= $dt");
+		while($ra = $emps->db->fetch_named($r)){
+			$website = $ef->load_website($ra['ef_website_id']);
+			if(!$website){
+				continue;
+			}
+			$cfg = $website['cfg'];
+			$hostname = $cfg['hostname'];
+			$hostname_part = $this->hostname_part($hostname);
+			$interval = intval($cfg['heartbeat_interval']);
+			if(!$interval){
+				$interval = 60;
+			}
+			$dt = time() + $interval;
+			$emps->db->query("update ".TP."ef_heartbeat set nedt = $dt where id = ".$ra['id']);
+			exec("curl http://".$hostname_part.".".$ef->defaults['hostname_short']."/heartbeat/ &");
+		}
+	}
+	
 	public function cycle(){
 		global $ef, $emps;
+		
+		$this->heartbeat_cycle();
 		
 		while(true){
 			$r = $emps->db->query("select * from ".TP."ef_commands where status = 0 order by id asc limit 1");

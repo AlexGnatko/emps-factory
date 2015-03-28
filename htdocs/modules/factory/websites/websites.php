@@ -23,6 +23,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		'cfg'=>'Config',
 		'ssl'=>'SSL',
 		'install'=>'Installation',
+		'heartbeat'=>'Heartbeat',
 //		'props'=>'Properties',
 		);
 		
