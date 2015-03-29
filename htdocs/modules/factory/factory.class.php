@@ -120,6 +120,10 @@ class EMPS_Factory {
 			$ra['www_dir'] = $prefix.'/'.$ra['user']['username'].'/'.$ra['hostname'];
 		}
 		
+		if(!$ra['include_path']){
+			$ra['include_path'] = $this->defaults['main_path'].'/lib';
+		}
+		
 		if(!$ra['htdocs']){
 			$ra['htdocs'] = 'htdocs';
 		}
