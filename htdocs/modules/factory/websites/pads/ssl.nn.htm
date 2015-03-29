@@ -21,7 +21,12 @@ The empty input box doesn't mean the current PEM file is empty!
 </span>
 <span class="help-block">For security reasons, it is not possible to view the current contents of the PEM file.</span>
 </span>
-<textarea class="form-control" rows="10" name="pemfile"></textarea>
+<textarea class="form-control" rows="6" name="pemfile"></textarea>
+</div>
+<div class="form-group">
+<label>Separate Key File (for nginx):</label>
+<textarea class="form-control" rows="6" name="keyfile"></textarea>
+<span class="help-block">Only for nginx: it requires the private key to be stored in a different file.</span>
 </div>
 <p><button type="submit" class="btn btn-primary btn-lg">Send</button></p>
 </form>

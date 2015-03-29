@@ -467,34 +467,49 @@ class EMPS_FactoryWorker
 		$owner = $website['user']['username'];
 		$wwwdata = $ef->defaults['www_group'];
 		
-		$htdocs = $cfg['path'];
-		
-		$www_dir = $website['www_dir'];
-		
 		$failed = false;
 		
 		$file_name = $data['file_name'];
+		$key_file_name = $data['key_file_name'];
+
+		$hostname = $cfg['hostname'];				
 		
-		$conf_path = $ef->defaults['lighttpd_conf_path'];
-		
-		$hostname = $cfg['hostname'];		
-		
-		$certs_path = $conf_path.'/certs';
-		
-		if(!is_dir($certs_path)){
-			$this->create_dir($certs_path, 0600, $wwwdata);
+		$server_type = $ef->defaults['server_type'];
+		if($server_type == "lighttpd"){
+			$conf_path = $ef->defaults['lighttpd_conf_path'];
+			$certs_path = $conf_path.'/certs';
+			if(!is_dir($certs_path)){
+				$this->create_dir($certs_path, 0600, $wwwdata);
+			}
+			$pem_path = $certs_path.'/'.$hostname.'.pem';
+			$results = shell_exec("openssl verify -CAfile ".$file_name." ".$file_name);
+			$x = explode(": ", $results, 2);
+			if(trim($x[1]) == "OK"){
+				$this->say("openssl verify - OK");
+				$this->move_file($file_name, $pem_path, 0600, $wwwdata);
+			}else{
+				$failed = true;
+				$this->say("ERROR: openssl verify failed for this pemfile!");
+			}
 		}
-		
-		$pem_path = $certs_path.'/'.$hostname.'.pem';
-		
-		$results = shell_exec("openssl verify -CAfile ".$file_name." ".$file_name);
-		$x = explode(": ", $results, 2);
-		if(trim($x[1]) == "OK"){
-			$this->say("openssl verify - OK");
-			$this->move_file($file_name, $pem_path, 0600, $wwwdata);
-		}else{
-			$failed = true;
-			$this->say("ERROR: openssl verify failed for this pemfile!");
+		if($server_type == "nginx"){
+			$conf_path = $ef->defaults['nginx_conf_path'];
+			$certs_path = $conf_path.'/ssl';
+			if(!is_dir($certs_path)){
+				$this->create_dir($certs_path, 0600, $wwwdata);
+			}
+			$pem_path = $certs_path.'/'.$hostname.'.pem';
+			$key_path = $certs_path.'/'.$hostname.'.key';
+			$results = shell_exec("openssl verify -CAfile ".$file_name." ".$key_file_name);
+			$x = explode(": ", $results, 2);
+			if(trim($x[1]) == "OK"){
+				$this->say("openssl verify - OK");
+				$this->move_file($file_name, $pem_path, 0600, $wwwdata);
+				$this->move_file($key_file_name, $key_path, 0600, $wwwdata);
+			}else{
+				$failed = true;
+				$this->say("ERROR: openssl verify failed for this pemfile!");
+			}
 		}
 
 		$ef->set_status($website['context_id'], array("pemfile_time"=>$emps->form_time(time())));	

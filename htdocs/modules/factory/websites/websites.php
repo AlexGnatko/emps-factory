@@ -79,8 +79,10 @@ if($_POST['post_pem'] && $key){
 	
 	if($row){
 		$file_name = $ef->temporary_file("pemfile-".$row['id'], $_POST['pemfile']);
+		$key_file_name = $ef->temporary_file("kyfile-".$row['id'], $_POST['keyfile']);
 		$data = array();
 		$data['file_name'] = $file_name;
+		$data['key_file_name'] = $file_name;
 		$data['website_id'] = $row['id'];
 		
 		$ef->custom_command("install-pemfile", $row['id'], json_encode($data));

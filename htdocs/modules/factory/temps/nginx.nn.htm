@@ -21,8 +21,8 @@ server {
 server {
     listen			443;
     ssl				on;
-    ssl_certificate /etc/ssl/{{$hostname}}.pem;    # path to your cacert.pem
-    ssl_certificate_key /etc/ssl/{{$hostname}}.pem;    # path to your privkey.pem
+    ssl_certificate /etc/nginx/ssl/{{$hostname}}.pem;    # path to your cacert.pem
+    ssl_certificate_key /etc/nginx/ssl/{{$hostname}}.key;    # path to your privkey.pem
     fastcgi_param   HTTPS               on;
     fastcgi_param   HTTP_SCHEME         https;
 
