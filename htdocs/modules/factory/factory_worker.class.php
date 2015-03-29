@@ -474,6 +474,8 @@ class EMPS_FactoryWorker
 
 		$hostname = $cfg['hostname'];				
 		
+		$smarty->assign("ssl", $website['sd']['ssl']);
+		
 		$server_type = $ef->defaults['server_type'];
 		if($server_type == "lighttpd"){
 			$conf_path = $ef->defaults['lighttpd_conf_path'];
