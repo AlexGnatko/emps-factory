@@ -419,6 +419,9 @@ class EMPS_FactoryWorker
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');
 		
+		$smarty->assign("ssl", $website['sd']['ssl']);
+		$this->say("SSL mode: ".$website['sd']['ssl']);
+		
 		$prefix = $cfg['prefix'];
 		
 		if($server_type == "lighttpd"){
@@ -473,8 +476,6 @@ class EMPS_FactoryWorker
 		$key_file_name = $data['key_file_name'];
 
 		$hostname = $cfg['hostname'];				
-		
-		$smarty->assign("ssl", $website['sd']['ssl']);
 		
 		$server_type = $ef->defaults['server_type'];
 		if($server_type == "lighttpd"){
