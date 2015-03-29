@@ -419,8 +419,8 @@ class EMPS_FactoryWorker
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');
 		
-		$smarty->assign("ssl", $website['sd']['ssl']);
-		$this->say("SSL mode: ".$website['sd']['ssl']);
+		$smarty->assign("ssl", $website['sd']['ssl_mode']);
+		$this->say("SSL mode: ".$website['sd']['ssl_mode']);
 		
 		$prefix = $cfg['prefix'];
 		
