@@ -7,6 +7,7 @@
 	access_log		/var/log/nginx/{{$hostname}}.log awstats;
 	error_log		/var/log/nginx/{{$hostname}}.error.log error;
 
+	include /etc/nginx/deny.conf;
 	include /etc/nginx/rewrite.conf;
 
 	include /etc/nginx/gzip.conf;
