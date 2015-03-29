@@ -1,31 +1,31 @@
 {{capture name="common"}}
-    server_name		{{$hostname}} ~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
-    root 			{{$htdocs}}/;
-    
-    index index.php;
-    
-    access_log		/var/log/nginx/{{$hostname}}.log awstats;
-    error_log		/var/log/nginx/{{$hostname}}.error.log error;
-    
-    include /etc/nginx/rewrite.conf;
-    
-    include /etc/nginx/gzip.conf;
+	server_name		{{$hostname}} ~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
+	root 			{{$htdocs}}/;
+
+	index index.php;
+
+	access_log		/var/log/nginx/{{$hostname}}.log awstats;
+	error_log		/var/log/nginx/{{$hostname}}.error.log error;
+
+	include /etc/nginx/rewrite.conf;
+
+	include /etc/nginx/gzip.conf;
 {{/capture}}
 
 server {
-    listen			80;
-    {{$smarty.capture.common}}
+	listen			80;
+	{{$smarty.capture.common}}
 }
 
 {{if $ssl}}
 server {
-    listen			443;
-    ssl				on;
-    ssl_certificate /etc/nginx/ssl/{{$hostname}}.pem;    # path to your cacert.pem
-    ssl_certificate_key /etc/nginx/ssl/{{$hostname}}.key;    # path to your privkey.pem
-    fastcgi_param   HTTPS               on;
-    fastcgi_param   HTTP_SCHEME         https;
+	listen			443;
+	ssl				on;
+	ssl_certificate /etc/nginx/ssl/{{$hostname}}.pem;    # path to your cacert.pem
+	ssl_certificate_key /etc/nginx/ssl/{{$hostname}}.key;    # path to your privkey.pem
+	fastcgi_param   HTTPS               on;
+	fastcgi_param   HTTP_SCHEME         https;
 
-    {{$smarty.capture.common}}
+	{{$smarty.capture.common}}
 }
 {{/if}}
