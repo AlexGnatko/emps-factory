@@ -500,7 +500,7 @@ class EMPS_FactoryWorker
 			}
 			$pem_path = $certs_path.'/'.$hostname.'.pem';
 			$key_path = $certs_path.'/'.$hostname.'.key';
-			$results = shell_exec("openssl verify -CAfile ".$file_name." ".$key_file_name);
+			$results = shell_exec("openssl verify -CAfile ".$key_file_name." ".$file_name);
 			$x = explode(": ", $results, 2);
 			if(trim($x[1]) == "OK"){
 				$this->say("openssl verify - OK");
