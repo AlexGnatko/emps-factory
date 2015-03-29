@@ -500,12 +500,17 @@ class EMPS_FactoryWorker
 			}
 			$pem_path = $certs_path.'/'.$hostname.'.pem';
 			$key_path = $certs_path.'/'.$hostname.'.key';
-			$results = shell_exec("openssl verify -CAfile ".$key_file_name." ".$file_name);
+			$comb_path = $certs_path.'/'.$hostname.'.comb';
+			
+			$comb_name = $ef->temporary_file("comb-".$website['id'], file_get_contents($key_file_name)."\n".file_get_contents($file_name));
+			
+			$results = shell_exec("openssl verify -CAfile ".$comb_name." ".$comb_name);
 			$x = explode(": ", $results, 2);
 			if(trim($x[1]) == "OK"){
 				$this->say("openssl verify - OK");
 				$this->move_file($file_name, $pem_path, 0600, $wwwdata);
 				$this->move_file($key_file_name, $key_path, 0600, $wwwdata);
+				$this->move_file($comb_name, $comb_path, 0600, $wwwdata);
 			}else{
 				$failed = true;
 				$this->say("ERROR: openssl verify failed for this pemfile!");
