@@ -165,6 +165,7 @@ class EMPS_Factory {
 			$ra['etime'] = $emps->form_time($ra['edt']);
 		}
 		$ra['ctime'] = $emps->form_time($ra['cdt']);
+		$ra['user'] = $emps->auth->load_user($ra['user_id']);
 
 		return $ra;
 	}
