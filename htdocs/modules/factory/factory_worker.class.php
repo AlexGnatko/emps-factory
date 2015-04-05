@@ -580,6 +580,8 @@ class EMPS_FactoryWorker
 				$receive = $smarty->fetch("db:_factory/temps,git_receive");
 				$this->put_file($git_repo_path.'/hooks/post-receive', 0755, $owner, $receive);
 				
+				$this->echo_shell("git config --global user.email \"gnatko@mail.ru\"");
+				$this->echo_shell("git config --global user.name \"Alex\"");
 				$this->echo_shell("cd ".$git_repo_path." && git add .gitignore && git add htdocs ".
 					"&& git commit -m \"EMPS Factory Init\"");
 				
