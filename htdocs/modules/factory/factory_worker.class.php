@@ -343,6 +343,8 @@ class EMPS_FactoryWorker
 		
 		$cfg = $ef->site_defaults($website);
 		
+		$server_type = $ef->defaults['server_type'];
+		
 		$user = $ef->load_user(intval($website['user_id']));
 
 		$failed = false;
@@ -358,6 +360,7 @@ class EMPS_FactoryWorker
 			$hostname = $cfg['hostname'];
 			
 			$smarty->assign("hostname", $hostname);
+			$smarty->assign("server_type", $server_type);
 			
 			$text = $smarty->fetch("db:_factory/temps,awstats");
 			
