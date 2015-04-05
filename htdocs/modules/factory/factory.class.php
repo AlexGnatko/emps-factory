@@ -240,9 +240,7 @@ class EMPS_Factory {
 			$cfg['include_path'] = $this->defaults['main_path'].'/lib';
 		}
 		
-		if(!$cfg['awstats_url']){
-			$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/cgi-bin/awstats.pl?config=".$cfg['hostname'];
-		}
+		$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/cgi-bin/awstats.pl?config=".$cfg['hostname'];
 		
 		$cfg['prefix'] = $ra['prefix'];
 		
