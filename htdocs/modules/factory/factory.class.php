@@ -2,7 +2,7 @@
 
 define('DT_EF_WEBSITE', 10010);
 
-define('P_EF_WEBSITE', 'local_cfg:t,status_data:t,prefix:c');
+define('P_EF_WEBSITE', 'local_cfg:t,status_data:t,prefix:c,www_dir:t');
 
 class EMPS_Factory {
 	public $defaults;
