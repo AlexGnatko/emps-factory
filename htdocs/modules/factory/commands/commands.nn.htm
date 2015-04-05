@@ -23,7 +23,7 @@
 {{if $lst[i].status > 0}}
 <code class="ef-response">
 <div class="pull-right">
-<span class="alert alert-default">{{$lst[i].user.username}}</span>
+<span class="label label-default">{{$lst[i].user.username}}</span>
 </div>
 {{$lst[i].response|escape:html|nl2br}}
 Ended at {{$lst[i].etime}}
