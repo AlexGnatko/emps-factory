@@ -40,10 +40,10 @@ master website. An EMPS slave website will have a different index.php file.</spa
 <input type="text" name="www_dir_alt" value="{{$row.www_dir_alt|escape:html}}" class="form-control" placeholder="{{$row.www_dir}}"/>
 </div>
 
-<div class="form-group">
+{{*<div class="form-group">
 <label>Git repository path: </label>
 <input type="text" name="www_dir" value="{{$row.www_dir|escape:html}}" class="form-control" placeholder="{{$row.www_dir}}"/>
-</div>
+</div>*}}
 
 <p><strong>WWW Path:</strong><br/>
 <code class="ef-code">{{$row.www_dir}}/{{$row.htdocs}}</code></p>
