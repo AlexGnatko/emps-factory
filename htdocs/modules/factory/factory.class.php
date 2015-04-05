@@ -112,14 +112,18 @@ class EMPS_Factory {
 			}
 		}
 		
-		if(!$ra['www_dir']){
+		if($ra['www_dir_alt']){
 			$ra['www_dir'] = $ra['www_dir_alt'];
+		}else{
 			if(!$ra['www_dir']){
-				$prefix = $ra['user']['www_dir'];
-				if(!$prefix){
-					$prefix = $this->defaults['main_path'];
+				$ra['www_dir'] = $ra['www_dir_alt'];
+				if(!$ra['www_dir']){
+					$prefix = $ra['user']['www_dir'];
+					if(!$prefix){
+						$prefix = $this->defaults['main_path'];
+					}
+					$ra['www_dir'] = $prefix.'/'.$ra['user']['username'].'/'.$ra['hostname'];
 				}
-				$ra['www_dir'] = $prefix.'/'.$ra['user']['username'].'/'.$ra['hostname'];
 			}
 		}
 		
