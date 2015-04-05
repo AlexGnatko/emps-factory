@@ -241,7 +241,7 @@ class EMPS_Factory {
 		}
 		
 		if(!$cfg['awstats_url']){
-			$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/awstats/awstats.pl?config=".$cfg['hostname'];
+			$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/cgi-bin/awstats.pl?config=".$cfg['hostname'];
 		}
 		
 		$cfg['prefix'] = $ra['prefix'];
