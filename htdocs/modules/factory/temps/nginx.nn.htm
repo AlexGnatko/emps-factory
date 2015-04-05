@@ -15,7 +15,7 @@
 
 server {
 	listen			80;
-	{{$smarty.capture.common}}
+{{$smarty.capture.common}}
 }
 
 {{if $ssl}}
@@ -27,6 +27,6 @@ server {
 	fastcgi_param   HTTPS               on;
 	fastcgi_param   HTTP_SCHEME         https;
 
-	{{$smarty.capture.common}}
+{{$smarty.capture.common}}
 }
 {{/if}}
