@@ -805,6 +805,11 @@ class EMPS_FactoryWorker
 		while(true){
 			$r = $emps->db->query("select * from ".TP."ef_commands where status = 0 order by id asc limit 1");
 			
+			if(!$r){
+				$GLOBALS['die_now'] = true;
+				break;
+			}
+			
 			$ra = $emps->db->fetch_named($r);
 			
 			if(!$ra){
