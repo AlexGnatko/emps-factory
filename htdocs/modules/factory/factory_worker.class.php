@@ -795,6 +795,16 @@ class EMPS_FactoryWorker
 //			exec("curl http://".$hostname_part.".".$ef->defaults['hostname_short']."/heartbeat/ &");
 			exec("curl http://".$hostname."/heartbeat/ &");
 		}
+		
+		$homedir = $ef->defaults['home'];
+		$list = file_get_contents($homedir."/heartbeat.conf");
+		$x = explode("\n", $list);
+		foreach($x as $v){
+			$v = trim($v);
+			if($v){
+				exec("curl ".$v." &");
+			}
+		}
 	}
 	
 	public function cycle(){
