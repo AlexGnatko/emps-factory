@@ -2,6 +2,8 @@
 
 class EMPS_FactoryWorker
 {
+	public $last_tick = 0;
+	
 	public function say($s){
 		echo $s."\r\n";
 	}
@@ -796,16 +798,19 @@ class EMPS_FactoryWorker
 			exec("curl http://".$hostname."/heartbeat/ &");
 		}
 		
-		$homedir = $ef->defaults['home'];
-		$list = file_get_contents($homedir."/heartbeat.conf");
-		$x = explode("\n", $list);
-		foreach($x as $v){
-			$v = trim($v);
-			if(substr($v, 0, 1) == "#"){
-				continue;
-			}
-			if($v){
-				exec("curl ".$v." &");
+		if($this->last_tick < (time() - 60)){
+			$this->last_tick = time();
+			$homedir = $ef->defaults['home'];
+			$list = file_get_contents($homedir."/heartbeat.conf");
+			$x = explode("\n", $list);
+			foreach($x as $v){
+				$v = trim($v);
+				if(substr($v, 0, 1) == "#"){
+					continue;
+				}
+				if($v){
+					exec("curl ".$v." &");
+				}
 			}
 		}
 	}
