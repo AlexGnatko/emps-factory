@@ -801,6 +801,9 @@ class EMPS_FactoryWorker
 		$x = explode("\n", $list);
 		foreach($x as $v){
 			$v = trim($v);
+			if(substr($v, 0, 1) == "#"){
+				continue;
+			}
 			if($v){
 				exec("curl ".$v." &");
 			}
