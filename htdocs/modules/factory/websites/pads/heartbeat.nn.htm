@@ -6,9 +6,15 @@
 <h4 class="alert alert-danger">No heartbeat is enabled for this website!</h4>
 <p><a href="./?enable=1" class="btn btn-primary">Enable Heartbeat</a></p>
 {{else}}
+{{if $hb.status eq 10}}
 <h4 class="alert alert-success">Heartbeat is enabled!</h4>
+<p><a href="./?disable=1" class="btn btn-primary">Disable Heartbeat</a></p>
 {{if $hb.nedt}}
 <p>Next heartbeat time: <strong>{{$hb.ntime}}</strong></p>
+{{/if}}
+{{else}}
+<h4 class="alert alert-danger">Heartbeat is suspended!</h4>
+<p><a href="./?enable=1" class="btn btn-primary">Enable Heartbeat</a></p>
 {{/if}}
 <form action="." method="post" class="form form-inline" role="form" id="main_form">
 <input type="hidden" name="post_save" value="1" />

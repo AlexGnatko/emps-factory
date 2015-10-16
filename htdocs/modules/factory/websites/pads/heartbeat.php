@@ -14,6 +14,20 @@ if($_GET['enable']){
 		$SET['status'] = 10;
 		$SET['user_id'] = $emps->auth->USER_ID;
 		$emps->db->sql_insert("ef_heartbeat");
+	}else{
+		$SET = array();
+		$SET['status'] = 10;
+		$emps->db->sql_update("ef_heartbeat", "id = ".$hb['id']);
+	}
+	$emps->redirect_elink();exit();
+}
+
+if($_GET['disable']){
+	$hb = $emps->db->get_row("ef_heartbeat", "ef_website_id = ".$row['id']);
+	if($hb){
+		$SET = array();
+		$SET['status'] = '00';
+		$emps->db->sql_update("ef_heartbeat", "id = ".$hb['id']);
 	}
 	$emps->redirect_elink();exit();
 }
