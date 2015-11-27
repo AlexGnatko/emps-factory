@@ -22,6 +22,7 @@ server {
 {{if $ssl}}
 server {
 	listen			443;
+    listen			[::]:443;
 	ssl				on;
 	ssl_certificate /etc/nginx/ssl/{{$hostname}}.pem;    # path to your cacert.pem
 	ssl_certificate_key /etc/nginx/ssl/{{$hostname}}.key;    # path to your privkey.pem
