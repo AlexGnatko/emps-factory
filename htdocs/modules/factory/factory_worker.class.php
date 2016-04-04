@@ -455,6 +455,27 @@ class EMPS_FactoryWorker
 			}else{
 				$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
 			}
+			
+			if($website['sd']['ssl_mode']){
+				// copy default pem files
+				$conf_path = $ef->defaults['nginx_conf_path'];
+				$certs_path = $conf_path.'/ssl';
+				
+				$key_file_name = $certs_path."/nginx.key";
+				$file_name = $certs_path."/nginx.crt";
+				
+				$pem_path = $certs_path.'/'.$hostname.'.pem';
+				$key_path = $certs_path.'/'.$hostname.'.key';
+				$comb_path = $certs_path.'/'.$hostname.'.comb';
+				
+				if(!file_exists($pem_path) && !file_exists($key_path) && !file_exists($comb_path)){
+					$comb_name = $ef->temporary_file("comb-".$website['id'], file_get_contents($key_file_name)."\n".file_get_contents($file_name));
+	
+					$this->move_file($file_name, $pem_path, 0600, $wwwdata);
+					$this->move_file($key_file_name, $key_path, 0600, $wwwdata);
+					$this->move_file($comb_name, $comb_path, 0600, $wwwdata);
+				}
+			}
 		}else{
 			$this->say("Unknown server type!");
 			$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
