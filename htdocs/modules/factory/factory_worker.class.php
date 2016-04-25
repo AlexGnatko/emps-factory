@@ -713,7 +713,11 @@ class EMPS_FactoryWorker
 			}
 		}else{
 			if(!file_exists($file_name) || $overwrite){		
-				$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
+				if(EMPS_COMMON_PATH_PREFIX){
+					$fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';	
+				}else{
+					$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
+				}
 				$source_name = stream_resolve_include_path($fn);
 		
 				$this->copy_file($source_name, $file_name, 0755, $owner);
