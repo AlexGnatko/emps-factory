@@ -43,7 +43,10 @@ define('EMPS_SESSION_COOKIE_LIFETIME', 3600*24*7);
 
 define('EMPS_DISPLAY_ERRORS', 1);
 
-define('CURRENT_LANG', 1);
+if(!defined('CURRENT_LANG')){
+	define('CURRENT_LANG', 1);
+}
+    
 define('PHOTOSET_WATERMARK', false);
 
 define('EMPS_PHOTO_SIZE', '1920x1920|100x100|inner');
@@ -71,8 +74,10 @@ define('EMPS_VARS', 'aact,pp,act,key,t,ss,start,start2,start3,start4,sk,dlist,sd
 define('EMPS_URL_VARS', 'pp,key,start,ss,sd,sk,sm,sx,sy');
 
 // language configuration
-$emps_lang = '{{if $cfg.default_lang}}{{$cfg.default_lang}}{{else}}nn{{/if}}';								// default language setting
-$emps_lang_map = array('' => 'nn', 'en' => 'en');		// subdomain mapping for language settings
+if(!isset($emps_lang) && !isset($emps_lang_map)){
+	$emps_lang = '{{if $cfg.default_lang}}{{$cfg.default_lang}}{{else}}nn{{/if}}';								// default language setting
+	$emps_lang_map = array('' => 'nn', 'en' => 'en');		// subdomain mapping for language settings
+}
 
 // configuration of SMTP email box for sending messages from the website
 $emps_default_smtp_params = array(
