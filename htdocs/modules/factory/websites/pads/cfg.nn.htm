@@ -70,12 +70,10 @@
   
   <div class="form-group">
     <label class="col-sm-2 control-label">Force HTTPS</label>
-    <div class="col-sm-3">
+    <div class="col-sm-9">
     <input type="hidden" name="cfg[force_https]" value="0" />
-      <input type="checkbox" name="cfg[force_https]" value="1" class="form-control" {{if $row.cfg.force_https}}checkbox{{/if}}>
-    </div>
-    <div class="col-sm-6">
-    <span class="help-block">Check this checkbox to force the use of SSL.</span>
+      <input type="checkbox" name="cfg[force_https]" value="1" {{if $row.cfg.force_https eq 1}}checkbox{{/if}}>
+      Check this checkbox to force the use of SSL.
     </div>
   </div>
   
