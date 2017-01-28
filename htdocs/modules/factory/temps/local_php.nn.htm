@@ -11,7 +11,13 @@ $emps_force_hostname = true;
 $emps_force_hostname = false;
 {{/if}}
 
+{{if $cfg.force_https}}
+define('EMPS_SCRIPT_WEB', 'https://'.EMPS_HOST_NAME);
+$emps_force_protocol = "https";
+{{else}}
 define('EMPS_SCRIPT_WEB', 'http://'.EMPS_HOST_NAME);
+{{/if}}
+
 define('EMPS_SCRIPT_URL_FOLDER', '');
 
 // file paths configuration

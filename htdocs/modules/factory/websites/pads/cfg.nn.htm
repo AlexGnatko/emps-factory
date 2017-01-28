@@ -67,6 +67,18 @@
     </div>
   </div>
   
+  
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Force HTTPS</label>
+    <div class="col-sm-3">
+    <input type="hidden" name="cfg[force_https]" value="0" />
+      <input type="checkbox" name="cfg[force_https]" value="1" class="form-control" {{if $row.cfg.force_https}}checkbox{{/if}}>
+    </div>
+    <div class="col-sm-6">
+    <span class="help-block">Check this checkbox to force the use of SSL.</span>
+    </div>
+  </div>
+  
 <h5 class="subhead">MySQL Database Setup:</h5>
 
   <div class="form-group">
