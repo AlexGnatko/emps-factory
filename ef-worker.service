@@ -1,0 +1,13 @@
+# Systemd script (Ubuntu 16+)
+# Place this systemd script to /lib/systemd/system
+
+
+[Unit]
+Description=EMPS Factory Worker Service
+Requires=mysql.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/php -f /srv/www/emps-factory/worker.php
+KillMode=process
+Restart=always
