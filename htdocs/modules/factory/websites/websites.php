@@ -173,10 +173,21 @@ if($_POST['hostname']){
 
 $ited = new EMPS_WebsitesEditor;
 
+if(isset($_GET['set_closed'])){
+    $_SESSION['websites_closed'] = $_GET['set_closed'];
+}
+
+$smarty->assign("status_closed", $_SESSION['websites_closed']);
+
+if($_SESSION['orders_closed']){
+    $ited->where .= " and status = 50 ";
+}else{
+    $ited->where .= " and status <> 50 ";
+}
+
 $ited->ref_id = $key;
 
 $ited->add_pad_template("factory/websites/pads,%s");
 
 $ited->handle_request();
 
-?>

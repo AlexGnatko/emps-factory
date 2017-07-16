@@ -60,6 +60,14 @@ master website. An EMPS slave website will have a different index.php file.</spa
 
 <div class="col-lg-3">
 
+    <div class="form-group">
+        {{if $row.status eq 0}}
+            <a href="./?close_website=1" class="btn btn-danger">Archive this Website</a>
+        {{else}}
+            <a href="./?activate_website=1" class="btn btn-success">Activate this Website</a>
+        {{/if}}
+    </div>
+
 </div>
 
 </div>

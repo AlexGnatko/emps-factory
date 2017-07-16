@@ -6,11 +6,13 @@ CREATE TEMPORARY TABLE `temp_ef_websites` (
   `hostname` varchar(255) NOT NULL,
   `user_id` bigint NOT NULL DEFAULT '0',
   `parent_website_id` bigint NOT NULL DEFAULT '0',
+  `status` bigint NOT NULL,
   `cdt` bigint NOT NULL,
   `dt` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `parent_website_id` (`parent_website_id`),
+  KEY `status` (`status`),
   KEY `cdt` (`cdt`),  
   KEY `dt` (`dt`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
