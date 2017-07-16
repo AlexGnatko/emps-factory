@@ -193,7 +193,8 @@
         {{section name=i loop=$lst}}
             <tr>
                 <td>{{$lst[i].id}}</td>
-                <td><a href="{{$lst[i].nlink}}">{{$lst[i].hostname}}</a>
+                <td><a href="{{$lst[i].nlink}}">{{$lst[i].hostname}}</a><br/>
+                    <small>{{$lst[i].hostname_decoded}}</small>
                 </td>
                 <td><strong>{{$lst[i].user.username}}</strong> ({{$lst[i].user.firstname}} {{$lst[i].user.lastname}})
                 </td>

@@ -33,11 +33,12 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 	}	
 		
 	public function handle_row($ra){
-		global $emps,$ss,$key, $ef;
+		global $emps,$ss,$key, $ef, $IDN;
 		
 		$ra = $ef->explain_website($ra);
 		
 		$ra['cfg'] = $ef->site_defaults($ra);
+        $ra['hostname_decoded'] = $IDN->decode($ra['hostname']);
 		
 		return parent::handle_row($ra);
 	}
@@ -186,6 +187,10 @@ if($_SESSION['websites_closed']){
 }else{
     $ited->where .= " and status <> 50 ";
 }
+
+
+use Mso\IdnaConvert\IdnaConvert;
+$IDN = new IdnaConvert();
 
 $ited->ref_id = $key;
 
