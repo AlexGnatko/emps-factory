@@ -38,7 +38,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		$ra = $ef->explain_website($ra);
 		
 		$ra['cfg'] = $ef->site_defaults($ra);
-        $ra['hostname_decoded'] = $IDN->decode($ra['hostname']);
+        $ra['hostname_decoded'] = $IDN->decode(mb_strtolower($ra['hostname']));
 		
 		return parent::handle_row($ra);
 	}
