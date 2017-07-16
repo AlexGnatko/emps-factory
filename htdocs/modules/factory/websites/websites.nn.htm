@@ -5,7 +5,9 @@
 
         <h1>
             <small>Website:</small>
-            <small>{{$row.id}}:</small> {{$row.hostname}}</h1>
+            <small>{{$row.id}}:</small> {{$row.hostname}}
+            {{if $row.hostname_decoded != $row.hostname}}<br/><small>{{$row.hostname_decoded}}</small>{{/if}}
+        </h1>
     </div>
     {{include file="db:ited/subted"}}
     <div id="id_context" style="display:none">{{$row.context_id}}</div>
