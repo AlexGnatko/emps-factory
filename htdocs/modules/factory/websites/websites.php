@@ -179,6 +179,8 @@ if(isset($_GET['set_closed'])){
 
 $smarty->assign("status_closed", $_SESSION['websites_closed']);
 
+$ited->where = " where 1=1 ";
+
 if($_SESSION['orders_closed']){
     $ited->where .= " and status = 50 ";
 }else{
