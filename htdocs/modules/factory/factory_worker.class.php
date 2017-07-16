@@ -810,6 +810,10 @@ class EMPS_FactoryWorker
 			if(!$website){
 				continue;
 			}
+			if($website['status'] == 50){
+			    // the website is archived
+			    continue;
+            }
 			$cfg = $website['cfg'];
 			$hostname = $cfg['hostname'];
 			$hostname_part = $this->hostname_part($hostname);
