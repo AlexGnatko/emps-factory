@@ -72,7 +72,7 @@ master website. An EMPS slave website will have a different index.php file.</spa
         <label>Mark by color:</label>
         <select name="color" class="form-control">
         {{section name=i loop=$enum.colors}}
-            <option value="{{$enum.color[i].code}}" style="color:{{$enum.color[i].value}}">{{$enum.color[i].value}}</option>
+            <option value="{{$enum.colors[i].code}}" style="background-color:{{$enum.colors[i].value}}">{{$enum.colors[i].value}}</option>
         {{/section}}
         </select>
     </div>
