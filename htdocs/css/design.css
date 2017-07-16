@@ -53,3 +53,9 @@ body {
 .pwd-reveal {
 	cursor:pointer;
 }
+
+.mark-box {
+	display:inline-block;
+	width:15px;
+	height:15px;
+}

@@ -194,7 +194,11 @@
         </tr>
         {{section name=i loop=$lst}}
             <tr>
-                <td>{{$lst[i].id}}</td>
+                <td>{{$lst[i].id}}
+                    {{if $lst[i].color}}
+                        <i class="mark-box" style="background-color:{{include file="db:enum/enumval" e=$enum.colors value=$lst[i].color}}"></i>
+                    {{/if}}
+                </td>
                 <td><a href="{{$lst[i].nlink}}">{{$lst[i].hostname}}</a><br/>
                     {{if $lst[i].hostname_decoded != $lst[i].hostname}}<small>{{$lst[i].hostname_decoded}}</small>{{/if}}
                 </td>
