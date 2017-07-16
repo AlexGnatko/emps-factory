@@ -1,8 +1,8 @@
 <?php
 
-$emps->handle_view_row();
+$this->handle_view_row();
 
-$emps->handle_post();
+$this->handle_post();
 
 if($_GET['close_website']){
     $update = [];
