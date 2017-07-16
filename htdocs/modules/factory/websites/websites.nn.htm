@@ -194,7 +194,7 @@
             <tr>
                 <td>{{$lst[i].id}}</td>
                 <td><a href="{{$lst[i].nlink}}">{{$lst[i].hostname}}</a><br/>
-                    <small>{{$lst[i].hostname_decoded}}</small>
+                    {{if $lst[i].hostname_decoded != $lst[i].hostname}}<small>{{$lst[i].hostname_decoded}}</small>{{/if}}
                 </td>
                 <td><strong>{{$lst[i].user.username}}</strong> ({{$lst[i].user.firstname}} {{$lst[i].user.lastname}})
                 </td>
