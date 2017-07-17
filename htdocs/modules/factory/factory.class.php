@@ -258,6 +258,8 @@ class EMPS_Factory {
 		if(!$cfg['hostname_regex']){
 			$cfg['hostname_regex'] = $this->regex_escape($cfg['hostname']);
 		}
+
+		$cfg['username'] = $ra['user']['username'];
 		
 		return $cfg;
 	}
