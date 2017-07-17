@@ -414,13 +414,13 @@ class EMPS_FactoryWorker
             $hostname = $cfg['hostname'];
             $uploads_dir = "/srv/upload/".$owner."/".$hostname;
 
-            $this->create_dir($uploads_dir, 0666, $owner);
+            $this->create_dir($uploads_dir, 0777, $owner);
 
             $source_path = $htdocs."/local/upload";
             $target_path = $uploads_dir;
             $this->say("Renaming: ".$source_path." to ".$target_path);
             rename($source_path, $target_path);
-            $this->echo_shell("chmod -R 0666 ".$target_path);
+            $this->echo_shell("chmod -R 0777 ".$target_path);
 
         }
         if(!$failed){
