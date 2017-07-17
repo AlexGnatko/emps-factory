@@ -420,7 +420,7 @@ class EMPS_FactoryWorker
             $target_path = $uploads_dir;
             $this->say("Renaming: ".$source_path." to ".$target_path);
             rename($source_path, $target_path);
-            $this->echo_shell("chmod -R 0777 ".$target_path);
+            $this->echo_shell("chmod -R 0777 /srv/upload");
 
         }
         if(!$failed){
