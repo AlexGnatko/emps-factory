@@ -36,11 +36,10 @@ define('EMPS_TZ', '{{if $cfg.tz}}{{$cfg.tz}}{{else}}Asia/Irkutsk{{/if}}');
 define('EMPS_DT_FORMAT', '{{if $cfg.dt_format}}{{$cfg.dt_format}}{{else}}%d.%m.%Y %H:%M{{/if}}');
 
 {{if $cfg.external_uploads}}
-	define('EMPS_UPLOAD_PATH', '/srv/upload/{{$cfg.username}}/{{$cfg.hostname}}/');
+define('EMPS_UPLOAD_PATH', '/srv/upload/{{$cfg.username}}/{{$cfg.hostname}}/');
 {{else}}
-	define('EMPS_UPLOAD_SUBFOLDER', '/local/upload/');
+define('EMPS_UPLOAD_SUBFOLDER', '/local/upload/');
 {{/if}}
-
 
 define('EMPS_MIN_WATERMARKED', {{if $cfg.min_watermarked}}{{$cfg.min_watermarked}}{{else}}600{{/if}});
 
