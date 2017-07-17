@@ -182,4 +182,35 @@
 </div>
 </div>
 <hr size="1" />
+
+    {{if $row.cfg.external_uploads}}
+
+    <div class="row">
+        <div class="col-sm-3">
+            {{assign var="move_uploads_done" value="0"}}
+            {{if $row.sd.move_uploads == "started"}}
+                {{assign var="move_uploads_done" value="1"}}
+            {{/if}}
+
+
+            {{if $row.sd.move_uploads == "done"}}
+                {{assign var="move_uploads_done" value="10"}}
+                {{include file="db:_factory/websites/marker,complete"}}
+            {{else}}
+                {{include file="db:_factory/websites/marker,incomplete"}}
+            {{/if}}
+
+        </div>
+        <div class="col-sm-7">
+            <h4>Move Uploads</h4>
+            <p>The external folder for uploads is enabled. Now you can move the files from the internal uploads folder to the external one.</p>
+        </div>
+        <div class="col-sm-2">
+            {{include file="db:_factory/websites,install_buttons" value_done=$move_uploads_done modal="moveUploads"}}
+        </div>
+    </div>
+    <hr size="1" />
+
+    {{/if}}
+
 {{/if}}

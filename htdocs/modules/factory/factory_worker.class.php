@@ -372,15 +372,65 @@ class EMPS_FactoryWorker
 			
 			$this->echo_shell("/usr/lib/cgi-bin/awstats.pl -config=".$hostname." -update");
 			
-			if(!$failed){
-				$ef->set_status($website['context_id'], array("setup_awstats"=>"done"));
-				$this->say("Done!");
-			}else{
-				$ef->set_status($website['context_id'], array("setup_awstats"=>"failed"));
-			}
 		}
+        if(!$failed){
+            $ef->set_status($website['context_id'], array("setup_awstats"=>"done"));
+            $this->say("Done!");
+        }else{
+            $ef->set_status($website['context_id'], array("setup_awstats"=>"failed"));
+        }
 	}
-	
+
+    public function move_uploads($data, $ra){
+        global $emps, $ef, $smarty;
+
+        $website_id = $ra['ef_website_id'];
+        if(!$website_id){
+            $this->say("Can't move uploads: you have to select a website!");
+            return false;
+        }
+
+        $wwwdata = $ef->defaults['www_group'];
+
+        $website = $ef->load_website($website_id);
+
+        $cfg = $ef->site_defaults($website);
+
+        $htdocs = $cfg['path'];
+
+        $user = $ef->load_user(intval($website['user_id']));
+        $owner = $user['username'];
+
+        $failed = false;
+
+        if(!$user){
+            $this->say("ERROR: No such user!");
+            $failed = true;
+        }else{
+
+            $username = $user['username'];
+            $this->say("User: ".$username);
+
+            $hostname = $cfg['hostname'];
+            $uploads_dir = "/srv/upload/".$owner."/".$hostname;
+
+            $this->create_dir($uploads_dir, 0666, $owner);
+
+            $source_path = $htdocs."/local/upload";
+            $target_path = $uploads_dir;
+            $this->say("Renaming: ".$source_path." to ".$target_path);
+            rename($source_path, $target_path);
+
+        }
+        if(!$failed){
+            $ef->set_status($website['context_id'], array("setup_awstats"=>"done"));
+            $this->say("Done!");
+        }else{
+            $ef->set_status($website['context_id'], array("setup_awstats"=>"failed"));
+        }
+
+    }
+
 	public function hostname_part($hostname){
 		$x = explode(".", $hostname);
 		array_pop($x);
@@ -772,6 +822,9 @@ class EMPS_FactoryWorker
 		case 'setup-awstats':
 			$this->setup_awstats($data, $ra);
 			break;
+        case 'move-uploads':
+            $this->move_uploads($data, $ra);
+            break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;
 			$this->say("OK, going to restart...");
