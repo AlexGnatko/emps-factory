@@ -428,6 +428,7 @@ class EMPS_FactoryWorker
             $this->say("Done!");
         }else{
             $ef->set_status($website['context_id'], array("move_uploads"=>"failed"));
+
         }
 
     }
