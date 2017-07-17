@@ -424,10 +424,10 @@ class EMPS_FactoryWorker
 
         }
         if(!$failed){
-            $ef->set_status($website['context_id'], array("setup_awstats"=>"done"));
+            $ef->set_status($website['context_id'], array("move_uploads"=>"done"));
             $this->say("Done!");
         }else{
-            $ef->set_status($website['context_id'], array("setup_awstats"=>"failed"));
+            $ef->set_status($website['context_id'], array("move_uploads"=>"failed"));
         }
 
     }
