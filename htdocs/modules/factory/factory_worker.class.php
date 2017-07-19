@@ -879,7 +879,7 @@ class EMPS_FactoryWorker
 			$dt = time() + $interval;
 			$emps->db->query("update ".TP."ef_heartbeat set nedt = $dt where id = ".$ra['id']);
 //			exec("curl http://".$hostname_part.".".$ef->defaults['hostname_short']."/heartbeat/ &");
-			exec("curl -L http://".$hostname."/heartbeat/ | at now");
+			exec("echo \"curl -L http://".$hostname."/heartbeat/\" | at -M now");
 		}
 		
 		if($this->last_tick < (time() - 60)){
@@ -893,7 +893,7 @@ class EMPS_FactoryWorker
 					continue;
 				}
 				if($v){
-					exec("curl -L ".$v." | at now");
+					exec("echo \"curl -L ".$v."\" | at -M now");
 				}
 			}
 		}
