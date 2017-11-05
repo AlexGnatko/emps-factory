@@ -17,7 +17,7 @@ master website. An EMPS slave website will have a different index.php file.</spa
 </div>
 
 <div class="row">
-<div class="col-md-10">
+<div class="col-md-8">
 
 <div class="form-group">
 <label>Hostname (NOT URL!): </label>
@@ -33,6 +33,15 @@ master website. An EMPS slave website will have a different index.php file.</spa
 </div>
 
 </div>
+
+    <div class="col-md-2">
+        <div class="form-group">
+            <label>EMPS: </label>
+            {{include file="db:enum/enumval" e=$enum.emps_versions value=$row.emps_version class="form-control"}}
+        </div>
+
+    </div>
+
 </div>{{*row*}}
 
 <div class="form-group">
