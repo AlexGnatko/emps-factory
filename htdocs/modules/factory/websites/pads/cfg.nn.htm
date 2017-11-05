@@ -74,6 +74,15 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Photo Size</label>
+        <div class="col-sm-3">
+            <input type="text" name="cfg[photo_size]" class="form-control" placeholder="1920x1920|100x100|inner"
+                   value="{{$row.cfg.photo_size|escape:html}}">
+        </div>
+
+    </div>
+
 
     <div class="form-group">
         <label class="col-sm-2 control-label">Force HTTPS</label>

@@ -59,7 +59,7 @@ if(!defined('CURRENT_LANG')){
     
 define('PHOTOSET_WATERMARK', false);
 
-define('EMPS_PHOTO_SIZE', '1920x1920|100x100|inner');
+define('EMPS_PHOTO_SIZE', '{{if $cfg.photo_size}}{{$cfg.photo_size}}{{else}}1920x1920|100x100|inner{{/if}}');
 
 define("EMPS_FONTS", "{{$cfg.server_fonts}}");
 
