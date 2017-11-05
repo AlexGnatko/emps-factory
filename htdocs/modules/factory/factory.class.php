@@ -230,6 +230,9 @@ class EMPS_Factory {
 		if(!$cfg['hostname']){
 			$cfg['hostname'] = $ra['hostname'];
 		}
+        if(!$cfg['emps_version']){
+            $cfg['emps_version'] = $ra['emps_version'];
+        }
 		if(!$cfg['path']){
 			$cfg['path'] = $ra['www_dir'].'/'.$ra['htdocs'];
 		}

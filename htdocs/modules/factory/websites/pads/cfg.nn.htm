@@ -100,6 +100,7 @@
         </div>
     </div>
 
+    {{if $row.emps_version != 'EMPS5.0'}}
     <div class="form-group">
         <label class="col-sm-2 control-label">External uploads</label>
         <div class="col-sm-9">
@@ -115,51 +116,88 @@
 
         </div>
     </div>
+    {{/if}}
 
-    <h5 class="subhead">MySQL Database Setup:</h5>
+    {{if $row.emps_version == 'EMPS5.0'}}
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">MySQL Host</label>
-        <div class="col-sm-3">
-            <input type="text" name="cfg[db][host]" class="form-control" placeholder="localhost"
-                   value="{{$row.cfg.db.host|escape:html}}">
-        </div>
-        <label class="col-sm-1 control-label">Database</label>
-        <div class="col-sm-3">
-            <input type="text" name="cfg[db][database]" class="form-control"
-                   placeholder="{{$row.user.username}}_{{$row.db_suggested_name}}"
-                   value="{{$row.cfg.db.database|escape:html}}">
-        </div>
-        <div class="col-sm-3">
-            <span class="help-block"></span>
-        </div>
-    </div>
+        <h5 class="subhead">MongoDB Database Setup:</h5>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">MySQL User</label>
-        <div class="col-sm-3">
-            <input type="text" name="cfg[db][user]" class="form-control" placeholder="{{$row.user.username}}"
-                   value="{{$row.cfg.db.user|escape:html}}">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Connection URL</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][url]" class="form-control" placeholder="localhost"
+                       value="{{$row.cfg.db.url|escape:html}}">
+            </div>
+            <label class="col-sm-1 control-label">Database</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][database]" class="form-control"
+                       placeholder="{{$row.user.username}}_{{$row.db_suggested_name}}"
+                       value="{{$row.cfg.db.database|escape:html}}">
+            </div>
+            <div class="col-sm-3">
+                <span class="help-block"></span>
+            </div>
         </div>
-        <label class="col-sm-1 control-label">Password</label>
-        <div class="col-sm-3">
-            <input type="text" name="cfg[db][password]" class="form-control" placeholder="(use default)"
-                   value="{{$row.cfg.db.password|escape:html}}">
-        </div>
-        <div class="col-sm-3">
-            <span class="help-block"></span>
-        </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-2 control-label">Table Name Prefix</label>
-        <div class="col-sm-3">
-            <input type="text" name="cfg[table_prefix]" class="form-control" placeholder="c_"
-                   value="{{$row.cfg.table_prefix|escape:html}}">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Options</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][options]" class="form-control" placeholder="[]"
+                       value="{{$row.cfg.db.options|escape:html}}">
+            </div>
         </div>
-        <div class="col-sm-6">
+
+
+
+    {{else}}
+
+        <h5 class="subhead">MySQL Database Setup:</h5>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">MySQL Host</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][host]" class="form-control" placeholder="localhost"
+                       value="{{$row.cfg.db.host|escape:html}}">
+            </div>
+            <label class="col-sm-1 control-label">Database</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][database]" class="form-control"
+                       placeholder="{{$row.user.username}}_{{$row.db_suggested_name}}"
+                       value="{{$row.cfg.db.database|escape:html}}">
+            </div>
+            <div class="col-sm-3">
+                <span class="help-block"></span>
+            </div>
         </div>
-    </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">MySQL User</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][user]" class="form-control" placeholder="{{$row.user.username}}"
+                       value="{{$row.cfg.db.user|escape:html}}">
+            </div>
+            <label class="col-sm-1 control-label">Password</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[db][password]" class="form-control" placeholder="(use default)"
+                       value="{{$row.cfg.db.password|escape:html}}">
+            </div>
+            <div class="col-sm-3">
+                <span class="help-block"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Table Name Prefix</label>
+            <div class="col-sm-3">
+                <input type="text" name="cfg[table_prefix]" class="form-control" placeholder="c_"
+                       value="{{$row.cfg.table_prefix|escape:html}}">
+            </div>
+            <div class="col-sm-6">
+            </div>
+        </div>
+
+    {{/if}}
+
 
 
     <h5 class="subhead">Extra local.php Code:</h5>

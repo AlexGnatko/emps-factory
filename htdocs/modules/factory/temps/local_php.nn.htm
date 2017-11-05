@@ -1,5 +1,11 @@
 // EMPS PROJECT CONFIGURATION SCRIPT
 
+{{if $cfg.emps_version == "EMPS5.0"}}
+define('EMPS_VERSION', '5.0');
+{{else}}
+define('EMPS_VERSION', '4.5');
+{{/if}}
+
 // hostname / URL configuration
 if(!defined('EMPS_HOST_NAME')){
 	define('EMPS_HOST_NAME', '{{$cfg.hostname}}');
@@ -66,14 +72,23 @@ define("EMPS_FONTS", "{{$cfg.server_fonts}}");
 $emps_custom_session_handler = true;
 
 // database configuration. This object will be destroyed upon connection to the database for security reasons.
-$emps_db_config = array(
+{{if $cfg.emps_version == "EMPS5.0"}}
+	$emps_mongodb_config = array(
+	'url' => '{{$cfg.db.url}}',
+	'database' => '{{$cfg.db.database}}',
+	'options' => {{$cfg.db.options}});
+{{else}}
+
+	$emps_db_config = array(
 	'host' => '{{$cfg.db.host}}',
 	'database' => '{{$cfg.db.database}}',
 	'user' => '{{$cfg.db.user}}',
 	'password' => '{{$cfg.db.password}}',
 	'charset' => 'utf8');
 
-define('TP', {{if $cfg.table_prefix}}{{$cfg.table_prefix}}{{else}}'c_'{{/if}});	// table name prefix
+	define('TP', {{if $cfg.table_prefix}}{{$cfg.table_prefix}}{{else}}'c_'{{/if}});	// table name prefix
+
+{{/if}}
 
 // URL variable tracking configuration
 // Variables watch list

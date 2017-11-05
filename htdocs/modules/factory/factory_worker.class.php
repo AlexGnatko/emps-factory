@@ -764,7 +764,7 @@ class EMPS_FactoryWorker
 				$this->put_file($file_name, 0755, $owner, $index_php);
 			}
 		}else{
-			if(!file_exists($file_name) || $overwrite){		
+			if(!file_exists($file_name) || $overwrite){
 				if(EMPS_COMMON_PATH_PREFIX){
 					$fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';	
 				}else{
