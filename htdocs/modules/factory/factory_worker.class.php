@@ -523,8 +523,8 @@ class EMPS_FactoryWorker
 				if(!file_exists($pem_path) && !file_exists($key_path) && !file_exists($comb_path)){
 					$comb_name = $ef->temporary_file("comb-".$website['id'], file_get_contents($key_file_name)."\n".file_get_contents($file_name));
 	
-					$this->move_file($file_name, $pem_path, 0600, $wwwdata);
-					$this->move_file($key_file_name, $key_path, 0600, $wwwdata);
+					$this->copy_file($file_name, $pem_path, 0600, $wwwdata);
+					$this->copy_file($key_file_name, $key_path, 0600, $wwwdata);
 					$this->move_file($comb_name, $comb_path, 0600, $wwwdata);
 				}
 			}
