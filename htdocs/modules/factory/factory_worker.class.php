@@ -520,7 +520,7 @@ class EMPS_FactoryWorker
 				$key_path = $certs_path.'/'.$hostname.'.key';
 				$comb_path = $certs_path.'/'.$hostname.'.comb';
 				
-				if(!file_exists($pem_path) && !file_exists($key_path) && !file_exists($comb_path)){
+				if(!file_exists($pem_path) && !file_exists($key_path)){
 					$comb_name = $ef->temporary_file("comb-".$website['id'], file_get_contents($key_file_name)."\n".file_get_contents($file_name));
 	
 					$this->copy_file($file_name, $pem_path, 0600, $wwwdata);
