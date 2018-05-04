@@ -37,11 +37,11 @@
                 <td class="text-center">{{$stat.unique}}</td>
                 <td class="text-center">{{$stat.visits}}</td>
                 <td class="text-center">{{$stat.pages}}</td>
-                <th class="text-center">{{$stat.pages_by_visits|number_format:3:".":""}}</th>
+                <td class="text-center bg-info">{{$stat.pages_by_visits|number_format:3:".":""}}</td>
                 <td class="text-center">{{$stat.hits}}</td>
-                <th class="text-center">{{$stat.hits_by_pages|number_format:3:".":""}}</th>
+                <td class="text-center">{{$stat.hits_by_pages|number_format:3:".":""}}</td>
                 <td class="text-center">{{($stat.bw / 1024)|number_format:3:".":""}}</td>
-                <th class="text-center">{{$stat.bw_by_hits|number_format:3:".":""}}</th>
+                <td class="text-center">{{$stat.bw_by_hits|number_format:3:".":""}}</td>
             </tr>
         {{/foreach}}
         </table>
