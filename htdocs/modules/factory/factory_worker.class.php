@@ -970,7 +970,7 @@ class EMPS_FactoryWorker
                 $vars['visits'] = $general['TotalVisits'][0];
                 $vars['pages'] = $domain['ip'][0];
                 $vars['hits'] = $domain['ip'][1];
-                $vars['bw'] = $domain['ip'][2] / (1000000);
+                $vars['bw'] = $domain['ip'][2] / (1024*1024);
 
                 $this->save_stats_vars(date("Ym", $dt), $stat['id'], $vars);
             }
