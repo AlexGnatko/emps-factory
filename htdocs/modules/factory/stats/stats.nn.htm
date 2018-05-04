@@ -27,7 +27,7 @@
             </tr>
         {{foreach from=$period.websites item="website"}}
             <tr>
-                {{$stat = $website.stat}}
+                {{$stat = $website.stats}}
                 <td>{{$website.cfg.hostname}}</td>
                 <td>{{$stat.period}}</td>
                 <td class="text-center">{{$stat.unique}}</td>
