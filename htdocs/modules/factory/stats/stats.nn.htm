@@ -18,7 +18,6 @@
             <tr>
                 {{$stat = $period.stat}}
                 <td>Total</td>
-                <td>{{$stat.period}}</td>
                 <td class="text-center">{{$stat.unique}}</td>
                 <td class="text-center">{{$stat.visits}}</td>
                 <td class="text-center">{{$stat.pages}}</td>
@@ -28,8 +27,8 @@
         {{foreach from=$period.websites item="website"}}
             <tr>
                 {{$stat = $website.stats}}
-                <td>{{$website.cfg.hostname}}</td>
-                <td>{{$stat.period}}</td>
+
+                <td>{{$website|var_dump:true}} {{$website.cfg.hostname}}</td>
                 <td class="text-center">{{$stat.unique}}</td>
                 <td class="text-center">{{$stat.visits}}</td>
                 <td class="text-center">{{$stat.pages}}</td>
