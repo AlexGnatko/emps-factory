@@ -32,7 +32,7 @@ if($emps->auth->credentials("admin")){
 
     foreach($slst as $n => $v){
         $websites = $v['websites'];
-        usort(&$websites, function($a, $b){
+        usort($websites, function($a, $b){
             if($a['stats']['hits'] > $b['stats']['hits']){
                 return 1;
             }
