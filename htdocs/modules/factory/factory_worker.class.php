@@ -999,7 +999,7 @@ class EMPS_FactoryWorker
             $cfg = $website['cfg'];
             $hostname = $cfg['hostname'];
 
-            $interval = 24 * 60 * 60;
+            $interval = 23 * 60 * 60 + floor(rand(0, 60 * 60));
 //            $interval = 60;
             $dt = time() + $interval;
 
