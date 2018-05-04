@@ -16,7 +16,7 @@ if($emps->auth->credentials("admin")){
 
             $website = $ef->load_website($ra['ef_website_id']);
             unset($website['_full']);
-            unset($website['user']['_full']);
+            unset($website['user']);
 
             $slst[$stat['period']]['websites'][$ra['ef_website_id']]['website'] = $website;
             $slst[$stat['period']]['websites'][$ra['ef_website_id']]['stats'] = $stat;
