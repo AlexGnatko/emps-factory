@@ -335,7 +335,7 @@ class EMPS_Factory {
             $stat['hits_by_pages'] = $stat['hits'] / $stat['pages'];
         }
 	    if($stat['hits'] > 0){
-            $stat['bw_by_hits'] = $stat['bw'] * 1000 / $stat['hits'];
+            $stat['bw_by_hits'] = ($stat['bw'] * 1024) / $stat['hits'];
         }
 
         return $stat;
