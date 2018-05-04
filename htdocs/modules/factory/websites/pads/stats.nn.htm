@@ -1,0 +1,20 @@
+<h5 class="subhead">Website Usage Statistics</h5>
+<p>This feature collects visitor data from the awstats database associated with this website.</p>
+<p>The visitors, hosts, visits values are updated daily.</p>
+
+{{if !$stats}}
+    <h4 class="alert alert-danger">No usage stats is enabled for this website!</h4>
+    <p><a href="./?enable=1" class="btn btn-primary">Enable Stats</a></p>
+{{else}}
+    {{if $stats.status eq 10}}
+        <h4 class="alert alert-success">Usage stats is enabled!</h4>
+        <p><a href="./?disable=1" class="btn btn-primary">Disable Stats</a></p>
+        {{if $stats.nedt}}
+            <p>Next stats collection: <strong>{{$stats.ntime}}</strong></p>
+        {{/if}}
+    {{else}}
+        <h4 class="alert alert-danger">Usage stats is suspended!</h4>
+        <p><a href="./?enable=1" class="btn btn-primary">Enable Stats</a></p>
+    {{/if}}
+
+{{/if}}
