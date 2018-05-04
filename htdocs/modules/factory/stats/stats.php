@@ -20,6 +20,13 @@ if($emps->auth->credentials("admin")){
 
             $slst[$stat['period']]['websites'][$ra['ef_website_id']]['website'] = $website;
             $slst[$stat['period']]['websites'][$ra['ef_website_id']]['stats'] = $stat;
+
+            foreach($stat as $n => $v){
+                if($n != 'period'){
+                    $slst[$stat['period']]['stat'][$n] += $v;
+                }
+
+            }
         }
     }
 
