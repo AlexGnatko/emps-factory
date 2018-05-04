@@ -318,7 +318,9 @@ class EMPS_Factory {
         }
         $lst = [];
 	    foreach($rv as $n => $v){
-	        $v['period'] = $n;
+	        $year = mb_substr($n, 0, 4);
+	        $month = mb_substr($n, 4, 2);
+	        $v['period'] = $month.".".$year;
 	        $lst[] = $v;
         }
 
