@@ -1,4 +1,5 @@
 <?php
+$emps->no_smarty = true;
 
 if($emps->auth->credentials("admin")){
     require_once $emps->page_file_name('_factory,factory.class', 'controller');
