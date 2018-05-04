@@ -26,4 +26,27 @@
     <p>Access AWStats here:</p>
     <code class="ef-code"><a href="{{$row.cfg.awstats_url|escape:html}}" target="_blank">{{$row.cfg.awstats_url|escape:html}}</a></code>
 
+    <h3>Collected Stats:</h3>
+
+    <table class="table table-bordered">
+        <tr>
+            <th width="20%">Period</th>
+            <th width="15%" class="text-center">Unique Visitors</th>
+            <th width="15%" class="text-center">Visits</th>
+            <th width="20%" class="text-center">Pages</th>
+            <th width="20%" class="text-center">Hits</th>
+            <th width="10%" class="text-center">Data</th>
+        </tr>
+    {{foreach from=$stat_list item=$stat}}
+<tr>
+    <td>{{$stat.period}}</td>
+    <td class="text-center">{{$stat.unique}}</td>
+    <td class="text-center">{{$stat.visits}}</td>
+    <td class="text-center">{{$stat.pages}}</td>
+    <td class="text-center">{{$stat.hits}}</td>
+    <td class="text-center">{{$stat.bw}}</td>
+</tr>
+    {{/foreach}}
+    </table>
+
 {{/if}}

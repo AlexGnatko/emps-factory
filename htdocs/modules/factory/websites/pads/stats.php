@@ -40,3 +40,4 @@ if($hb){
 
 $smarty->assign("stats", $hb);
 
+$smarty->assign("stat_list", $ef->list_stats($hb['id']));

@@ -303,6 +303,25 @@ class EMPS_Factory {
 		
 		return $full_path;
 	}
-}
 
-?>
+	public function list_stats($stats_id){
+	    global $emps;
+
+	    $rv = [];
+	    $r = $emps->db->query("select * from ".TP."ef_stats_values where stats_id = {$stats_id} order by period desc");
+	    while($ra = $emps->db->fetch_named($r)){
+	        $period = $ra['period'];
+	        if(!isset($rv[$period])){
+	            $rv[$period] = [];
+            }
+            $rv[$period][$ra['code']] = $ra['value'];
+        }
+        $lst = [];
+	    foreach($rv as $n => $v){
+	        $v['period'] = $n;
+	        $lst[] = $v;
+        }
+
+        return $lst;
+    }
+}
