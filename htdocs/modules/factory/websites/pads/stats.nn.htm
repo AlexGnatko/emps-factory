@@ -1,6 +1,6 @@
 <h5 class="subhead">Website Usage Statistics</h5>
 
-{{if $row.sd.setup_awstats == "done"}}
+{{if $row.sd.setup_awstats != "done"}}
     <p>Usage statistics is unavailable. Please set up the website in awstats.</p>
 {{else}}
 <p>This feature collects visitor data from the awstats database associated with this website.</p>
