@@ -28,7 +28,7 @@
             <tr>
                 {{$stat = $website.stats}}
 
-                <td>{{$website|var_dump:true}} {{$website.cfg.hostname}}</td>
+                <td>{{$website|var_dump:true}} {{$website.website.cfg.hostname}}</td>
                 <td class="text-center">{{$stat.unique}}</td>
                 <td class="text-center">{{$stat.visits}}</td>
                 <td class="text-center">{{$stat.pages}}</td>
