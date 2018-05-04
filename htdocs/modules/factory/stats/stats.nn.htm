@@ -8,10 +8,13 @@
             <tr class="active">
                 <th width="20%">Website</th>
                 <th width="10%" class="text-center">Unique Visitors</th>
-                <th width="15%" class="text-center">Visits</th>
-                <th width="15%" class="text-center">Pages</th>
-                <th width="15%" class="text-center">Hits</th>
+                <th width="10%" class="text-center">Visits</th>
+                <th width="10%" class="text-center">Pages</th>
+                <th width="10%" class="text-center">P/V</th>
+                <th width="10%" class="text-center">Hits</th>
+                <th width="10%" class="text-center">H/P</th>
                 <th width="10%" class="text-center">Data, GB</th>
+                <th width="10%" class="text-center">D/H</th>
             </tr>
 
             <tr>
@@ -20,8 +23,11 @@
                 <th class="text-center">{{$stat.unique}}</th>
                 <th class="text-center">{{$stat.visits}}</th>
                 <th class="text-center">{{$stat.pages}}</th>
+                <th class="text-center">{{$stat.pages_by_vists|number_format:3:",":""}}</th>
                 <th class="text-center">{{$stat.hits}}</th>
+                <th class="text-center">{{$stat.hits_by_pages|number_format:3:",":""}}</th>
                 <th class="text-center">{{($stat.bw / 1024)|number_format:3:".":""}}</th>
+                <th class="text-center">{{$stat.bw_by_hits|number_format:3:",":""}}</th>
             </tr>
         {{foreach from=$period.websites item="website"}}
             <tr>
@@ -31,8 +37,11 @@
                 <td class="text-center">{{$stat.unique}}</td>
                 <td class="text-center">{{$stat.visits}}</td>
                 <td class="text-center">{{$stat.pages}}</td>
+                <th class="text-center">{{$stat.pages_by_vists|number_format:3:",":""}}</th>
                 <td class="text-center">{{$stat.hits}}</td>
+                <th class="text-center">{{$stat.hits_by_pages|number_format:3:",":""}}</th>
                 <td class="text-center">{{($stat.bw / 1024)|number_format:3:".":""}}</td>
+                <th class="text-center">{{$stat.bw_by_hits|number_format:3:",":""}}</th>
             </tr>
         {{/foreach}}
         </table>
