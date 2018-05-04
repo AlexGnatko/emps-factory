@@ -352,7 +352,7 @@ class EMPS_Factory {
 	    if($stat['hits'] > 0){
             $stat['bw_by_hits'] = ($stat['bw'] * 1024) / $stat['hits'];
             if($stat['bw_by_hits'] > 0) {
-                $bh_class = pow($stat['bw_by_hits'] / 50, 1/3);
+                $bh_class = pow($stat['bw_by_hits'] / 50, 1/5);
                 $class *= $bh_class;
             }
         }
