@@ -952,7 +952,7 @@ class EMPS_FactoryWorker
 	    $mY = date("mY", $dt);
         $stats_file = "/var/lib/awstats/awstats{$mY}.{$hostname}.txt";
         echo $stats_file."<br/>";
-        $fh = fopen("rb", $stats_file);
+        $fh = fopen($stats_file, "rb");
         if(!$fh){
             return false;
         }
