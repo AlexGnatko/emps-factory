@@ -9,11 +9,13 @@ if($emps->auth->credentials("admin")){
             continue;
         }
         $stats = $ef->list_stats($ra['id']);
-        if(!$slst[$stats['period']]){
-            $slst[$stats['period']] = ['period' => $stats['period'], 'websites' => []];
-        }
+        foreach($stats as $stat){
+            if(!$slst[$stat['period']]){
+                $slst[$stat['period']] = ['period' => $stat['period'], 'websites' => []];
+            }
 
-        $slst[$stats['period']]['websites'][$ra['ef_website_id']] = $stats;
+            $slst[$stat['period']]['websites'][$ra['ef_website_id']] = $stat;
+        }
     }
 
     dump($slst);
