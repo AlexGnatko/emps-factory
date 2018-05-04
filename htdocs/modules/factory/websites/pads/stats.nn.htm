@@ -1,4 +1,8 @@
 <h5 class="subhead">Website Usage Statistics</h5>
+
+{{if $row.sd.setup_awstats == "done"}}
+    <p>Usage statistics is unavailable. Please set up the website in awstats.</p>
+{{else}}
 <p>This feature collects visitor data from the awstats database associated with this website.</p>
 <p>The visitors, hosts, visits values are updated daily.</p>
 
@@ -16,5 +20,10 @@
         <h4 class="alert alert-danger">Usage stats is suspended!</h4>
         <p><a href="./?enable=1" class="btn btn-primary">Enable Stats</a></p>
     {{/if}}
+
+{{/if}}
+
+    <p>Access AWStats here:</p>
+    <code class="ef-code"><a href="{{$row.cfg.awstats_url|escape:html}}" target="_blank">{{$row.cfg.awstats_url|escape:html}}</a></code>
 
 {{/if}}
