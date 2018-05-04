@@ -14,7 +14,8 @@ if($emps->auth->credentials("admin")){
                 $slst[$stat['period']] = ['period' => $stat['period'], 'websites' => []];
             }
 
-            $slst[$stat['period']]['websites'][$ra['ef_website_id']] = $stat;
+            $slst[$stat['period']]['websites'][$ra['ef_website_id']]['website'] = $ef->load_website($ra['ef_website_id']);
+            $slst[$stat['period']]['websites'][$ra['ef_website_id']]['stats'] = $stat;
         }
     }
 
