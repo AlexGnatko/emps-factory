@@ -921,7 +921,11 @@ class EMPS_FactoryWorker
                 for($i = 0; $i < $count; $i++){
                     $line = fgets($fh);
                     $x = explode(" ", $line);
-                    $values[$x[0]] = intval($x[1]);
+                    $code = array_shift($x);
+                    $values[$code] = [];
+                    foreach($x as $xv){
+                        $values[$code][] = $xv;
+                    }
                 }
                 dump($values);
                 return $values;
