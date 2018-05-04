@@ -338,14 +338,14 @@ class EMPS_Factory {
 	    if($stat['visits'] > 0){
             $stat['pages_by_visits'] = $stat['pages'] / $stat['visits'];
             if($stat['pages_by_visits'] > 0){
-                $pv_class = sqrt($stat['pages_by_visits'] / 3);
+                $pv_class = pow($stat['pages_by_visits'] / 3, 1/2);
                 $class *= $pv_class;
             }
         }
 	    if($stat['pages'] > 0){
             $stat['hits_by_pages'] = $stat['hits'] / $stat['pages'];
             if($stat['hits_by_pages'] > 0) {
-                $hp_class = sqrt($stat['hits_by_pages'] / 5);
+                $hp_class = pow($stat['hits_by_pages'] / 5, 1/3);
                 $class *= $hp_class;
             }
         }
