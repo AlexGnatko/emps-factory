@@ -995,7 +995,7 @@ class EMPS_FactoryWorker
             $hostname = $cfg['hostname'];
 
             $interval = 24 * 60 * 60;
-            $interval = 0;
+            $interval = 60;
             $dt = time() + $interval;
 
             $emps->db->query("update ".TP."ef_stats set nedt = $dt where id = ".$ra['id']);
