@@ -9,5 +9,3 @@ $ef_defaults = $ef->load_defaults();
 
 $smarty->assign("ef_defaults", $ef_defaults);
 
-
-?>
