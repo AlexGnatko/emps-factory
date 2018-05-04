@@ -327,16 +327,40 @@ class EMPS_Factory {
         return $lst;
     }
 
+    public function stats_class_by_visits($visits){
+	    $class = $visits / 3000;
+	    if($class < 1){
+	        $class = 1;
+        }
+        return $class;
+    }
+
     public function analyse_stats($stat){
+        $class = $this->stats_class_by_visits($stat['visits']);
+
 	    if($stat['visits'] > 0){
             $stat['pages_by_visits'] = $stat['pages'] / $stat['visits'];
+            $pv_class = sqrt($stat['pages_by_visits'] / 3);
+            $class *= $pv_class;
         }
 	    if($stat['pages'] > 0){
             $stat['hits_by_pages'] = $stat['hits'] / $stat['pages'];
+            $hp_class = sqrt($stat['hits_by_pages'] / 5);
+            $class *= $hp_class;
         }
 	    if($stat['hits'] > 0){
             $stat['bw_by_hits'] = ($stat['bw'] * 1024) / $stat['hits'];
+            $bh_class = sqrt($stat['bw_by_hits'] / 50);
+            $class *= $bh_class;
         }
+
+        $class = round($class, 0);
+        if($class < 1){
+	        $class = 1;
+        }
+
+
+	    $stat['class'] = $class;
 
         return $stat;
     }
