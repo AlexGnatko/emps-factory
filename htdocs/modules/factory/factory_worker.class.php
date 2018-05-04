@@ -898,11 +898,121 @@ class EMPS_FactoryWorker
 			}
 		}
 	}
+
+	public function read_awstats_section($fh, $code){
+	    rewind($fh);
+	    while(!feof($fh)){
+	        $line = fgets($fh);
+	        $x = explode(" ", $line);
+	        if($x[0] == 'BEGIN_MAP'){
+	            $count = intval($x[1]);
+	            $map = [];
+	            for($i = 0; $i < $count; $i++){
+	                $line = fgets($fh);
+	                $x = explode(" ", $line);
+	                $map[$x[0]] = intval($x[1]);
+                }
+                $pos = $map['POS_'.$code];
+	            fseek($fh, $pos, SEEK_SET);
+            }
+            if($x[0] == 'BEGIN_'.$code){
+	            $count = intval($x[1]);
+	            $values = [];
+                for($i = 0; $i < $count; $i++){
+                    $line = fgets($fh);
+                    $x = explode(" ", $line);
+                    $values[$x[0]] = intval($x[1]);
+                }
+                dump($values);
+                return $values;
+            }
+        }
+    }
+
+    public function save_stats_var($Ym, $stat_id, $code, $value){
+	    global $emps;
+	    $nr = [];
+	    $nr['period'] = $Ym;
+	    $nr['stats_id'] = $stat_id;
+	    $nr['code'] = $code;
+	    $row = $emps->db->ensure_row("ef_stats_values", $nr);
+	    $update = ['SET' => ['value' => $value]];
+	    $emps->db->sql_update_row("ef_stats_values", $update, "id = {$row['id']}");
+    }
+
+    public function save_stats_vars($Ym, $stat_id, $vars){
+	    foreach($vars as $n => $v){
+	        $this->save_stats_var($Ym, $stat_id, $n, $v);
+        }
+    }
+
+	public function update_website_stats($stat, $hostname, $dt){
+	    global $emps;
+
+	    $mY = date("mY", $dt);
+        $stats_file = "/var/lib/awstats/awstats{$mY}.{$hostname}.txt";
+        $fh = fopen("rb", $stats_file);
+        if(!$fh){
+            return false;
+        }
+
+        $general = $this->read_awstats_section($fh, "GENERAL");
+        if($general){
+            $domain = $this->read_awstats_section($fh, "DOMAIN");
+            if($domain){
+                $vars = [];
+                $vars['unique'] = $general['TotalUnique'][0];
+                $vars['visits'] = $general['TotalVisits'][0];
+                $vars['pages'] = $domain['ip'][0];
+                $vars['hits'] = $domain['ip'][1];
+                $vars['bw'] = $domain['ip'][2] / (1000000);
+
+                dump($vars);
+
+                $this->save_stats_vars(date("Ym", $dt), $stat['id'], $vars);
+            }
+        }
+
+        fclose($fh);
+    }
+
+    public function stats_cycle(){
+        global $ef, $emps;
+
+        $dt = time();
+        $r = $emps->db->query("select * from ".TP."ef_stats where status = 10 and nedt <= $dt");
+        while($ra = $emps->db->fetch_named($r)){
+            $website = $ef->load_website($ra['ef_website_id']);
+            if(!$website){
+                continue;
+            }
+            if($website['status'] == 50){
+                // the website is archived
+                continue;
+            }
+            $cfg = $website['cfg'];
+            $hostname = $cfg['hostname'];
+
+            $interval = 24 * 60 * 60;
+            $interval = 60;
+            $dt = time() + $interval;
+
+            $emps->db->query("update ".TP."ef_stats set nedt = $dt where id = ".$ra['id']);
+
+            /**
+             * Update the stats variables
+             */
+
+            $this->update_website_stats($ra, $hostname, time());
+        }
+
+    }
 	
 	public function cycle(){
-		global $ef, $emps;
+		global $emps;
 		
 		$this->heartbeat_cycle();
+		$this->stats_cycle();
 		
 		while(true){
 			$r = $emps->db->query("select * from ".TP."ef_commands where status = 0 order by id asc limit 1");
@@ -934,4 +1044,3 @@ class EMPS_FactoryWorker
 	}
 }
 
-?>
