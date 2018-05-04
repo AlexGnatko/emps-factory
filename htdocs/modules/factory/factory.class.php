@@ -329,9 +329,6 @@ class EMPS_Factory {
 
     public function stats_class_by_visits($visits){
 	    $class = $visits / 3000;
-	    if($class < 1){
-	        $class = 1;
-        }
         return $class;
     }
 
