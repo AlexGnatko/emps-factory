@@ -328,9 +328,16 @@ class EMPS_Factory {
     }
 
     public function analyse_stats($stat){
-	    $stat['pages_by_visits'] = $stat['pages'] / $stat['visits'];
-	    $stat['hits_by_pages'] = $stat['hits'] / $stat['pages'];
-        $stat['bw_by_hits'] = $stat['bw'] / $stat['hits'];
+	    if($stat['visits'] > 0){
+            $stat['pages_by_visits'] = $stat['pages'] / $stat['visits'];
+        }
+	    if($stat['pages'] > 0){
+            $stat['hits_by_pages'] = $stat['hits'] / $stat['pages'];
+        }
+	    if($stat['hits'] > 0){
+            $stat['bw_by_hits'] = $stat['bw'] / $stat['hits'];
+        }
+
         return $stat;
     }
 }
