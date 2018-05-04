@@ -35,7 +35,7 @@
             <th width="15%" class="text-center">Visits</th>
             <th width="20%" class="text-center">Pages</th>
             <th width="20%" class="text-center">Hits</th>
-            <th width="10%" class="text-center">Data</th>
+            <th width="10%" class="text-center">Data, GB</th>
         </tr>
     {{foreach from=$stat_list item=$stat}}
 <tr>
@@ -44,7 +44,7 @@
     <td class="text-center">{{$stat.visits}}</td>
     <td class="text-center">{{$stat.pages}}</td>
     <td class="text-center">{{$stat.hits}}</td>
-    <td class="text-center">{{$stat.bw}}</td>
+    <td class="text-center">{{($stat.bw / 1000)|number_format:3:".":""}}</td>
 </tr>
     {{/foreach}}
     </table>
