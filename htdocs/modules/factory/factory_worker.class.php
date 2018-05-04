@@ -935,7 +935,7 @@ class EMPS_FactoryWorker
 	    $nr['period'] = $Ym;
 	    $nr['stats_id'] = $stat_id;
 	    $nr['code'] = $code;
-	    $row = $emps->db->ensure_row("ef_stats_values", $nr);
+	    $row = $emps->db->sql_ensure_row("ef_stats_values", $nr);
 	    $update = ['SET' => ['value' => $value]];
 	    $emps->db->sql_update_row("ef_stats_values", $update, "id = {$row['id']}");
     }
