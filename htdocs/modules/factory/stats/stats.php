@@ -18,6 +18,8 @@ if($emps->auth->credentials("admin")){
             unset($website['_full']);
             unset($website['user']);
 
+            $stat = $ef->analyse_stats($stat);
+
             $slst[$stat['period']]['websites'][$ra['ef_website_id']]['website'] = $website;
             $slst[$stat['period']]['websites'][$ra['ef_website_id']]['stats'] = $stat;
 
@@ -41,6 +43,7 @@ if($emps->auth->credentials("admin")){
             }
             return 0;
         });
+        $slst[$n]['stat'] = $ef->analyse_stats($slst[$n]['stat']);
         $slst[$n]['websites'] = $websites;
     }
 

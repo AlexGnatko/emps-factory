@@ -982,6 +982,9 @@ class EMPS_FactoryWorker
     public function stats_cycle(){
         global $ef, $emps;
 
+        require_once $emps->common_module('datetime/dates.class.php');
+        $dates = new EMPS_Dates;
+
         $dt = time();
         $r = $emps->db->query("select * from ".TP."ef_stats where status = 10 and nedt <= $dt");
         while($ra = $emps->db->fetch_named($r)){
@@ -1006,7 +1009,12 @@ class EMPS_FactoryWorker
              * Update the stats variables
              */
 
-            $this->update_website_stats($ra, $hostname, time());
+            $dt = time();
+            for($i = 0; $i < 12; $i++){
+                $this->update_website_stats($ra, $hostname, $dt);
+                $dt = $dates->prev_period("month", $dt);
+            }
+
         }
 
     }

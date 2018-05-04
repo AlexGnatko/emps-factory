@@ -326,4 +326,8 @@ class EMPS_Factory {
 
         return $lst;
     }
+
+    public function analyse_stats($stat){
+
+    }
 }
