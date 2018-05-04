@@ -34,10 +34,10 @@ if($emps->auth->credentials("admin")){
         $websites = $v['websites'];
         usort($websites, function($a, $b){
             if($a['stats']['hits'] > $b['stats']['hits']){
-                return 1;
+                return -1;
             }
             if($a['stats']['hits'] < $b['stats']['hits']){
-                return -1;
+                return 1;
             }
             return 0;
         });
