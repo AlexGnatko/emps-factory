@@ -30,7 +30,7 @@ if($emps->auth->credentials("admin")){
         }
     }
 
-    dump($slst);
+    $smarty->assign("slst", $slst);
 
 }else{
     $emps->deny_access("AdminNeeded");
