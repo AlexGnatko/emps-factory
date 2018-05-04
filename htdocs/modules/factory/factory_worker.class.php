@@ -928,7 +928,6 @@ class EMPS_FactoryWorker
                         $values[$code][] = $xv;
                     }
                 }
-                dump($values);
                 return $values;
             }
         }
@@ -956,7 +955,7 @@ class EMPS_FactoryWorker
 
 	    $mY = date("mY", $dt);
         $stats_file = "/var/lib/awstats/awstats{$mY}.{$hostname}.txt";
-        echo $stats_file."<br/>";
+//        echo $stats_file."<br/>";
         $fh = fopen($stats_file, "rb");
         if(!$fh){
             return false;
@@ -972,8 +971,6 @@ class EMPS_FactoryWorker
                 $vars['pages'] = $domain['ip'][0];
                 $vars['hits'] = $domain['ip'][1];
                 $vars['bw'] = $domain['ip'][2] / (1000000);
-
-                dump($vars);
 
                 $this->save_stats_vars(date("Ym", $dt), $stat['id'], $vars);
             }
