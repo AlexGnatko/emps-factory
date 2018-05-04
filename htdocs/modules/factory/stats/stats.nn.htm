@@ -23,11 +23,11 @@
                 <th class="text-center">{{$stat.unique}}</th>
                 <th class="text-center">{{$stat.visits}}</th>
                 <th class="text-center">{{$stat.pages}}</th>
-                <th class="text-center">{{$stat.pages_by_visits|number_format:3:".":""}}</th>
+                <th class="text-center bg-info">{{$stat.pages_by_visits|number_format:3:".":""}}</th>
                 <th class="text-center">{{$stat.hits}}</th>
-                <th class="text-center">{{$stat.hits_by_pages|number_format:3:".":""}}</th>
+                <th class="text-center bg-info">{{$stat.hits_by_pages|number_format:3:".":""}}</th>
                 <th class="text-center">{{($stat.bw / 1024)|number_format:3:".":""}}</th>
-                <th class="text-center">{{$stat.bw_by_hits|number_format:3:".":""}}</th>
+                <th class="text-center bg-info">{{$stat.bw_by_hits|number_format:3:".":""}}</th>
             </tr>
         {{foreach from=$period.websites item="website"}}
             <tr>
@@ -39,9 +39,9 @@
                 <td class="text-center">{{$stat.pages}}</td>
                 <td class="text-center bg-info">{{$stat.pages_by_visits|number_format:3:".":""}}</td>
                 <td class="text-center">{{$stat.hits}}</td>
-                <td class="text-center">{{$stat.hits_by_pages|number_format:3:".":""}}</td>
+                <td class="text-center bg-info">{{$stat.hits_by_pages|number_format:3:".":""}}</td>
                 <td class="text-center">{{($stat.bw / 1024)|number_format:3:".":""}}</td>
-                <td class="text-center">{{$stat.bw_by_hits|number_format:3:".":""}}</td>
+                <td class="text-center bg-info">{{$stat.bw_by_hits|number_format:3:".":""}}</td>
             </tr>
         {{/foreach}}
         </table>
