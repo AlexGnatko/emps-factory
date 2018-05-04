@@ -27,7 +27,7 @@
             <tr>
                 {{$stat = $website.stats}}
 
-                <td>{{$website.website.cfg.hostname}}</td>
+                <td><a href="/factory-websites/{{$website.website.id}}/-/stats/">{{$website.website.cfg.hostname}}</a></td>
                 <td class="text-center">{{$stat.unique}}</td>
                 <td class="text-center">{{$stat.visits}}</td>
                 <td class="text-center">{{$stat.pages}}</td>
