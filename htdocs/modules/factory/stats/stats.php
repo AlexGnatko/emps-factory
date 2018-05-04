@@ -1,6 +1,6 @@
 <?php
 
-if($emps->credentials("admin")){
+if($emps->auth->credentials("admin")){
 
     $slst = [];
     $r = $emps->db->query("select * from ".TP."ef_stats");
