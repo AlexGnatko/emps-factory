@@ -34,7 +34,7 @@ if($emps->auth->credentials("admin")){
         $slst[$n]['databases'] = $databases;
     }
 
-    dump($slst);
+//    dump($slst);
 
     $smarty->assign("slst", $slst);
 
