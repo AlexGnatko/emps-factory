@@ -1036,7 +1036,7 @@ class EMPS_FactoryWorker
         }
     }
 
-    public function db_stats_cycle(){
+    public function db_stats_cycle($override){
 	    global $emps;
 
 	    $last_db_stats = intval($emps->get_setting("_last_db_stats"));
@@ -1045,7 +1045,7 @@ class EMPS_FactoryWorker
 
 	    $dt = time() - 24*60*60;
 
-	    if($last_db_stats < $dt){
+	    if($last_db_stats < $dt || $override){
 	        echo "Running...";
 	        $emps->save_setting("_last_db_stats", time());
 
@@ -1072,7 +1072,7 @@ class EMPS_FactoryWorker
 		
 		$this->heartbeat_cycle();
 		$this->stats_cycle();
-        $this->db_stats_cycle();
+        $this->db_stats_cycle(false);
 		
 		while(true){
 			$r = $emps->db->query("select * from ".TP."ef_commands where status = 0 order by id asc limit 1");
