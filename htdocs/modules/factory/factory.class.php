@@ -368,7 +368,7 @@ class EMPS_Factory {
     }
 
     public function analyse_db_stats($stat){
-	    $class = pow($stat['count_star'] / 1000000, 1/3);
+	    $class = pow($stat['count_star'] / 1000000, 1/2);
 
 	    if($stat['count_star'] > 0){
             $stat['sr_cs'] = $stat['sum_rows'] / $stat['count_star'];
