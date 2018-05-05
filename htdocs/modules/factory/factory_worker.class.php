@@ -1040,6 +1040,7 @@ class EMPS_FactoryWorker
 	    global $emps;
 
 	    $last_db_stats = intval($emps->get_setting("_last_db_stats"));
+        $last_db_stats_delete = intval($emps->get_setting("_last_db_stats_delete"));
 
 //	    echo $last_db_stats;
 
@@ -1064,7 +1065,11 @@ class EMPS_FactoryWorker
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
             }
 
-            $emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
+            if($last_db_stats_delete < $dt && !$override){
+                $emps->save_setting("_last_db_stats_delete", time());
+                $emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
+            }
+
         }
     }
 	
