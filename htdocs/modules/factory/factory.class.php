@@ -366,4 +366,21 @@ class EMPS_Factory {
 
         return $stat;
     }
+
+    public function analyse_db_stats($stat){
+	    $class = $stat['count_star'] / 10000;
+
+	    if($stat['count_star'] > 0){
+            $stat['sr_cs'] = $stat['sum_rows'] / $stat['count_star'];
+        }
+
+        $class = round($class, 0);
+        if($class < 1){
+            $class = 1;
+        }
+
+        $stat['class'] = $class;
+
+        return $stat;
+    }
 }

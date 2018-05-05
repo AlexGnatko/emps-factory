@@ -1,0 +1,38 @@
+<div class="page-header">
+    <h1>Database Usage Stats: Overview</h1>
+
+    {{foreach from=$slst item="period"}}
+        <h2>{{$period.period}}</h2>
+        <table class="table">
+
+            <tr class="active">
+                <th width="40%">Database</th>
+                <th width="15%" class="text-center">Event Count</th>
+                <th width="15%" class="text-center">Rows Examined</th>
+                <th width="15%" class="text-center">R/E</th>
+                <th width="15%" class="text-center">Class</th>
+            </tr>
+
+            <tr>
+                {{$stat = $period.stat}}
+                <th>Total</th>
+                <th class="text-center">{{$stat.count_star}}</th>
+                <th class="text-center">{{$stat.sum_rows}}</th>
+                <th class="text-center bg-info">{{$stat.sr_cs}}</th>
+                <th class="text-center bg-warning">{{$stat.class}}</th>
+
+            </tr>
+            {{foreach from=$period.databases item="database"}}
+                <tr>
+                    {{$stat = $database.stats}}
+
+                    <td>{{$database.name}}</td>
+                    <td class="text-center">{{$stat.count_star}}</td>
+                    <td class="text-center">{{$stat.sum_rows}}</td>
+                    <td class="text-center bg-info">{{$stat.sr_cs}}</td>
+                    <td class="text-center bg-warning">{{$stat.class}}</td>
+                </tr>
+            {{/foreach}}
+        </table>
+    {{/foreach}}
+</div>
