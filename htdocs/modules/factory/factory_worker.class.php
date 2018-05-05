@@ -1064,7 +1064,7 @@ class EMPS_FactoryWorker
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
             }
 
-            //$emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
+            $emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
         }
     }
 	
