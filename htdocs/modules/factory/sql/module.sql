@@ -77,11 +77,29 @@ CREATE TEMPORARY TABLE `temp_ef_stats_values` (
   `stats_id` bigint NOT NULL DEFAULT '0',
   `period` int NOT NULL,
   `code` varchar(255) NOT NULL,
-  `value` int NOT NULL,
+  `value` bigint NOT NULL,
   `dt` bigint NOT NULL,
   `cdt` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `stats_id` (`stats_id`),
+  KEY `period` (`period`),
+  KEY `code` (`code`),
+  KEY `value` (`value`),
+  KEY `dt` (`dt`),
+  KEY `cdt` (`cdt`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- table
+CREATE TEMPORARY TABLE `temp_ef_database_stats_values` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `database` varchar(255) NOT NULL,
+  `period` bigint NOT NULL,
+  `code` varchar(255) NOT NULL,
+  `value` bigint NOT NULL,
+  `dt` bigint NOT NULL,
+  `cdt` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `database` (`database`),
   KEY `period` (`period`),
   KEY `code` (`code`),
   KEY `value` (`value`),

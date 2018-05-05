@@ -362,7 +362,6 @@ class EMPS_Factory {
 	        $class = 1;
         }
 
-
 	    $stat['class'] = $class;
 
         return $stat;

@@ -1016,7 +1016,46 @@ class EMPS_FactoryWorker
             }
 
         }
+    }
 
+    public function save_db_stat($database, $code, $value){
+	    global $emps;
+
+	    $period = date("Ymd", time());
+        $nr = [];
+        $nr['database'] = $database;
+        $nr['code'] = $code;
+        $nr['period'] = $period;
+        $stats_row = $emps->db->sql_ensure_row("ef_database_stats_values", $nr);
+
+        if($stats_row){
+            $update = ['SET' => ['value' => $value]];
+            $emps->db->sql_update_row("ef_database_stats_values", $update, "id = {$stats_row['id']}");
+        }
+    }
+
+    public function db_stats_cycle(){
+	    global $emps;
+
+	    $last_db_stats = intval($emps->get_setting("_last_db_stats"));
+
+	    $dt = time() - 24*60*60;
+
+	    if($last_db_stats < $dt){
+	        $emps->save_setting("_last_db_stats", time());
+
+            $r = $emps->db->query("select schema_name, sum(count_star) as count_star_sum, 
+                sum(sum_rows_affected) as sum_rows
+                from performance_schema.`events_statements_summary_by_digest` group by schema_name 
+                order by count_star_sum desc");
+
+            while($ra = $emps->db->fetch_named($r)){
+                $this->save_db_stat($ra['schema_name'], "count_star", $ra['count_star_sum']);
+                $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
+            }
+
+            $emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
+        }
     }
 	
 	public function cycle(){
@@ -1024,6 +1063,7 @@ class EMPS_FactoryWorker
 		
 		$this->heartbeat_cycle();
 		$this->stats_cycle();
+        $this->db_stats_cycle();
 		
 		while(true){
 			$r = $emps->db->query("select * from ".TP."ef_commands where status = 0 order by id asc limit 1");

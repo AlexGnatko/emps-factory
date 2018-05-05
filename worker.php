@@ -35,6 +35,5 @@ while(true){
 	if($GLOBALS['die_now']){
 		break;
 	}
-	sleep(3);
+	sleep(round(rand(1, 5)));
 }
-?>
