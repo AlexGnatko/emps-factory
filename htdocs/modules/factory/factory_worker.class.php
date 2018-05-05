@@ -1053,6 +1053,8 @@ class EMPS_FactoryWorker
                 from performance_schema.`events_statements_summary_by_digest` group by schema_name 
                 order by count_star_sum desc");
 
+            $emps->db->sql_error();
+
             while($ra = $emps->db->fetch_named($r)){
                 $this->save_db_stat($ra['schema_name'], "count_star", $ra['count_star_sum']);
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
