@@ -372,6 +372,10 @@ class EMPS_Factory {
 
 	    if($stat['count_star'] > 0){
             $stat['sr_cs'] = $stat['sum_rows'] / $stat['count_star'];
+            if($stat['sr_cs'] > 0){
+                $cs_class = pow($stat['sr_cs'] / 10, 1/2);
+                $class *= $cs_class;
+            }
         }
 
         $class = round($class, 0);
