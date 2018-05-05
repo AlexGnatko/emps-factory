@@ -1027,6 +1027,8 @@ class EMPS_FactoryWorker
         $nr['code'] = $code;
         $nr['period'] = $period;
         $stats_row = $emps->db->sql_ensure_row("ef_database_stats_values", $nr);
+        dump($nr);
+        dump($stats_row);
 
         if($stats_row){
             $update = ['SET' => ['value' => $value]];
