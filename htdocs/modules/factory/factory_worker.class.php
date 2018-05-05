@@ -1049,10 +1049,10 @@ class EMPS_FactoryWorker
 	        echo "Running...";
 	        $emps->save_setting("_last_db_stats", time());
 
-            $r = $emps->db->query("select schema_name, sum(count_star) as count_star_sum, 
-                sum(sum_rows_affected) as sum_rows
-                from performance_schema.`events_statements_summary_by_digest` group by schema_name 
-                order by count_star_sum desc");
+            $r = $emps->db->query("select schema_name, sum(count_star) as `count_star_sum`, 
+                sum(sum_rows_affected) as `sum_rows`
+                from performance_schema.`events_statements_summary_by_digest` group by `schema_name` 
+                order by `count_star_sum` desc");
 
             echo "Query done...";
             $emps->db->sql_error();
@@ -1062,6 +1062,7 @@ class EMPS_FactoryWorker
                 $this->save_db_stat($ra['schema_name'], "count_star", $ra['count_star_sum']);
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
             }
+            echo "All done...";
 
             //$emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
         }
