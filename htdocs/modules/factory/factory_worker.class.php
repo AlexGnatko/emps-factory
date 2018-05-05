@@ -1050,7 +1050,7 @@ class EMPS_FactoryWorker
 	        $emps->save_setting("_last_db_stats", time());
 
             $r = $emps->db->query("select schema_name, sum(count_star) as `count_star_sum`, 
-                sum(sum_rows_affected) as `sum_rows`
+                sum(sum_rows_examined) as `sum_rows`
                 from performance_schema.`events_statements_summary_by_digest` group by `schema_name` 
                 order by `count_star_sum` desc");
 
