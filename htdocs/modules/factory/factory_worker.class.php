@@ -1027,8 +1027,8 @@ class EMPS_FactoryWorker
         $nr['code'] = $code;
         $nr['period'] = $period;
         $stats_row = $emps->db->sql_ensure_row("ef_database_stats_values", $nr);
-        dump($nr);
-        dump($stats_row);
+//        dump($nr);
+//        dump($stats_row);
 
         if($stats_row){
             $update = ['SET' => ['value' => $value]];
@@ -1046,7 +1046,7 @@ class EMPS_FactoryWorker
 	    $dt = time() - 24*60*60;
 
 	    if($last_db_stats < $dt || $override){
-	        echo "Running...";
+
 	        $emps->save_setting("_last_db_stats", time());
 
             $r = $emps->db->query("select schema_name, sum(count_star) as `count_star_sum`, 
@@ -1054,16 +1054,15 @@ class EMPS_FactoryWorker
                 from performance_schema.`events_statements_summary_by_digest` group by `schema_name` 
                 order by `count_star_sum` desc");
 
-            echo "Query done...";
             $emps->db->sql_error();
-            dump($r);
 
-            while($ra = $emps->db->fetch_row($r)){
-                dump($ra);
+            while($ra = $emps->db->fetch_named($r)){
+                if(!$ra['schema_name']){
+                    continue;
+                }
                 $this->save_db_stat($ra['schema_name'], "count_star", $ra['count_star_sum']);
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
             }
-            echo "All done...";
 
             //$emps->db->query("truncate table performance_schema.`events_statements_summary_by_digest`");
         }
