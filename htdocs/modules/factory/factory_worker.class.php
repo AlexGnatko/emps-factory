@@ -1046,6 +1046,7 @@ class EMPS_FactoryWorker
 	    $dt = time() - 24*60*60;
 
 	    if($last_db_stats < $dt){
+	        echo "Running...";
 	        $emps->save_setting("_last_db_stats", time());
 
             $r = $emps->db->query("select schema_name, sum(count_star) as count_star_sum, 
@@ -1053,9 +1054,11 @@ class EMPS_FactoryWorker
                 from performance_schema.`events_statements_summary_by_digest` group by schema_name 
                 order by count_star_sum desc");
 
+            echo "Query done...";
             $emps->db->sql_error();
 
             while($ra = $emps->db->fetch_named($r)){
+                dump($ra);
                 $this->save_db_stat($ra['schema_name'], "count_star", $ra['count_star_sum']);
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
             }
