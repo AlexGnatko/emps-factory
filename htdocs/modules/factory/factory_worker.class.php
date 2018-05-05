@@ -1039,7 +1039,7 @@ class EMPS_FactoryWorker
     public function db_stats_cycle($override){
 	    global $emps;
 
-        $props = $this->p->read_properties([], $emps->website_ctx);
+        $props = $emps->p->read_properties([], $emps->website_ctx);
 	    $last_db_stats = intval($props["_last_db_stats"]);
         $last_db_stats_delete = intval($props["_last_db_stats_delete"]);
 
