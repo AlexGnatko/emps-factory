@@ -1057,7 +1057,7 @@ class EMPS_FactoryWorker
             echo "Query done...";
             $emps->db->sql_error();
 
-            while($ra = $emps->db->fetch_named($r)){
+            while($ra = $emps->db->fetch_row($r)){
                 dump($ra);
                 $this->save_db_stat($ra['schema_name'], "count_star", $ra['count_star_sum']);
                 $this->save_db_stat($ra['schema_name'], "sum_rows", $ra['sum_rows']);
