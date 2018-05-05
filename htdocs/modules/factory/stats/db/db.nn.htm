@@ -18,7 +18,7 @@
                 <th>Total</th>
                 <th class="text-center">{{$stat.count_star}}</th>
                 <th class="text-center">{{$stat.sum_rows}}</th>
-                <th class="text-center bg-info">{{$stat.sr_cs}}</th>
+                <th class="text-center bg-info">{{$stat.sr_cs|number_format:3:".":""}}</th>
                 <th class="text-center bg-warning">{{$stat.class}}</th>
 
             </tr>
@@ -29,7 +29,7 @@
                     <td>{{$database.name}}</td>
                     <td class="text-center">{{$stat.count_star}}</td>
                     <td class="text-center">{{$stat.sum_rows}}</td>
-                    <td class="text-center bg-info">{{$stat.sr_cs}}</td>
+                    <td class="text-center bg-info">{{$stat.sr_cs|number_format:3:".":""}}</td>
                     <td class="text-center bg-warning">{{$stat.class}}</td>
                 </tr>
             {{/foreach}}
