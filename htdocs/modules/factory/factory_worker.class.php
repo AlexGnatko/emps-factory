@@ -1048,7 +1048,9 @@ class EMPS_FactoryWorker
 
 	    if($last_db_stats < $dt || $override){
 
-	        $emps->save_setting("_last_db_stats", time());
+	        if(!$override){
+                $emps->save_setting("_last_db_stats", time());
+            }
 
             $r = $emps->db->query("select schema_name, sum(count_star) as `count_star_sum`, 
                 sum(sum_rows_examined) as `sum_rows`
