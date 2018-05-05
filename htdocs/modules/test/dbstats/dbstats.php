@@ -10,7 +10,6 @@ if($emps->auth->credentials("admin")){
 
     $ef->load_defaults();
 
-    $emps->save_setting("_last_db_stats", 0);
     $efw->db_stats_cycle(true);
 }else{
     $emps->deny_access("AdminNeeded");
