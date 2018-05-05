@@ -1056,6 +1056,7 @@ class EMPS_FactoryWorker
 
             echo "Query done...";
             $emps->db->sql_error();
+            dump($r);
 
             while($ra = $emps->db->fetch_row($r)){
                 dump($ra);
