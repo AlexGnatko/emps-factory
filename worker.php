@@ -27,6 +27,8 @@ $off_time = time() + 2*60*60;
 
 $ef->load_defaults();
 
+$emps->select_website();
+
 while(true){
 	$efw->cycle();
 	if(time() > $off_time){
