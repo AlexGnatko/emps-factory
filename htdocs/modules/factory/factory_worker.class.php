@@ -1041,7 +1041,7 @@ class EMPS_FactoryWorker
 
 	    $last_db_stats = intval($emps->get_setting("_last_db_stats"));
 
-	    echo $last_db_stats;
+//	    echo $last_db_stats;
 
 	    $dt = time() - 24*60*60;
 
