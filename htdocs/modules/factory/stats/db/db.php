@@ -36,6 +36,8 @@ if($emps->auth->credentials("admin")){
 
 //    dump($slst);
 
+    krsort($slst);
+
     $smarty->assign("slst", $slst);
 
 }else{
