@@ -1,6 +1,8 @@
 # Systemd script (Ubuntu 16+)
 # Place this systemd script to /lib/systemd/system
 
+[Install]
+WantedBy=multi-user.target
 
 [Unit]
 Description=EMPS Factory Worker Service
