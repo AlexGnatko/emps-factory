@@ -658,11 +658,8 @@ class EMPS_FactoryWorker
 
                 $child_owner = $child['user']['username'];
 
-                $this->say(sprintf("Copying %s to %s...", $key_path, $dst_key_path));
                 $this->copy_file($key_path, $dst_key_path, 0755, $child_owner);
-                $this->say(sprintf("Copying %s to %s...", $pem_path, $dst_pem_path));
                 $this->copy_file($pem_path, $dst_pem_path, 0755, $child_owner);
-                $this->say(sprintf("Copying %s to %s...", $comb_path, $dst_comb_path));
                 $this->copy_file($comb_path, $dst_comb_path, 0755, $child_owner);
             }
         }
