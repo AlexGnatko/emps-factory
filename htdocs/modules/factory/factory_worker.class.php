@@ -535,7 +535,7 @@ class EMPS_FactoryWorker
 	}
 	
 	public function install_pemfile($data, $ra){
-		global $emps, $ef, $smarty;
+		global $emps, $ef;
 		
 		$website_id = $ra['ef_website_id'];
 		if(!$website_id){
@@ -608,7 +608,74 @@ class EMPS_FactoryWorker
 		}
 	}
 
-	public function setup_project_git($data, $ra){
+    /**
+     * Copy SSL certificates from a core website to child websites
+     *
+     * @param $data
+     * @param $ra
+     * @return bool
+     */
+    public function copy_pemfile($data, $ra){
+        global $emps, $ef;
+
+        $website_id = $ra['ef_website_id'];
+        if(!$website_id){
+            $this->say("Can't copy pemfile: you have to select a website!");
+            return false;
+        }
+
+        $website = $ef->load_website($website_id);
+        $cfg = $website['cfg'];
+        $owner = $website['user']['username'];
+
+        $failed = false;
+
+        $hostname = $cfg['hostname'];
+
+        $server_type = $ef->defaults['server_type'];
+        if($server_type == "lighttpd"){
+            // no script for lighttpd so far
+        }
+        if($server_type == "nginx"){
+
+            $conf_path = $ef->defaults['nginx_conf_path'];
+            $certs_path = $conf_path.'/ssl';
+
+            $pem_path = $certs_path.'/'.$hostname.'.pem';
+            $key_path = $certs_path.'/'.$hostname.'.key';
+            $comb_path = $certs_path.'/'.$hostname.'.comb';
+
+            $lst = $ef->list_child_websites($website_id);
+            foreach($lst as $child){
+                $child_hostname = $child['cfg']['hostname'];
+
+                $dst_pem_path = $certs_path.'/'.$child_hostname.'.pem';
+                $dst_key_path = $certs_path.'/'.$child_hostname.'.key';
+                $dst_comb_path = $certs_path.'/'.$child_hostname.'.comb';
+
+                $child_owner = $child['user']['username'];
+
+                $this->say(sprintf("Copying %s to %s...", $key_path, $dst_key_path));
+                $this->copy_file($key_path, $dst_key_path, 0755, $child_owner);
+                $this->say(sprintf("Copying %s to %s...", $pem_path, $dst_pem_path));
+                $this->copy_file($pem_path, $dst_pem_path, 0755, $child_owner);
+                $this->say(sprintf("Copying %s to %s...", $comb_path, $dst_comb_path));
+                $this->copy_file($comb_path, $dst_comb_path, 0755, $child_owner);
+            }
+        }
+
+        $ef->set_status($website['context_id'], array("copy_pemfile_time"=>$emps->form_time(time())));
+        if(!$failed){
+            $ef->set_status($website['context_id'], array("copy_pemfile"=>"done"));
+            $this->say("Done!");
+        }else{
+            $ef->set_status($website['context_id'], array("copy_pemfile"=>"failed"));
+        }
+
+        return true;
+    }
+
+    public function setup_project_git($data, $ra){
 		global $emps, $ef, $smarty;
 		
 		$website_id = $ra['ef_website_id'];
@@ -812,6 +879,9 @@ class EMPS_FactoryWorker
 		case 'install-pemfile':
 			$this->install_pemfile($data, $ra);
 			break;
+        case 'copy-pemfile':
+            $this->copy_pemfile($data, $ra);
+            break;
 		case 'configure-httpd':
 			$this->configure_httpd($data, $ra);
 			break;

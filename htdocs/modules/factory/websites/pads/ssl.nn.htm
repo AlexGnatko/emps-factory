@@ -12,6 +12,19 @@
 &nbsp;
 <a class="btn btn-default btn-xs" href="./">Reload</a></p>
 {{/if}}
+
+    {{if $row.sd.copy_pemfile == "failed"}}
+        <p class="alert alert-danger">Failed to copy PEM files at {{$row.sd.copy_pemfile_time}}</p>
+    {{/if}}
+    {{if $row.sd.copy_pemfile == "done"}}
+        <p class="alert alert-success">Successfully copied PEM files at {{$row.sd.copy_pemfile_time}}</p>
+    {{/if}}
+    {{if $row.sd.copy_pemfile == "started"}}
+        <p class="alert alert-warning">Pemfile copying pending...
+            &nbsp;
+            <a class="btn btn-default btn-xs" href="./">Reload</a></p>
+    {{/if}}
+
 <form action="." method="post" class="form">
 <input type="hidden" name="post_pem" value="1" />
 <div class="form-group">
@@ -37,6 +50,13 @@ The empty input box doesn't mean the current PEM file is empty!
 <p class="text-right"><a href="./?disable_https=1" class="btn btn-warning">Disable HTTPS</a></p>
 {{if $row.sd.pemfile == "done"}}
 <p class="well well-sm">If you've just enabled the HTTPS mode, you also need to re-do the Webserver Configuration!</p>
+
+    {{if !$SlaveMode}}
+        <h5>Copy this SSL configuration to slave websites</h5>
+        <p><a class="btn btn-success btn-lg" data-target="#copySSL" data-toggle="modal">Copy SSL</a></p>
+    {{/if}}
+
+
 {{/if}}
 {{if $row.sd.pemfile == "failed"}}
 <p class="well well-sm">The PEM file is invalid, so the Webserver's default will be used.</p>

@@ -94,6 +94,20 @@ if($_POST['post_pem'] && $key){
 	}
 }
 
+if($_POST['copy_ssl'] && $key){
+    $row = $ef->load_website(intval($key));
+
+    if($row){
+        $data = array();
+        $data['website_id'] = $row['id'];
+
+        $ef->custom_command("copy-pemfile", $row['id'], json_encode($data));
+        $ef->set_status($row['context_id'], array("copy_pemfile"=>"started"));
+
+        $emps->redirect_elink();exit();
+    }
+}
+
 if($_POST['setup_git'] && $key){
 	$row = $ef->load_website(intval($key));
 	

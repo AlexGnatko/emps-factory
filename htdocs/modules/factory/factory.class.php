@@ -161,6 +161,22 @@ class EMPS_Factory {
 			return false;
 		}
 	}
+
+	public function list_child_websites($website_id){
+	    global $emps;
+
+	    $r = $emps->db->query("select * from ".TP."ef_websites where parent_website_id = {$website_id} order by id asc");
+	    $lst = [];
+	    while($ra = $emps->db->fetch_named($r)){
+            $ra = $this->explain_website($ra);
+
+            $cfg = $this->site_defaults($ra);
+            $ra['cfg'] = $cfg;
+
+	        $lst[] = $ra;
+        }
+        return $lst;
+    }
 	
 	public function explain_command($ra){
 		global $emps;
