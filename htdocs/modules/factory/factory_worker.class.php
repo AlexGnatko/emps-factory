@@ -602,6 +602,9 @@ class EMPS_FactoryWorker
 		if(!$failed){
 			$ef->set_status($website['context_id'], array("pemfile"=>"done"));
 			$this->say("Done!");
+            if($server_type == "nginx") {
+                $ef->add_command("service nginx reload");
+            }
 		}else{
 			$ef->set_status($website['context_id'], array("pemfile"=>"failed"));
 			$ef->set_status($website['context_id'], array("ssl_mode"=>false));
@@ -668,6 +671,9 @@ class EMPS_FactoryWorker
         if(!$failed){
             $ef->set_status($website['context_id'], array("copy_pemfile"=>"done"));
             $this->say("Done!");
+            if($server_type == "nginx") {
+                $ef->add_command("service nginx reload");
+            }
         }else{
             $ef->set_status($website['context_id'], array("copy_pemfile"=>"failed"));
         }
