@@ -478,6 +478,8 @@ class EMPS_FactoryWorker
 		
 		$smarty->assign("ssl", $website['sd']['ssl_mode']);
 		$this->say("SSL mode: ".$website['sd']['ssl_mode']);
+
+		$smarty->assign("letsencrypt", $website['sd']['letsencrypt']);
 		
 		$prefix = $cfg['prefix'];
 		
