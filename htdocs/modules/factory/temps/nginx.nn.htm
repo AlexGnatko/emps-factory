@@ -24,8 +24,15 @@ server {
 	listen			443;
     listen			[::]:443;
 	ssl				on;
+{{if $letsencrypt}}
+	ssl_certificate /etc/letsencrypt/live/{{$hostname}}/fullchain.pem; # managed by Certbot
+	# path to your cacert.pem
+	ssl_certificate_key /etc/letsencrypt/live/{{$hostname}}/privkey.pem; # managed by Certbot
+	# path to your privkey.pem
+{{else}}
 	ssl_certificate /etc/nginx/ssl/{{$hostname}}.pem;    # path to your cacert.pem
 	ssl_certificate_key /etc/nginx/ssl/{{$hostname}}.key;    # path to your privkey.pem
+{{/if}}
 	fastcgi_param   HTTPS               on;
 	fastcgi_param   HTTP_SCHEME         https;
 

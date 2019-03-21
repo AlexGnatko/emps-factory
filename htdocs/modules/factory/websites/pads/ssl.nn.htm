@@ -1,48 +1,68 @@
 <h5 class="subhead">SSL Certificate, HTTPS Mode</h5>
 <div class="row">
 <div class="col-md-7">
-{{if $row.sd.pemfile == "failed"}}
-<p class="alert alert-danger">Failed to install the PEM file at {{$row.sd.pemfile_time}}</p>
-{{/if}}
-{{if $row.sd.pemfile == "done"}}
-<p class="alert alert-success">Successfully installed the PEM file at {{$row.sd.pemfile_time}}</p>
-{{/if}}
-{{if $row.sd.pemfile == "started"}}
-<p class="alert alert-warning">Pemfile installation pending...
-&nbsp;
-<a class="btn btn-default btn-xs" href="./">Reload</a></p>
-{{/if}}
 
-    {{if $row.sd.copy_pemfile == "failed"}}
-        <p class="alert alert-danger">Failed to copy PEM files at {{$row.sd.copy_pemfile_time}}</p>
-    {{/if}}
-    {{if $row.sd.copy_pemfile == "done"}}
-        <p class="alert alert-success">Successfully copied PEM files at {{$row.sd.copy_pemfile_time}}</p>
-    {{/if}}
-    {{if $row.sd.copy_pemfile == "started"}}
-        <p class="alert alert-warning">Pemfile copying pending...
-            &nbsp;
-            <a class="btn btn-default btn-xs" href="./">Reload</a></p>
-    {{/if}}
+    {{if $row.sd.letsencrypt}}
+        <h4>Let's Encrypt mode is enabled.</h4>
+        <p>You have to manually run the <code>certbot --nginx</code> command in the shell
+        to install certificates.</p>
+        <p><a href="./?letsencrypt=disable" class="btn btn-warning btn-lg">Disable Let's Encrypt</a></p>
+    {{else}}
 
-<form action="." method="post" class="form">
-<input type="hidden" name="post_pem" value="1" />
-<div class="form-group">
-<label>New PEM File Contents:</label>
-<span class="help-block">Post new contents here. If you posted here before, the contents should be in the appropriate folder on the server.
+        {{if $row.sd.pemfile == "failed"}}
+            <p class="alert alert-danger">Failed to install the PEM file at {{$row.sd.pemfile_time}}</p>
+        {{/if}}
+        {{if $row.sd.pemfile == "done"}}
+            <p class="alert alert-success">Successfully installed the PEM file at {{$row.sd.pemfile_time}}</p>
+        {{/if}}
+        {{if $row.sd.pemfile == "started"}}
+            <p class="alert alert-warning">Pemfile installation pending...
+                &nbsp;
+                <a class="btn btn-default btn-xs" href="./">Reload</a></p>
+        {{/if}}
+
+        {{if $row.sd.copy_pemfile == "failed"}}
+            <p class="alert alert-danger">Failed to copy PEM files at {{$row.sd.copy_pemfile_time}}</p>
+        {{/if}}
+        {{if $row.sd.copy_pemfile == "done"}}
+            <p class="alert alert-success">Successfully copied PEM files at {{$row.sd.copy_pemfile_time}}</p>
+        {{/if}}
+        {{if $row.sd.copy_pemfile == "started"}}
+            <p class="alert alert-warning">Pemfile copying pending...
+                &nbsp;
+                <a class="btn btn-default btn-xs" href="./">Reload</a></p>
+        {{/if}}
+
+        <form action="." method="post" class="form">
+            <input type="hidden" name="post_pem" value="1" />
+            <div class="form-group">
+                <label>New PEM File Contents:</label>
+                <span class="help-block">Post new contents here. If you posted here before, the contents should be in the appropriate folder on the server.
 The empty input box doesn't mean the current PEM file is empty!
 </span>
-<span class="help-block">For security reasons, it is not possible to view the current contents of the PEM file.</span>
-</span>
-<textarea class="form-control" rows="6" name="pemfile"></textarea>
-</div>
-<div class="form-group">
-<label>Separate Key File (for nginx):</label>
-<textarea class="form-control" rows="6" name="keyfile"></textarea>
-<span class="help-block">Only for nginx: it requires the private key to be stored in a different file.</span>
-</div>
-<p><button type="submit" class="btn btn-primary btn-lg">Send</button></p>
-</form>
+                <span class="help-block">For security reasons, it is not possible to view the current contents of the PEM file.</span>
+                </span>
+                <textarea class="form-control" rows="6" name="pemfile"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Separate Key File (for nginx):</label>
+                <textarea class="form-control" rows="6" name="keyfile"></textarea>
+                <span class="help-block">Only for nginx: it requires the private key to be stored in a different file.</span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><button type="submit" class="btn btn-primary btn-lg">Send</button></p>
+                </div>
+                <div class="col-md-6">
+                    <p><a href="./?letsencrypt=enable" class="btn btn-info btn-lg">Use Let's Encrypt</a></p>
+                </div>
+            </div>
+
+        </form>
+
+
+    {{/if}}
+
 </div>
 <div class="col-md-5">
 {{if $row.sd.ssl_mode}}

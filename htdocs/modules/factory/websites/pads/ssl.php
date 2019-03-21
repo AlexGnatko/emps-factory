@@ -14,4 +14,12 @@ if($_GET['disable_https']){
 	$emps->redirect_elink();exit();
 }
 
-?>
+if($_GET['letsencrypt'] == "enable"){
+    $ef->set_status($this->row['context_id'], array("letsencrypt"=>true));
+    $emps->redirect_elink();exit();
+}
+
+if($_GET['letsencrypt'] == "disable"){
+    $ef->set_status($this->row['context_id'], array("letsencrypt"=>false));
+    $emps->redirect_elink();exit();
+}
