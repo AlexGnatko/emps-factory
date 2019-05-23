@@ -336,7 +336,7 @@ class EMPS_Factory {
 	        if(!isset($rv[$period])){
 	            $rv[$period] = [];
             }
-            $rv[$period][$ra['code']] = $ra['value'];
+            $rv[$period][$ra['code']] = intval($ra['value']);
         }
         $lst = [];
 	    foreach($rv as $n => $v){
