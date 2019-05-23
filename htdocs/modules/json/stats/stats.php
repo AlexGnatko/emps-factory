@@ -18,7 +18,7 @@ while($ra = $emps->db->fetch_named($r)){
         unset($website['user']);
 
         $website = [];
-        $emps->copy_values($website, $ws, "id,name");
+        $emps->copy_values($website, $ws, "id,hostname");
 
         $stat = $ef->analyse_stats($stat);
 
