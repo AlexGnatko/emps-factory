@@ -64,7 +64,7 @@ foreach($d_stat as $n => $v) {
     $d_stat[$n] /= count($slst);
 }
 
-$d_stat = $ef->analyse_db_stats($o_stat);
+$d_stat = $ef->analyse_db_stats($d_stat);
 
 $response = [];
 $response['code'] = "OK";
