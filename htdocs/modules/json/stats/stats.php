@@ -32,19 +32,25 @@ while($ra = $emps->db->fetch_named($r)){
 }
 
 
-foreach($slst as $n => $v){
+foreach($slst as $n => $v) {
     $websites = $v['websites'];
-    usort($websites, function($a, $b){
-        if($a['stats']['hits'] > $b['stats']['hits']){
+    usort($websites, function ($a, $b) {
+        if ($a['stats']['hits'] > $b['stats']['hits']) {
             return -1;
         }
-        if($a['stats']['hits'] < $b['stats']['hits']){
+        if ($a['stats']['hits'] < $b['stats']['hits']) {
             return 1;
         }
         return 0;
     });
+    $wlst = [];
+    foreach ($websites as $website) {
+        if ($website['website']['id'] == $website_id){
+            $wlst[] = $website;
+        }
+    }
     $slst[$n]['stat'] = $ef->analyse_stats($slst[$n]['stat']);
-    $slst[$n]['websites'] = $websites;
+    $slst[$n]['websites'] = $wlst;
 }
 
 $response = [];
