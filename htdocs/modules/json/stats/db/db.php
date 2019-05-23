@@ -18,9 +18,11 @@ while($ra = $emps->db->fetch_named($r)){
 
     $period = $ra['period'];
     $slst[$period]['period'] = $period;
-    $slst[$period]['databases'][$ra['database']]['name'] = $ra['database'];
-    $slst[$period]['databases'][$ra['database']]['stats'][$ra['code']] = $ra['value'];
-    $slst[$period]['stat'][$ra['code']] += $ra['value'];
+    if ($ra['database']['name'] == $database_name) {
+        $slst[$period]['databases'][$ra['database']]['name'] = $ra['database'];
+        $slst[$period]['databases'][$ra['database']]['stats'][$ra['code']] = intval($ra['value']);
+    }
+    $slst[$period]['stat'][$ra['code']] += intval($ra['value']);
 }
 
 foreach($slst as $n => $v){
@@ -40,6 +42,8 @@ foreach($slst as $n => $v){
     $slst[$n]['stat'] = $ef->analyse_db_stats($slst[$n]['stat']);
     $slst[$n]['databases'] = $databases;
 }
+
+
 
 //    dump($slst);
 
