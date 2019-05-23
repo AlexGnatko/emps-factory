@@ -55,13 +55,13 @@ foreach ($slst as $row) {
 }
 
 foreach($o_stat as $n => $v) {
-    $o_stat[$n] /= count($slst);
+    $o_stat[$n] = round($o_stat[$n] / count($slst));
 }
 
 $o_stat = $ef->analyse_db_stats($o_stat);
 
 foreach($d_stat as $n => $v) {
-    $d_stat[$n] /= count($slst);
+    $d_stat[$n] = round($d_stat[$n] / count($slst));
 }
 
 $d_stat = $ef->analyse_db_stats($d_stat);
