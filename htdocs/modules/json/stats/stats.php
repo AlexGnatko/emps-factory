@@ -10,7 +10,7 @@ while($ra = $emps->db->fetch_named($r)){
 
     $period = intval($start);
 
-    $ef->stats_peroid = $period;
+    $ef->stats_period = $period;
     $stats = $ef->list_stats($ra['id']);
     foreach($stats as $stat){
         $website = $ef->load_website($ra['ef_website_id']);
