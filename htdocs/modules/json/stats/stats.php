@@ -4,9 +4,10 @@ $emps->no_smarty = true;
 
 $website_id = intval($key);
 
-$ra = $emps->db->get_row("ef_stats", "ef_website_id = {$website_id}");
+$slst = [];
+$r = $emps->db->query("select * from ".TP."ef_stats");
+while($ra = $emps->db->fetch_named($r)){
 
-if ($ra) {
     $period = intval($start);
 
     $ef->stats_peroid = $peroid;
@@ -28,30 +29,25 @@ if ($ra) {
 
         }
     }
-
-    foreach($slst as $n => $v){
-        $websites = $v['websites'];
-        usort($websites, function($a, $b){
-            if($a['stats']['hits'] > $b['stats']['hits']){
-                return -1;
-            }
-            if($a['stats']['hits'] < $b['stats']['hits']){
-                return 1;
-            }
-            return 0;
-        });
-        $slst[$n]['stat'] = $ef->analyse_stats($slst[$n]['stat']);
-        $slst[$n]['websites'] = $websites;
-    }
-
-    $response = [];
-    $response['code'] = "OK";
-    $response['lst'] = $slst;
-    $emps->json_response($response); exit;
-
-} else {
-    $response = [];
-    $response['code'] = "Error";
-    $response['message'] = "Нет данных!";
-    $emps->json_response($response); exit;
 }
+
+
+foreach($slst as $n => $v){
+    $websites = $v['websites'];
+    usort($websites, function($a, $b){
+        if($a['stats']['hits'] > $b['stats']['hits']){
+            return -1;
+        }
+        if($a['stats']['hits'] < $b['stats']['hits']){
+            return 1;
+        }
+        return 0;
+    });
+    $slst[$n]['stat'] = $ef->analyse_stats($slst[$n]['stat']);
+    $slst[$n]['websites'] = $websites;
+}
+
+$response = [];
+$response['code'] = "OK";
+$response['lst'] = $slst;
+$emps->json_response($response); exit;
