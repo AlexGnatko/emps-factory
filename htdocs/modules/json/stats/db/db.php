@@ -68,7 +68,7 @@ $d_stat = $ef->analyse_db_stats($d_stat);
 
 $response = [];
 $response['code'] = "OK";
-$response['lst'] = $slst;
+//$response['lst'] = $slst;
 $response['o_stat'] = $o_stat;
 $response['d_stat'] = $d_stat;
 $emps->json_response($response); exit;
