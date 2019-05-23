@@ -10,7 +10,9 @@ $sp = $period * 100 + 1;
 $ep = $sp + 30;
 
 $slst = [];
-$r = $emps->db->query("select * from ".TP."ef_database_stats_values where period >= {$sp} and period <= {$ep}");
+$q = "select * from ".TP."ef_database_stats_values where period >= {$sp} and period <= {$ep}";
+error_log($q);
+$r = $emps->db->query($q);
 while($ra = $emps->db->fetch_named($r)){
     if(!$ra['database']){
         continue;
