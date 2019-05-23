@@ -13,9 +13,12 @@ while($ra = $emps->db->fetch_named($r)){
     $ef->stats_period = $period;
     $stats = $ef->list_stats($ra['id']);
     foreach($stats as $stat){
-        $website = $ef->load_website($ra['ef_website_id']);
+        $ws = $ef->load_website($ra['ef_website_id']);
         unset($website['_full']);
         unset($website['user']);
+
+        $website = [];
+        $emps->copy_values($website, $ws, "id,name");
 
         $stat = $ef->analyse_stats($stat);
 
