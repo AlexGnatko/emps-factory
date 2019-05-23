@@ -56,7 +56,14 @@ foreach($slst as $n => $v) {
     $slst[$n]['websites'] = $wlst;
 }
 
+foreach ($slst as $v) {
+    $o_stats = $v['stat'];
+    $w_stats = $v['websites'][0]['stats'];
+}
+
 $response = [];
 $response['code'] = "OK";
-$response['lst'] = $slst;
+$response['o_stats'] = $o_stats;
+$response['w_stats'] = $w_stats;
+
 $emps->json_response($response); exit;
