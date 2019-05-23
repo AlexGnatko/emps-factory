@@ -43,13 +43,32 @@ foreach($slst as $n => $v){
     $slst[$n]['databases'] = $databases;
 }
 
+$o_stat = [];
+$d_stat = [];
+foreach ($slst as $row) {
+    foreach($row['stat'] as $n => $v) {
+        $o_stat[$n] += $v;
+    }
+    foreach($row['databases'][0]['stats'] as $n => $v) {
+        $d_stat[$n] += $v;
+    }
+}
 
+foreach($o_stat as $n => $v) {
+    $o_stat[$n] /= count($slst);
+}
 
-//    dump($slst);
+$o_stat = $ef->analyse_db_stats($o_stat);
 
-krsort($slst);
+foreach($d_stat as $n => $v) {
+    $d_stat[$n] /= count($slst);
+}
+
+$d_stat = $ef->analyse_db_stats($o_stat);
 
 $response = [];
 $response['code'] = "OK";
 $response['lst'] = $slst;
+$response['o_stat'] = $o_stat;
+$response['d_stat'] = $d_stat;
 $emps->json_response($response); exit;
