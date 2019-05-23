@@ -4,9 +4,9 @@ $emps->no_smarty = true;
 
 $website_id = intval($key);
 
-$stat = $emps->db->get_row("ef_stats", "ef_website_id = {$website_id}");
+$ra = $emps->db->get_row("ef_stats", "ef_website_id = {$website_id}");
 
-if ($stat) {
+if ($ra) {
     $period = intval($start);
 
     $ef->stats_peroid = $peroid;
