@@ -27,7 +27,7 @@ while($ra = $emps->db->fetch_named($r)){
 
         foreach($stat as $n => $v){
             if($n != 'period'){
-                $slst[$stat['period']]['stat'][$n] += $v;
+                $slst[$stat['period']]['stats'][$n] += $v;
             }
 
         }
@@ -52,7 +52,7 @@ foreach($slst as $n => $v) {
             $wlst[] = $website;
         }
     }
-    $slst[$n]['stat'] = $ef->analyse_stats($slst[$n]['stat']);
+    $slst[$n]['stats'] = $ef->analyse_stats($slst[$n]['stat']);
     $slst[$n]['websites'] = $wlst;
 }
 
