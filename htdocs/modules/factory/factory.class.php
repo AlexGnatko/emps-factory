@@ -328,7 +328,9 @@ class EMPS_Factory {
 	        $where = " and period = {$this->stats_period} ";
         }
 	    $rv = [];
-	    $r = $emps->db->query("select * from ".TP."ef_stats_values where stats_id = {$stats_id} {$where} order by period desc");
+	    $q = "select * from ".TP."ef_stats_values where stats_id = {$stats_id} {$where} order by period desc";
+	    error_log($q);
+	    $r = $emps->db->query($q);
 	    while($ra = $emps->db->fetch_named($r)){
 	        $period = $ra['period'];
 	        if(!isset($rv[$period])){
