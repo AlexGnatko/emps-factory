@@ -2,7 +2,7 @@
 
 $emps->no_smarty = true;
 
-$website_id = intval($key);
+$database_name = $key;
 
 $period = intval($start);
 
@@ -10,9 +10,7 @@ $sp = $period * 100 + 1;
 $ep = $sp + 30;
 
 $slst = [];
-$q = "select * from ".TP."ef_database_stats_values where period >= {$sp} and period <= {$ep}";
-error_log($q);
-$r = $emps->db->query($q);
+$r = $emps->db->query("select * from ".TP."ef_database_stats_values where period >= {$sp} and period <= {$ep}");
 while($ra = $emps->db->fetch_named($r)){
     if(!$ra['database']){
         continue;
@@ -22,7 +20,7 @@ while($ra = $emps->db->fetch_named($r)){
     $slst[$period]['period'] = $period;
     $slst[$period]['databases'][$ra['database']]['name'] = $ra['database'];
     $slst[$period]['databases'][$ra['database']]['stats'][$ra['code']] = $ra['value'];
-    $slst[$period]['stats'][$ra['code']] += $ra['value'];
+    $slst[$period]['stat'][$ra['code']] += $ra['value'];
 }
 
 foreach($slst as $n => $v){
@@ -39,7 +37,7 @@ foreach($slst as $n => $v){
     foreach($databases as $nn => $vv){
         $databases[$nn]['stats'] = $ef->analyse_db_stats($vv['stats']);
     }
-    $slst[$n]['stats'] = $ef->analyse_db_stats($slst[$n]['stat']);
+    $slst[$n]['stat'] = $ef->analyse_db_stats($slst[$n]['stat']);
     $slst[$n]['databases'] = $databases;
 }
 
