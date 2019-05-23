@@ -18,7 +18,7 @@ while($ra = $emps->db->fetch_named($r)){
 
     $period = $ra['period'];
     $slst[$period]['period'] = $period;
-    if ($ra['database']['name'] == $database_name) {
+    if ($ra['database'] == $database_name) {
         $slst[$period]['databases'][$ra['database']]['name'] = $ra['database'];
         $slst[$period]['databases'][$ra['database']]['stats'][$ra['code']] = intval($ra['value']);
     }
