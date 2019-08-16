@@ -402,7 +402,7 @@ class EMPS_Factory {
 
         $class = round($class, 0);
         if($class < 1){
-            $class = 1;
+            $class = 0;
         }
 
         $stat['class'] = $class;
