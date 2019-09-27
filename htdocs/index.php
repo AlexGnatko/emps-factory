@@ -7,7 +7,7 @@
 $emps_start_time = microtime(true);
 
 // Just a suggestion. Could be turned off on a production server.
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(0);
 if($_GET['debug']){
 	error_reporting(E_ERROR | E_WARNING | E_PARSE);
 }
@@ -19,4 +19,3 @@ require_once "local/local.php";						// local settings for configuration
 
 require_once "EMPS/4.5/emps_bootstrap.php";			// The main logic of the index.php file
 
-?>
