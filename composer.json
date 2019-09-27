@@ -19,6 +19,6 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "mso/idna-convert": "*"
+    "algo26-matthias/idna-convert": "*"
   }
 }
