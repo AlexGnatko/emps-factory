@@ -10,7 +10,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 
 	public $table_name = "ef_websites";
 	
-	public $credentials = "users,admin";
+	public $credentials = "users";
 	
 	public $form_name = "db:_factory/websites,form";	
 	
