@@ -199,9 +199,16 @@ class EMPS_Factory {
 		$perpage = $this->perpage;
 		
 		$start = intval($start);
-		
+
+		$where = "";
+
+		if ($this->user_filter) {
+		    $where .= " and user_id = {$this->user_filter['user_id']} ";
+        }
+
 		$lst = array();
-		$r = $emps->db->query("select * from ".TP."ef_commands order by id desc limit $start, $perpage");
+
+		$r = $emps->db->query("select * from ".TP."ef_commands where 1=1 {$where} order by id desc limit $start, $perpage");
 		while($ra = $emps->db->fetch_named($r)){
 			$ra = $this->explain_command($ra);
 			$lst[] = $ra;
