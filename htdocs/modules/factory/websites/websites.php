@@ -10,7 +10,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 
 	public $table_name = "ef_websites";
 	
-	public $credentials = "admin";
+	public $credentials = "users,admin";
 	
 	public $form_name = "db:_factory/websites,form";	
 	
@@ -45,156 +45,173 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 	}
 }
 
-if($_POST['install_local_php'] && $key){
-	$row = $ef->load_website(intval($key));
-		
-	$data = array();
-	if($_POST['overwrite']){
-		$data['overwrite'] = true;
-	}else{
-		$data['overwrite'] = false;
-	}
-	
-	$ef->custom_command("init-project", $row['id'], json_encode($data));
-	$ef->set_status($row['context_id'], array("init_project"=>"started"));
-	
-	$cfg = $ef->site_defaults($row);
-	$smarty->assign("cfg", $cfg);
-	$text = $smarty->fetch("db:_factory/temps,local_php");
-	
-	$text = '<'.'?'."php\r\n".$text."\r\n?".'>';
-	
-	$file_name = $ef->temporary_file("local.php-".$row['id'], $text);
-	
-	$data = array();
-	$data['file_name'] = $file_name;
-	$data['htdocs'] = $cfg['path'];
-	$data['owner'] = $row['user']['username'];
-	
-	$ef->custom_command("install-local-php", $row['id'], json_encode($data));
-	$ef->set_status($row['context_id'], array("local_php"=>"started"));
-	$emps->redirect_elink();exit();
-}
+$can_do = false;
 
-if($_POST['post_pem'] && $key){
-	$row = $ef->load_website(intval($key));
-	
-	if($row){
-		$file_name = $ef->temporary_file("pemfile-".$row['id'], $_POST['pemfile']);
-		$key_file_name = $ef->temporary_file("keyfile-".$row['id'], $_POST['keyfile']);
-		$data = array();
-		$data['file_name'] = $file_name;
-		$data['key_file_name'] = $key_file_name;
-		$data['website_id'] = $row['id'];
-		
-		$ef->custom_command("install-pemfile", $row['id'], json_encode($data));
-		$ef->set_status($row['context_id'], array("pemfile"=>"started"));
-		
-		$emps->redirect_elink();exit();
-	}
-}
-
-if($_POST['copy_ssl'] && $key){
-    $row = $ef->load_website(intval($key));
-
-    if($row){
-        $data = array();
-        $data['website_id'] = $row['id'];
-
-        $ef->custom_command("copy-pemfile", $row['id'], json_encode($data));
-        $ef->set_status($row['context_id'], array("copy_pemfile"=>"started"));
-
-        $emps->redirect_elink();exit();
+if ($emps->auth->credentials("admin")) {
+    $can_do = true;
+} else {
+    $id = intval($key);
+    $row = $emps->db->get_row("ef_websites", "id = {$id}");
+    if ($row) {
+        if ($row['user_id'] = $emps->auth->USER_ID) {
+            $can_do = true;
+            $smarty->assign("OwnerMode", 1);
+        }
     }
 }
 
-if($_POST['setup_git'] && $key){
-	$row = $ef->load_website(intval($key));
-	
-	if($row){
-		$data = array();
-	
-		$data['website_id'] = $row['id'];
-	
-		$ef->custom_command("setup-project-git", $row['id'], json_encode($data));
-		$ef->set_status($row['context_id'], array("setup_git"=>"started"));
-	
-		$emps->redirect_elink();exit();
-	}
-}
+if ($can_do) {
+    if($_POST['install_local_php'] && $key){
+        $row = $ef->load_website(intval($key));
 
-if($_POST['install_httpd'] && $key){
-	$row = $ef->load_website(intval($key));
-	
-	if($row){
-		$data = array();
-	
-		$data['website_id'] = $row['id'];
-	
-		$ef->custom_command("configure-httpd", $row['id'], json_encode($data));
-		$ef->set_status($row['context_id'], array("setup_httpd"=>"started"));
-	
-		$emps->redirect_elink();exit();
-	}
-}
-
-if($_POST['install_mysql'] && $key){
-	$row = $ef->load_website(intval($key));
-	
-	if($row){
-		$data = array();
-	
-		$data['website_id'] = $row['id'];
-	
-		$ef->custom_command("install-database", $row['id'], json_encode($data));
-		$ef->set_status($row['context_id'], array("setup_mysql"=>"started"));
-	
-		$emps->redirect_elink();exit();
-	}
-}
-
-if($_POST['init_website'] && $key){
-	$row = $ef->load_website(intval($key));
-	
-	if($row){
-		$data = array();
-	
-		$data['website_id'] = $row['id'];
-	
-		$ef->custom_command("init-website", $row['id'], json_encode($data));
-		$ef->set_status($row['context_id'], array("init_website"=>"started"));
-	
-		$emps->redirect_elink();exit();
-	}
-}
-
-if($_POST['setup_awstats'] && $key){
-	$row = $ef->load_website(intval($key));
-	
-	if($row){
-		$data = array();
-	
-		$data['website_id'] = $row['id'];
-	
-		$ef->custom_command("setup-awstats", $row['id'], json_encode($data));
-		$ef->set_status($row['context_id'], array("setup_awstats"=>"started"));
-	
-		$emps->redirect_elink();exit();
-	}
-}
-
-if($_POST['move_uploads'] && $key){
-    $row = $ef->load_website(intval($key));
-
-    if($row){
         $data = array();
+        if($_POST['overwrite']){
+            $data['overwrite'] = true;
+        }else{
+            $data['overwrite'] = false;
+        }
 
-        $data['website_id'] = $row['id'];
+        $ef->custom_command("init-project", $row['id'], json_encode($data));
+        $ef->set_status($row['context_id'], array("init_project"=>"started"));
 
-        $ef->custom_command("move-uploads", $row['id'], json_encode($data));
-        $ef->set_status($row['context_id'], array("move_uploads"=>"started"));
+        $cfg = $ef->site_defaults($row);
+        $smarty->assign("cfg", $cfg);
+        $text = $smarty->fetch("db:_factory/temps,local_php");
 
+        $text = '<'.'?'."php\r\n".$text."\r\n?".'>';
+
+        $file_name = $ef->temporary_file("local.php-".$row['id'], $text);
+
+        $data = array();
+        $data['file_name'] = $file_name;
+        $data['htdocs'] = $cfg['path'];
+        $data['owner'] = $row['user']['username'];
+
+        $ef->custom_command("install-local-php", $row['id'], json_encode($data));
+        $ef->set_status($row['context_id'], array("local_php"=>"started"));
         $emps->redirect_elink();exit();
+    }
+
+    if($_POST['post_pem'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $file_name = $ef->temporary_file("pemfile-".$row['id'], $_POST['pemfile']);
+            $key_file_name = $ef->temporary_file("keyfile-".$row['id'], $_POST['keyfile']);
+            $data = array();
+            $data['file_name'] = $file_name;
+            $data['key_file_name'] = $key_file_name;
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("install-pemfile", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("pemfile"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['copy_ssl'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("copy-pemfile", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("copy_pemfile"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['setup_git'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("setup-project-git", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("setup_git"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['install_httpd'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("configure-httpd", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("setup_httpd"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['install_mysql'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("install-database", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("setup_mysql"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['init_website'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("init-website", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("init_website"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['setup_awstats'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("setup-awstats", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("setup_awstats"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
+    if($_POST['move_uploads'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("move-uploads", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("move_uploads"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
     }
 }
 
