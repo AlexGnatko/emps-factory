@@ -5,17 +5,20 @@
 <h1>Server Command Log</h1>
 </div>
 
-<form class="form" action="." method="post" style="margin-bottom:10px">
-<input type="hidden" name="post_add_command" value="1" />
+{{if $AdminMode}}
+    <form class="form" action="." method="post" style="margin-bottom:10px">
+        <input type="hidden" name="post_add_command" value="1" />
 
-    <div class="input-group">
-      <input type="text" class="form-control" placeholder="df" name="command">
-      <span class="input-group-btn">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="df" name="command">
+            <span class="input-group-btn">
         <button class="btn btn-default" type="submit">Add to Queue</button>
       </span>
-    </div>
+        </div>
 
-</form>
+    </form>
+
+{{/if}}
 
 {{section name=i loop=$lst}}
 <code class="ef-command">{{if $lst[i].sdt}}<span class="grey">{{$lst[i].stime}}:</span> {{/if}}# <strong>{{$lst[i].command|escape:html|nl2br}}</strong> <small class="pull-right">{{$lst[i].ctime}}</small>
