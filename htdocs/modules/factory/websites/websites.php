@@ -48,10 +48,12 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 $can_do = false;
 
 $OwnerMode = false;
+$ClientMode = false;
 
 if ($emps->auth->credentials("admin")) {
     $can_do = true;
 } else {
+    $ClientMode = true;
     $id = intval($key);
     $row = $emps->db->get_row("ef_websites", "id = {$id}");
     if ($row) {
@@ -232,7 +234,7 @@ $smarty->assign("status_closed", $_SESSION['websites_closed']);
 
 $ited->where = " where 1=1 ";
 
-if ($OwnerMode) {
+if ($ClientMode) {
     $ited->where .= " and user_id = {$emps->auth->USER_ID} ";
 }
 
