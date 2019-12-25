@@ -39,7 +39,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		$ra = $ef->explain_website($ra);
 		
 		$ra['cfg'] = $ef->site_defaults($ra);
-        $ra['hostname_decoded'] = $IDN->convert(mb_strtolower($ra['hostname']));
+        $ra['hostname_decoded'] = $IDN->decode(mb_strtolower($ra['hostname']));
 		
 		return parent::handle_row($ra);
 	}
@@ -245,8 +245,8 @@ if($_SESSION['websites_closed']){
 }
 
 
-use Algo26\IdnaConvert\ToUnicode;
-$IDN = new ToUnicode();
+use Algo26\IdnaConvert\IdnaConvert;
+$IDN = new IdnaConvert();
 
 $ited->ref_id = $key;
 
