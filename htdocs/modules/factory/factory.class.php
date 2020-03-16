@@ -285,6 +285,13 @@ class EMPS_Factory {
 			$cfg['hostname_regex'] = $this->regex_escape($cfg['hostname']);
 		}
 
+		if (!isset($cfg['access_log'])) {
+		    $cfg['access_log'] = 1;
+        }
+        if (!isset($cfg['error_log'])) {
+            $cfg['error_log'] = 1;
+        }
+
 		$cfg['username'] = $ra['user']['username'];
 		
 		return $cfg;

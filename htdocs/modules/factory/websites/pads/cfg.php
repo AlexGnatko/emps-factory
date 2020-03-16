@@ -22,4 +22,3 @@ if($_GET['preview_local_php']){
 	$this->handle_post();
 }
 
-?>

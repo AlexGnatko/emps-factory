@@ -50,4 +50,3 @@ if($_POST['post_save']){
 
 $this->handle_post();
 
-?>
