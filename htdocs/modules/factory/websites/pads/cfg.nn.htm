@@ -200,18 +200,21 @@
 
     <h5 class="subhead">Nginx Configuration Options:</h5>
 
-    <div class="row form-group">
+    <div class="row">
         <div class="col-sm-3">
-            <div class="checkbox form-control">
-                <label>
-                    <input type="hidden" name="cfg[access_log]" value="0"/>
-                    <input type="checkbox" name="cfg[access_log]" value="1"
-                           {{if $row.cfg.access_log eq 1}}checked{{/if}}>
-                    Access logging
-                </label>
+            <div class="form-group">
+                <div class="checkbox form-control">
+                    <label>
+                        <input type="hidden" name="cfg[access_log]" value="0"/>
+                        <input type="checkbox" name="cfg[access_log]" value="1"
+                               {{if $row.cfg.access_log eq 1}}checked{{/if}}>
+                        Access logging
+                    </label>
+                </div>
             </div>
         </div>
         <div class="col-sm-3">
+            <div class="form-group">
             <div class="checkbox form-control">
                 <label>
                     <input type="hidden" name="cfg[error_log]" value="0"/>
@@ -219,6 +222,7 @@
                            {{if $row.cfg.error_log eq 1}}checked{{/if}}>
                     Error logging
                 </label>
+            </div>
             </div>
         </div>
     </div>
