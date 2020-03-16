@@ -4,9 +4,18 @@
 
 	index index.php;
 
+{{if $access_log}}
 	access_log		/var/log/nginx/{{$hostname}}.log awstats;
-	error_log		/var/log/nginx/{{$hostname}}.error.log error;
+{{else}}
+	access_log		off;
+{{/if}}
 
+{{if $error_log}}
+	error_log		/var/log/nginx/{{$hostname}}.error.log error;
+{{else}}
+	error_log		off;
+{{/if}}
+	
 	include /etc/nginx/deny.conf;
 	include /etc/nginx/rewrite.conf;
 

@@ -475,6 +475,9 @@ class EMPS_FactoryWorker
 		$smarty->assign("upper_host", $this->regex_escape($ef->defaults['hostname_short']));
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');
+
+		$smarty->assign("error_log", $website['cfg']['error_log']);
+        $smarty->assign("access_log", $website['cfg']['access_log']);
 		
 		$smarty->assign("ssl", $website['sd']['ssl_mode']);
 		$this->say("SSL mode: ".$website['sd']['ssl_mode']);
@@ -498,7 +501,7 @@ class EMPS_FactoryWorker
 			}
 		}elseif($server_type == "nginx"){
 			$config_file = $ef->defaults['nginx_conf_path'].'/sites-enabled/'.$prefix.'-'.$hostname.'.conf';
-			
+
 			$text = $smarty->fetch("db:_factory/temps,nginx");
 			$this->put_file($config_file, 0644, $wwwdata, $text);
 	
