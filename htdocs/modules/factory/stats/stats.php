@@ -2,8 +2,9 @@
 
 if($emps->auth->credentials("admin")){
 
+    $Ym = date("Ym", time() - 24 * 60 * 60 * 365.4 * 2);
     $slst = [];
-    $r = $emps->db->query("select * from ".TP."ef_stats");
+    $r = $emps->db->query("select * from ".TP."ef_stats where period > {$Ym}");
     while($ra = $emps->db->fetch_named($r)){
         if(!$ra['ef_website_id']){
             continue;
