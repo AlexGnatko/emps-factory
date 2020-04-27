@@ -341,6 +341,9 @@ class EMPS_Factory {
 	    if ($this->stats_period) {
 	        $where = " and period = {$this->stats_period} ";
         }
+        if ($this->stats_from_period) {
+            $where = " and period > {$this->stats_from_period} ";
+        }
 	    $rv = [];
 	    $q = "select * from ".TP."ef_stats_values where stats_id = {$stats_id} {$where} order by period desc";
 	    //error_log($q);
