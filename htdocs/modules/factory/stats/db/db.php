@@ -2,8 +2,9 @@
 
 if($emps->auth->credentials("admin")){
 
+    $Ymd = date("Ymd", time() - 24 * 60 * 60 * 90);
     $slst = [];
-    $r = $emps->db->query("select * from ".TP."ef_database_stats_values");
+    $r = $emps->db->query("select * from ".TP."ef_database_stats_values and period > {$Ymd}");
     while($ra = $emps->db->fetch_named($r)){
         if(!$ra['database']){
             continue;
