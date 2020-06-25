@@ -201,6 +201,11 @@
     <h5 class="subhead">Nginx Configuration Options:</h5>
 
     <div class="form-group">
+        <div class="col-sm-2">
+            <p>
+                {{include file="db:enum/pickenum" xenum="php_versions" name="cfg[emps_version]" value=$row.cfg.emps_version class="form-control"}}
+            </p>
+        </div>
         <div class="col-sm-3">
             <p>
                 <div class="checkbox form-control">
@@ -225,6 +230,7 @@
             </div>
             </p>
         </div>
+
     </div>
 
 

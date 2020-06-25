@@ -478,6 +478,8 @@ class EMPS_FactoryWorker
 
 		$smarty->assign("error_log", $website['cfg']['error_log']);
         $smarty->assign("access_log", $website['cfg']['access_log']);
+
+        $smarty->assign("php_version", $website['cfg']['php_version']);
 		
 		$smarty->assign("ssl", $website['sd']['ssl_mode']);
 		$this->say("SSL mode: ".$website['sd']['ssl_mode']);

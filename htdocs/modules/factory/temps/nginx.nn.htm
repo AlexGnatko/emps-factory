@@ -17,8 +17,15 @@
 {{/if}}
 	
 	include /etc/nginx/deny.conf;
+{{if $php_version == "7.0"}}
+	include /etc/nginx/rewrite-7.0.conf;
+{{elseif $php_version == "7.2"}}
+	include /etc/nginx/rewrite-7.2.conf;
+{{elseif $php_version == "7.4"}}
+	include /etc/nginx/rewrite-7.4.conf;
+{{else}}
 	include /etc/nginx/rewrite.conf;
-
+{{/if}}
 	include /etc/nginx/gzip.conf;
 {{/capture}}
 
