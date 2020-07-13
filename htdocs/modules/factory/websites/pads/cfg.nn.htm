@@ -205,19 +205,16 @@
             {{include file="db:enum/pickenum" xenum="php_version" name="cfg[emps_version]" value=$row.cfg.emps_version class="form-control"}}
         </div>
         <div class="col-sm-3">
-            <p>
-                <div class="checkbox form-control">
-                    <label>
-                        <input type="hidden" name="cfg[access_log]" value="0"/>
-                        <input type="checkbox" name="cfg[access_log]" value="1"
-                               {{if $row.cfg.access_log eq 1}}checked{{/if}}>
-                        Access logging
-                    </label>
-                </div>
-            </p>
+            <div class="checkbox form-control">
+                <label>
+                    <input type="hidden" name="cfg[access_log]" value="0"/>
+                    <input type="checkbox" name="cfg[access_log]" value="1"
+                           {{if $row.cfg.access_log eq 1}}checked{{/if}}>
+                    Access logging
+                </label>
+            </div>
         </div>
         <div class="col-sm-3">
-            <p>
             <div class="checkbox form-control">
                 <label>
                     <input type="hidden" name="cfg[error_log]" value="0"/>
@@ -226,7 +223,6 @@
                     Error logging
                 </label>
             </div>
-            </p>
         </div>
 
     </div>
