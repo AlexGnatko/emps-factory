@@ -189,6 +189,21 @@ if ($can_do) {
         }
     }
 
+    if($_POST['certbot'] && $key){
+        $row = $ef->load_website(intval($key));
+
+        if($row){
+            $data = array();
+
+            $data['website_id'] = $row['id'];
+
+            $ef->custom_command("certbot", $row['id'], json_encode($data));
+            $ef->set_status($row['context_id'], array("cerbot"=>"started"));
+
+            $emps->redirect_elink();exit();
+        }
+    }
+
     if($_POST['setup_awstats'] && $key){
         $row = $ef->load_website(intval($key));
 
