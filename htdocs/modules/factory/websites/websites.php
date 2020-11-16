@@ -198,7 +198,7 @@ if ($can_do) {
             $data['website_id'] = $row['id'];
 
             $ef->custom_command("certbot", $row['id'], json_encode($data));
-            $ef->set_status($row['context_id'], array("cerbot"=>"started"));
+            $ef->set_status($row['context_id'], array("certbot"=>"started"));
 
             $emps->redirect_elink();exit();
         }
