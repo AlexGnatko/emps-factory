@@ -640,7 +640,7 @@ class EMPS_FactoryWorker
         $ef->set_status($website['context_id'], [
                 "letsencrypt" => true,
                 "certbot_time" => $emps->form_time(time()),
-                "cerbot" => "done"
+                "certbot" => "done"
                 ]);
         $this->say("Done!");
 
