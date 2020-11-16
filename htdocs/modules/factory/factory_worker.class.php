@@ -618,6 +618,34 @@ class EMPS_FactoryWorker
 		}
 	}
 
+	public function certbot($data, $ra) {
+        global $emps, $ef;
+
+        $website_id = $ra['ef_website_id'];
+        if(!$website_id){
+            $this->say("Can't obtain certificate: you have to select a website!");
+            return false;
+        }
+
+        $website = $ef->load_website($website_id);
+        $cfg = $website['cfg'];
+
+        $hostname = $cfg['hostname'];
+
+        $command = "certbot --nginx --no-redirect -n -d {$hostname}";
+        $this->say($command);
+        $output = shell_exec($command);
+        $this->say($output);
+
+        $ef->set_status($website['context_id'], [
+                "letsencrypt" => true,
+                "certbot_time" => $emps->form_time(time()),
+                "cerbot" => "done"
+                ]);
+        $this->say("Done!");
+
+    }
+
     /**
      * Copy SSL certificates from a core website to child websites
      *
@@ -906,6 +934,9 @@ class EMPS_FactoryWorker
 			break;
         case 'move-uploads':
             $this->move_uploads($data, $ra);
+            break;
+        case 'certbot':
+            $this->certbot($data, $ra);
             break;
 		case 'restart':
 			$GLOBALS['die_now'] = true;

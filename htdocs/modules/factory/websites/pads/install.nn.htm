@@ -115,6 +115,31 @@
 <hr size="1" />
 
 <div class="row">
+    <div class="col-sm-3">
+        {{assign var="certbot_done" value="0"}}
+        {{if $row.sd.certbot == "started"}}
+            {{assign var="certbot_done" value="1"}}
+        {{/if}}
+        {{if $row.sd.certbot == "done"}}
+            {{assign var="certbot_done" value="10"}}
+            {{include file="db:_factory/websites/marker,complete"}}
+        {{else}}
+            {{include file="db:_factory/websites/marker,incomplete"}}
+        {{/if}}
+
+    </div>
+    <div class="col-sm-7">
+        <h4>Obtain Let's Encrypt Certificate</h4>
+        <p>Get the free SSL certificate for this domain name.</p>
+    </div>
+    <div class="col-sm-2">
+        {{include file="db:_factory/websites,install_buttons" value_done=$cerbot_done modal="installCertbot"}}
+    </div>
+</div>
+
+<hr size="1" />
+
+<div class="row">
 <div class="col-sm-3">
 {{assign var="awstats_done" value="0"}}
 {{if $row.sd.setup_awstats == "started"}}
