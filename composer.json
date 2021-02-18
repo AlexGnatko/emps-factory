@@ -1,5 +1,5 @@
 {
-  "name": "EMPS/emps-factory",
+  "name": "emps/emps-factory",
   "type": "project",
   "description": "EMPS Factory: web hosting management",
   "authors": [
@@ -11,13 +11,7 @@
   "config": {
     "secure-http": false
   },
-  "repositories": [
-    {
-      "type": "pear",
-      "url": "http://pear.php.net"
-    }
-  ],
-  "require": {
+   "require": {
     "php": ">=5.6.0",
     "algo26-matthias/idna-convert": "2.1.0"
   }
