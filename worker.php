@@ -1,5 +1,5 @@
 <?php
-// this script is supposed to be ran as root
+// this script is supposed to be run as root
 
 // testing checkout under gnatko
 
