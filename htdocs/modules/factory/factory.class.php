@@ -256,6 +256,9 @@ class EMPS_Factory {
         if(!$cfg['emps_version']){
             $cfg['emps_version'] = $ra['emps_version'];
         }
+        if ($ra['emps_version']) {
+		    $cfg['emps_version'] = $ra['emps_version'];
+        }
 		if(!$cfg['path']){
 			$cfg['path'] = $ra['www_dir'].'/'.$ra['htdocs'];
 		}
