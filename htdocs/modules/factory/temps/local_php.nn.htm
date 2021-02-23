@@ -2,6 +2,10 @@
 
 {{if $cfg.emps_version == "EMPS5.0"}}
 define('EMPS_VERSION', '5.0');
+{{elseif $cfg.emps_version == "EMPS6.0"}}
+define('EMPS_VERSION', '6.0');
+{{elseif $cfg.emps_version == "EMPS6.5"}}
+define('EMPS_VERSION', '6.5');
 {{else}}
 define('EMPS_VERSION', '4.5');
 {{/if}}
