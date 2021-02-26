@@ -865,11 +865,11 @@ class EMPS_FactoryWorker
 			$smarty->assign("htdocs", $parent_website['www_dir'].'/htdocs');
 			$index_php = $smarty->fetch("db:_factory/temps,slave_index");
 			
-			if(!file_exists($file_name) || $overwrite){
+			if(!file_exists($file_name)){
 				$this->put_file($file_name, 0755, $owner, $index_php);
 			}
 		}else{
-			if(!file_exists($file_name) || $overwrite){
+			if(!file_exists($file_name)){
 				if(EMPS_COMMON_PATH_PREFIX){
 					$fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';	
 				}else{
