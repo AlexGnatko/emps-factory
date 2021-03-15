@@ -267,7 +267,8 @@ class EMPS_FactoryWorker
 		$failed = false;
 		
 		$this->say("Trying to create if not exists: ".$database_name);
-		$r = $emps->db->query("create database if not exists `".$database_name."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci");
+		$r = $emps->db->query("create database if not exists `".$database_name."` 
+		    DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 		
 		$r = $emps->db->query("show databases like '".$database_name."'");
 		$ra = $emps->db->fetch_named($r);
