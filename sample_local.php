@@ -55,7 +55,7 @@ $emps_custom_session_handler = true;
 $emps_db_config = array(
 	'host' => 'localhost',
 	'database' => 'user_emps_factory',
-	'user' => 'user',
+	'user' => 'emps_factory_user',
 	'password' => 'passW0rd',
 	'charset' => 'utf8');
 
