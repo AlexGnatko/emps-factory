@@ -5,7 +5,7 @@ if ($emps->auth->credentials("admin")) {
     if ($_POST['post_create']) {
         $nr = $_POST;
         $nr['user_id'] = $emps->auth->USER_ID;
-        $nr['apikey'] = $emps->short_md5(md5(json_encode($nr).time()));
+        $nr['apikey'] = md5(json_encode($nr).time());
         $emps->db->sql_insert_row("ef_remote_commands", ['SET' => $nr]);
         $emps->redirect_elink(); exit;
     }
