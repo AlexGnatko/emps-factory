@@ -483,6 +483,7 @@ class EMPS_FactoryWorker
                     str_replace(".", "_", $hostname)));
         }
 
+        $smarty->assign("cfg", $website['cfg']);
 		$smarty->assign("error_log", $website['cfg']['error_log']);
         $smarty->assign("access_log", $website['cfg']['access_log']);
 
