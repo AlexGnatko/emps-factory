@@ -1,8 +1,11 @@
 {{capture name="common"}}
 	server_name		{{$hostname}} ~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
-	root 			{{$htdocs}}/;
 
+{{if $cfg.emps_version == "Django"}}
+{{else}}
+	root 			{{$htdocs}}/;
 	index index.php;
+{{/if}}
 
 {{if $access_log}}
 	access_log		/var/log/nginx/{{$hostname}}.log awstats;
@@ -15,7 +18,24 @@
 {{else}}
 	error_log		off;
 {{/if}}
-	
+
+{{if $cfg.emps_version == "Django"}}
+    {{*Django*}}
+	location /media  {
+		alias {{$www_dir}}/media
+	}
+
+	location /static {
+		alias {{$www_dir}}/static
+	}
+
+	location / {
+		uwsgi_pass  {{$django_name}};
+		include     /etc/nginx/uwsgi_params;
+	}
+    {{*/Django*}}
+{{else}}
+	{{*PHP*}}
 	include /etc/nginx/deny.conf;
 {{if $php_version == "7.0"}}
 	include /etc/nginx/rewrite-7.0.conf;
@@ -27,7 +47,16 @@
 	include /etc/nginx/rewrite.conf;
 {{/if}}
 	include /etc/nginx/gzip.conf;
+    {{*/PHP*}}
+{{/if}}
+
 {{/capture}}
+
+{{if $cfg.emps_version == "Django"}}
+upstream {{$django_name}} {
+	server unix:///var/run/wsgi/{{$django_name}}.sock;
+}
+{{/if}}
 
 server {
 	listen			80;

@@ -476,6 +476,12 @@ class EMPS_FactoryWorker
 		$smarty->assign("upper_host", $this->regex_escape($ef->defaults['hostname_short']));
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');
+        $smarty->assign("www_dir", $www_dir);
+
+        if ($cfg['emps_version'] == "Django") {
+            $smarty->assign("django_name", str_replace("-", "_",
+                    str_replace(".", "_", $hostname)));
+        }
 
 		$smarty->assign("error_log", $website['cfg']['error_log']);
         $smarty->assign("access_log", $website['cfg']['access_log']);
