@@ -22,11 +22,11 @@
 {{if $cfg.emps_version == "Django"}}
     {{*Django*}}
 	location /media  {
-		alias {{$www_dir}}/media
+		alias {{$www_dir}}/media;
 	}
 
 	location /static {
-		alias {{$www_dir}}/static
+		alias {{$www_dir}}/static;
 	}
 
 	location / {
