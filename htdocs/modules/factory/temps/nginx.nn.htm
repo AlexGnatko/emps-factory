@@ -54,7 +54,7 @@
 
 {{if $cfg.emps_version == "Django"}}
 upstream {{$django_name}} {
-	server unix:///var/run/wsgi/{{$hostname}}.sock;
+	server unix:///var/run/uwsgi/{{$hostname}}.sock;
 }
 {{/if}}
 
