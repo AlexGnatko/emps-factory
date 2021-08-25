@@ -49,6 +49,7 @@
 	include /etc/nginx/gzip.conf;
     {{*/PHP*}}
 {{/if}}
+	include {{$www_dir}}/nginx/*.conf
 
 {{/capture}}
 
