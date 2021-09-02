@@ -1,5 +1,5 @@
 {{capture name="common"}}
-	server_name		{{$hostname}} ~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
+	server_name		{{$hostname}} www.{{$hostname}} ~(^|\.)({{$hostname_escaped}}|{{$hostname_part}}\.{{$upper_host}})$;
 
 {{if $cfg.emps_version == "Django"}}
 {{else}}
