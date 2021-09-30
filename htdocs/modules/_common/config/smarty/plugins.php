@@ -1,7 +1,7 @@
 <?php
 global $smarty;
 
-function smarty_modifier_money($v){
+function smarty_modifier_salt($v){
     $value = md5(uniqid(microtime().$v));
     return $value;
 }
