@@ -640,8 +640,13 @@ class EMPS_FactoryWorker
 
         $hostname = $cfg['hostname'];
 
+        $www = "";
+        if ($cfg['certbot_www'] == 1) {
+            $www = ",www.{$hostname}";
+        }
+
         //$command = "certbot certonly --webroot -w /srv/www/htdocs --no-redirect -n -d {$hostname},www.{$hostname}";
-        $command = "certbot --nginx --no-redirect -n --cert-name {$hostname} -d {$hostname},www.{$hostname}";
+        $command = "certbot --nginx --no-redirect -n --cert-name {$hostname} -d {$hostname}{$www}";
         $this->say($command);
         $output = shell_exec($command);
         $this->say($output);

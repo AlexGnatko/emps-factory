@@ -227,6 +227,21 @@
 
     </div>
 
+    <h5 class="subhead">Let's Encrypt Options:</h5>
+
+    <div class="form-group">
+        <div class="col-sm-3">
+            <div class="checkbox form-control">
+                <label>
+                    <input type="hidden" name="cfg[certbot_www]" value="0"/>
+                    <input type="checkbox" name="cfg[certbot_www]" value="1"
+                           {{if $row.cfg.certbot_www eq 1}}checked{{/if}}>
+                    Add 'www' domain name
+                </label>
+            </div>
+        </div>
+
+    </div>
 
     <h5 class="subhead">Extra local.php Code:</h5>
 
