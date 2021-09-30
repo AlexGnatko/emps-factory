@@ -873,7 +873,7 @@ class EMPS_FactoryWorker
             $this->say($output);
             $output = shell_exec("cd {$www_dir} && tar pzxf ./latest.tar.gz && rm ./latest.tar.gz");
             $this->say($output);
-            $output = shell_exec("cd {$www_dir} && cp -R ./wordpress/* ./htdocs");
+            $output = shell_exec("cd {$www_dir} && mv ./wordpress/* ./htdocs && rm -R ./wordpress");
             $this->say($output);
 
             $output = shell_exec("chown -R {$owner}:www-data {$www_dir}");
