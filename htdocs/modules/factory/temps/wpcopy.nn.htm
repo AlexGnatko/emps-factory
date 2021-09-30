@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cp -r themes/* ../htdocs/wp-content/themes
+cp -r plugins/* ../htdocs/wp-content/plugins
+
+chown -R www-data:www-data ../htdocs/wp-content/plugins
+chmod -R 0755 ../htdocs/wp-content/plugins
+chown -R www-data:www-data ../htdocs/wp-content/themes
+chmod -R 0755 ../htdocs/wp-content/themes
+

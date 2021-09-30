@@ -773,11 +773,16 @@ class EMPS_FactoryWorker
 				$smarty->assign("username", $owner);
 				$receive = $smarty->fetch("db:_factory/temps,git_receive");
 				$this->put_file($git_repo_path.'/hooks/post-receive', 0755, $owner, $receive);
+
+				$add = "";
+				if ($cfg['emps_version'] == "WordPress") {
+				    $add = " && git add src ";
+                }
 				
 				$this->echo_shell("cd ".$git_repo_path." && ".
 					"git config user.email \"gnatko@mail.ru\" && ".
 					"git config user.name \"Alex\" && ".
-					"git add .gitignore && git add htdocs ".
+					"git add .gitignore && git add htdocs {$add} ".
 					"&& git commit -m \"EMPS Factory Init\"");
 				
 				$this->echo_shell("chown -R ".$owner.":git ".$git_repo_path);
@@ -832,68 +837,131 @@ class EMPS_FactoryWorker
 		if(!is_dir($htdocs)){
 			$this->create_dir($htdocs, 0755, $owner);
 		}
+
+        if ($cfg['emps_version'] == "WordPress") {
+            if(!is_dir($www_dir."/src")){
+                $this->create_dir($www_dir."/src", 0755, $owner);
+            }
+            if(!is_dir($www_dir."/src/plugins")){
+                $this->create_dir($www_dir."/src/plugins", 0755, $owner);
+            }
+            if(!is_dir($www_dir."/src/themes")){
+                $this->create_dir($www_dir."/src/themes", 0755, $owner);
+            }
+
+            $index = $smarty->fetch("db:_factory/temps,wpindex");
+            $file_name = $www_dir.'/src/plugins/index.php';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $index);
+            }
+
+            $file_name = $www_dir.'/src/themes/index.php';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $index);
+            }
+
+            $copy = $smarty->fetch("db:_factory/temps,wpcopy");
+            $file_name = $www_dir.'/src/copy';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0777, $owner, $copy);
+            }
+
+            $output = shell_exec("cd {$www_dir} && wget https://wordpress.org/latest.tar.gz");
+            $this->say($output);
+            $output = shell_exec("cd {$www_dir} && tar pzxf ./latest.tar.gz && rm ./latest.tar.gz");
+            $this->say($output);
+            $output = shell_exec("cd {$www_dir} && cp -R ./wordpress/* ./htdocs");
+            $this->say($output);
+
+            $output = shell_exec("chown -R {$owner}:www-data {$www_dir}");
+            $this->say($output);
+            $output = shell_exec("chmod -R 777 {$www_dir}/htdocs/wp-content");
+            $this->say($output);
+
+            $smarty->assign("wordpress", 1);
+
+            $gitignore = $smarty->fetch("db:_factory/temps,gitignore");
+            $file_name = $www_dir.'/.gitignore';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $gitignore);
+            }
+
+            $smarty->assign("dir", $www_dir);
+            $post_checkout = $smarty->fetch("db:_factory/temps,post_checkout");
+            $file_name = $www_dir.'/post-checkout.sh';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $post_checkout);
+            }
+        } else {
+            $target_dir = $htdocs.'/local';
+            if(!is_dir($target_dir)){
+                $this->create_dir($target_dir, 0755, $owner);
+            }
+            $target_dir = $htdocs.'/local/upload';
+            if(!is_dir($target_dir)){
+                $this->create_dir($target_dir, 0777, $owner);
+            }
+            $target_dir = $htdocs.'/local/temp_c';
+            if(!is_dir($target_dir)){
+                $this->create_dir($target_dir, 0777, $owner);
+            }
+
+            $htaccess = $smarty->fetch("db:_factory/temps,htaccess");
+            $file_name = $htdocs.'/.htaccess';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $htaccess);
+            }
+
+            if($parent_website){
+                $smarty->assign("slave", 1);
+            }
+
+            $gitignore = $smarty->fetch("db:_factory/temps,gitignore");
+            $file_name = $www_dir.'/.gitignore';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $gitignore);
+            }
+
+            $smarty->assign("dir", $www_dir);
+            $post_checkout = $smarty->fetch("db:_factory/temps,post_checkout");
+            $file_name = $www_dir.'/post-checkout.sh';
+
+            if(!file_exists($file_name) || $overwrite){
+                $this->put_file($file_name, 0755, $owner, $post_checkout);
+            }
+
+            $file_name = $htdocs.'/index.php';
+
+            if($parent_website){
+                $smarty->assign("hostname", $website['hostname']);
+                $smarty->assign("htdocs", $parent_website['www_dir'].'/htdocs');
+                $index_php = $smarty->fetch("db:_factory/temps,slave_index");
+
+                if(!file_exists($file_name)){
+                    $this->put_file($file_name, 0755, $owner, $index_php);
+                }
+            }else{
+                if(!file_exists($file_name)){
+                    if(EMPS_COMMON_PATH_PREFIX){
+                        $fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';
+                    }else{
+                        $fn = EMPS_PATH_PREFIX.'/sample_index.php';
+                    }
+                    $source_name = stream_resolve_include_path($fn);
+
+                    $this->copy_file($source_name, $file_name, 0755, $owner);
+                }
+            }
+
+        }
 		
-		$target_dir = $htdocs.'/local';
-		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0755, $owner);
-		}
-		$target_dir = $htdocs.'/local/upload';
-		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0777, $owner);
-		}
-		$target_dir = $htdocs.'/local/temp_c';
-		if(!is_dir($target_dir)){
-			$this->create_dir($target_dir, 0777, $owner);
-		}
-		
-		$htaccess = $smarty->fetch("db:_factory/temps,htaccess");
-		$file_name = $htdocs.'/.htaccess';
-		
-		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0755, $owner, $htaccess);
-		}
-		
-		if($parent_website){
-			$smarty->assign("slave", 1);
-		}
-		
-		$gitignore = $smarty->fetch("db:_factory/temps,gitignore");
-		$file_name = $www_dir.'/.gitignore';
-		
-		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0755, $owner, $gitignore);
-		}
-		
-		$smarty->assign("dir", $www_dir);
-		$post_checkout = $smarty->fetch("db:_factory/temps,post_checkout");
-		$file_name = $www_dir.'/post-checkout.sh';
-		
-		if(!file_exists($file_name) || $overwrite){
-			$this->put_file($file_name, 0755, $owner, $post_checkout);
-		}
-		
-		$file_name = $htdocs.'/index.php';
-		
-		if($parent_website){
-			$smarty->assign("hostname", $website['hostname']);
-			$smarty->assign("htdocs", $parent_website['www_dir'].'/htdocs');
-			$index_php = $smarty->fetch("db:_factory/temps,slave_index");
-			
-			if(!file_exists($file_name)){
-				$this->put_file($file_name, 0755, $owner, $index_php);
-			}
-		}else{
-			if(!file_exists($file_name)){
-				if(EMPS_COMMON_PATH_PREFIX){
-					$fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';	
-				}else{
-					$fn = EMPS_PATH_PREFIX.'/sample_index.php';	
-				}
-				$source_name = stream_resolve_include_path($fn);
-		
-				$this->copy_file($source_name, $file_name, 0755, $owner);
-			}
-		}
 
 		$ef->set_status($website['context_id'], array("init_project"=>"done"));
 		$this->say("All done!");
