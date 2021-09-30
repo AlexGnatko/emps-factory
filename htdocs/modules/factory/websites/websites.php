@@ -81,15 +81,20 @@ if ($can_do) {
 
         $cfg = $ef->site_defaults($row);
         $smarty->assign("cfg", $cfg);
-        $text = $smarty->fetch("db:_factory/temps,local_php");
+        if ($cfg['emps_version'] == "WordPress") {
+            $text = $smarty->fetch("db:_factory/temps,wpconfig");
+        } else {
+            $text = $smarty->fetch("db:_factory/temps,local_php");
+        }
 
-        $text = '<'.'?'."php\r\n".$text."\r\n?".'>';
+        $text = '<'.'?'."php\r\n".$text;
 
         $file_name = $ef->temporary_file("local.php-".$row['id'], $text);
 
         $data = array();
         $data['file_name'] = $file_name;
         $data['htdocs'] = $cfg['path'];
+        $data['www_dir'] = $row['www_dir'];
         $data['owner'] = $row['user']['username'];
 
         $ef->custom_command("install-local-php", $row['id'], json_encode($data));

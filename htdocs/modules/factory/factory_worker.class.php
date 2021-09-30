@@ -34,24 +34,40 @@ class EMPS_FactoryWorker
 		}
 				
 		$website = $ef->load_website($website_id);
-		
-		$this->say("Installing local.php...");
-		
-		$file_path = $data['file_name'];
-		$htdocs = $data['htdocs'];
-		$owner = $data['owner'];
+		$cfg = $website['cfg'];
 
-		$target_dir = $htdocs.'/local';		
-		$target_path = $target_dir.'/local.php';
+        if ($cfg['emps_version'] == "WordPress") {
+            $this->say("Installing wp-config.php...");
 
-		if(!is_dir($target_dir)){
-			$this->say("Creating ".$target_dir."...");
-			mkdir($target_dir, 0777, true);
-			$this->file_chown($target_dir, $owner);
-			$this->file_chmod($target_dir, 0777);
-		}
-		$this->move_file($file_path, $target_path, 0755, $owner);
-		
+            $file_path = $data['file_name'];
+            $www_dir = $data['www_dir'];
+            $owner = $data['owner'];
+
+            $target_path = $www_dir.'/wp-config.php';
+
+            $this->move_file($file_path, $target_path, 0755, $owner);
+
+        } else {
+            $this->say("Installing local.php...");
+
+            $file_path = $data['file_name'];
+            $htdocs = $data['htdocs'];
+            $owner = $data['owner'];
+
+            $target_dir = $htdocs.'/local';
+            $target_path = $target_dir.'/local.php';
+
+            if(!is_dir($target_dir)){
+                $this->say("Creating ".$target_dir."...");
+                mkdir($target_dir, 0777, true);
+                $this->file_chown($target_dir, $owner);
+                $this->file_chmod($target_dir, 0777);
+            }
+            $this->move_file($file_path, $target_path, 0755, $owner);
+
+        }
+
+
 		$this->say("Done!");
 		
 		$ef->set_status($website['context_id'], array("local_php"=>"done"));		
@@ -560,6 +576,7 @@ class EMPS_FactoryWorker
 		
 		$website = $ef->load_website($website_id);
 		$cfg = $website['cfg'];
+
 		$owner = $website['user']['username'];
 		$wwwdata = $ef->defaults['www_group'];
 		

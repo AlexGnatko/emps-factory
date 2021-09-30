@@ -10,8 +10,12 @@ if($_GET['preview_local_php']){
 	header("Content-Type: text/plain; charset=utf-8");
 	
 	$smarty->assign("cfg", $cfg);
-	$text = $smarty->fetch("db:_factory/temps,local_php");
-	
+	if ($cfg['emps_version'] == "WordPress") {
+        $text = $smarty->fetch("db:_factory/temps,wpconfig");
+    } else {
+        $text = $smarty->fetch("db:_factory/temps,local_php");
+    }
+
 	echo $text;
 }else{
 	if($_POST['post_save']){
