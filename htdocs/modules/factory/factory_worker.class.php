@@ -43,10 +43,11 @@ class EMPS_FactoryWorker
             $www_dir = $data['www_dir'];
             $owner = $data['owner'];
 
-            $target_path = $www_dir.'/wp-config.php';
+            $target_path = $www_dir . '/wp-config.php';
 
             $this->move_file($file_path, $target_path, 0755, $owner);
-
+        } elseif ($cfg['emps_version'] == "Node") {
+            $this->say("No support for local.php!");
         } else {
             $this->say("Installing local.php...");
 
@@ -856,33 +857,33 @@ class EMPS_FactoryWorker
 		}
 
         if ($cfg['emps_version'] == "WordPress") {
-            if(!is_dir($www_dir."/src")){
-                $this->create_dir($www_dir."/src", 0755, $owner);
+            if (!is_dir($www_dir . "/src")) {
+                $this->create_dir($www_dir . "/src", 0755, $owner);
             }
-            if(!is_dir($www_dir."/src/plugins")){
-                $this->create_dir($www_dir."/src/plugins", 0755, $owner);
+            if (!is_dir($www_dir . "/src/plugins")) {
+                $this->create_dir($www_dir . "/src/plugins", 0755, $owner);
             }
-            if(!is_dir($www_dir."/src/themes")){
-                $this->create_dir($www_dir."/src/themes", 0755, $owner);
+            if (!is_dir($www_dir . "/src/themes")) {
+                $this->create_dir($www_dir . "/src/themes", 0755, $owner);
             }
 
             $index = $smarty->fetch("db:_factory/temps,wpindex");
-            $file_name = $www_dir.'/src/plugins/index.php';
+            $file_name = $www_dir . '/src/plugins/index.php';
 
-            if(!file_exists($file_name) || $overwrite){
+            if (!file_exists($file_name) || $overwrite) {
                 $this->put_file($file_name, 0755, $owner, $index);
             }
 
-            $file_name = $www_dir.'/src/themes/index.php';
+            $file_name = $www_dir . '/src/themes/index.php';
 
-            if(!file_exists($file_name) || $overwrite){
+            if (!file_exists($file_name) || $overwrite) {
                 $this->put_file($file_name, 0755, $owner, $index);
             }
 
             $copy = $smarty->fetch("db:_factory/temps,wpcopy");
-            $file_name = $www_dir.'/src/copy';
+            $file_name = $www_dir . '/src/copy';
 
-            if(!file_exists($file_name) || $overwrite){
+            if (!file_exists($file_name) || $overwrite) {
                 $this->put_file($file_name, 0777, $owner, $copy);
             }
 
@@ -901,19 +902,21 @@ class EMPS_FactoryWorker
             $smarty->assign("wordpress", 1);
 
             $gitignore = $smarty->fetch("db:_factory/temps,gitignore");
-            $file_name = $www_dir.'/.gitignore';
+            $file_name = $www_dir . '/.gitignore';
 
-            if(!file_exists($file_name) || $overwrite){
+            if (!file_exists($file_name) || $overwrite) {
                 $this->put_file($file_name, 0755, $owner, $gitignore);
             }
 
             $smarty->assign("dir", $www_dir);
             $post_checkout = $smarty->fetch("db:_factory/temps,post_checkout");
-            $file_name = $www_dir.'/post-checkout.sh';
+            $file_name = $www_dir . '/post-checkout.sh';
 
-            if(!file_exists($file_name) || $overwrite){
+            if (!file_exists($file_name) || $overwrite) {
                 $this->put_file($file_name, 0755, $owner, $post_checkout);
             }
+        } elseif ($cfg['emps_version'] == "Node") {
+
         } else {
             $target_dir = $htdocs.'/local';
             if(!is_dir($target_dir)){
