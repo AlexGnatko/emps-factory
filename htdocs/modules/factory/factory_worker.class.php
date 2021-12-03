@@ -499,6 +499,11 @@ class EMPS_FactoryWorker
             $smarty->assign("django_name", str_replace("-", "_",
                     str_replace(".", "_", $hostname)));
         }
+        if ($cfg['emps_version'] == "Node") {
+            $smarty->assign("node_name", str_replace("-", "_",
+                str_replace(".", "_", $hostname)));
+            $smarty->assign("node_upstream", $website['cfg']['upstream']);
+        }
 
         $smarty->assign("cfg", $website['cfg']);
 		$smarty->assign("error_log", $website['cfg']['error_log']);
