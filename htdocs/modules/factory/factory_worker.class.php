@@ -974,10 +974,17 @@ class EMPS_FactoryWorker
                 }
             }else{
                 if(!file_exists($file_name)){
-                    if(EMPS_COMMON_PATH_PREFIX){
-                        $fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';
-                    }else{
-                        $fn = EMPS_PATH_PREFIX.'/sample_index.php';
+                    $x = explode(".", $cfg['emps_version']);
+                    $major = $x[0];
+
+                    if ($major == "6") {
+                        $fn = "/srv/www/lib/EMPS6/6.X/sample_index.php";
+                    } else {
+                        if(EMPS_COMMON_PATH_PREFIX){
+                            $fn = EMPS_COMMON_PATH_PREFIX.'/sample_index.php';
+                        }else{
+                            $fn = EMPS_PATH_PREFIX.'/sample_index.php';
+                        }
                     }
                     $source_name = stream_resolve_include_path($fn);
 
