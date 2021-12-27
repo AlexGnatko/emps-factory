@@ -977,7 +977,7 @@ class EMPS_FactoryWorker
                     $x = explode(".", $cfg['emps_version']);
                     $major = $x[0];
 
-                    if ($major == "6") {
+                    if ($major == "EMPS6") {
                         $fn = "/srv/www/lib/EMPS6/6.X/sample_index.php";
                     } else {
                         if(EMPS_COMMON_PATH_PREFIX){
