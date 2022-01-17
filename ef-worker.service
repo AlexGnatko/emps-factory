@@ -13,3 +13,6 @@ Type=simple
 ExecStart=/usr/bin/php -f /srv/www/emps-factory/worker.php
 KillMode=process
 Restart=always
+RestartSec=5
+StartLimitIntervalSec=5
+StartLimitBurst=50
