@@ -935,6 +935,10 @@ class EMPS_FactoryWorker
             if(!is_dir($target_dir)){
                 $this->create_dir($target_dir, 0777, $owner);
             }
+            $target_dir = $htdocs.'/local/minified';
+            if(!is_dir($target_dir)){
+                $this->create_dir($target_dir, 0777, $owner);
+            }
 
             $htaccess = $smarty->fetch("db:_factory/temps,htaccess");
             $file_name = $htdocs.'/.htaccess';
