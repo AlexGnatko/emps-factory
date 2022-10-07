@@ -1337,28 +1337,20 @@ class EMPS_FactoryWorker
     public function start_service($row) {
         global $emps;
 
-        $descriptorspec = array(
-            0 => array("pipe", "r"),
-            1 => array("pipe", "w"),
-            2 => array("pipe", "w"),
-        );
-        //  myscript.sh >/dev/null 2>&1 < /dev/null &
-        $process = proc_open('exec '.$row['command'] .' >/dev/null 2>&1 < /dev/null &', $descriptorspec, $pipes, $row['path'], null);
-        if (is_resource($process)) {
-            $status = proc_get_status($process);
-            if ($status['running']) {
-                $pid = $status['pid'];
-                $cmd = $this->cmd_by_pid($pid);
-                $nr = [];
-                $nr['lastpid'] = $pid;
-                $nr['runcmd'] = $cmd;
-                $nr['lastrun'] = time();
-                $emps->db->sql_update_row("ef_services", ['SET' => $nr], "id = {$row['id']}");
-                echo "STARTED THE SERVICE! {$pid}\r\n{$cmd}\r\n";
-            }
-        } else {
-            echo "COULD NOT START THE SERVICE!\r\n";
-        }
+        $command = $row['command']."  >/dev/null 2>&1 < /dev/null &";
+        $out = shell_exec($command);
+
+        $x = explode(" ", $out);
+        $pid = intval($x[1]);
+        echo "Detached PID: {$pid}\r\n";
+
+        $cmd = $this->cmd_by_pid($pid);
+        $nr = [];
+        $nr['lastpid'] = $pid;
+        $nr['runcmd'] = $cmd;
+        $nr['lastrun'] = time();
+        $emps->db->sql_update_row("ef_services", ['SET' => $nr], "id = {$row['id']}");
+        echo "STARTED THE SERVICE! {$pid}\r\n{$cmd}\r\n";
     }
 
     public function maintain_service($row) {
