@@ -1337,12 +1337,11 @@ class EMPS_FactoryWorker
     public function start_service($row) {
         global $emps;
 
-        $command = $row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
+        $command = "nohup ".$row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
         $out = shell_exec($command);
         echo "OUT: {$out}\r\n";
 
-        $x = explode(" ", $out);
-        $pid = intval($x[1]);
+        $pid = intval($out);
         echo "Detached PID: {$pid}\r\n";
 
         $cmd = $this->cmd_by_pid($pid);
