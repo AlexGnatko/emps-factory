@@ -1337,7 +1337,7 @@ class EMPS_FactoryWorker
     public function start_service($row) {
         global $emps;
 
-        $command = $row['command']." >/dev/null 2>&1 < /dev/null &";
+        $command = $row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
         $out = shell_exec($command);
         echo "OUT: {$out}\r\n";
 
