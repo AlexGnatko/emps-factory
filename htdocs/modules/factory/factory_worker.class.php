@@ -1343,7 +1343,7 @@ class EMPS_FactoryWorker
             2 => array("pipe", "w"),
         );
         //  myscript.sh >/dev/null 2>&1 < /dev/null &
-        $process = proc_open('exec setsid '.$row['command'] .' >/dev/null 2>&1 < /dev/null &', $descriptorspec, $pipes, $row['path'], null);
+        $process = proc_open('setsid exec '.$row['command'] .' >/dev/null 2>&1 < /dev/null &', $descriptorspec, $pipes, $row['path'], null);
         if (is_resource($process)) {
             $status = proc_get_status($process);
             if ($status['running']) {
