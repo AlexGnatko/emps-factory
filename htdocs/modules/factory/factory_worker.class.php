@@ -1338,7 +1338,7 @@ class EMPS_FactoryWorker
         global $emps;
 
         $out = null;
-        $command = "cd {$row['path']} && nohup ".$row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
+        $command = "cd {$row['path']} && setsid -f ".$row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
         $out = exec($command, $out);
         echo "OUT: {$out}\r\n";
 
