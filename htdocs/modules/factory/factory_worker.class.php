@@ -1327,6 +1327,7 @@ class EMPS_FactoryWorker
             return false;
         }
         $out = $this->cmd_by_pid($row['lastpid']);
+        echo "Current CMD {$row['lastpid']}: {$out}\r\n";
         if ($out == $row['runcmd']) {
             return true;
         }
@@ -1352,7 +1353,7 @@ class EMPS_FactoryWorker
                 $nr['runcmd'] = $cmd;
                 $nr['lastrun'] = time();
                 $emps->db->sql_update_row("ef_services", ['SET' => $nr], "id = {$row['id']}");
-                echo "STARTED THE SERVICE! {$pid}\r\n";
+                echo "STARTED THE SERVICE! {$pid}\r\n{$cmd}\r\n";
             }
         } else {
             echo "COULD NOT START THE SERVICE!\r\n";
@@ -1360,7 +1361,7 @@ class EMPS_FactoryWorker
     }
 
     public function maintain_service($row) {
-        $pid = $row['listpid'];
+        $pid = $row['lastpid'];
         if (!$pid || !$this->service_running($row)) {
             $this->start_service($row);
         } else {
@@ -1376,6 +1377,7 @@ class EMPS_FactoryWorker
             echo "Service #{$row['id']}: {$row['name']}\r\n";
             $this->maintain_service($row);
         }
+        sleep(30);
     }
 	
 	public function cycle(){
