@@ -1337,7 +1337,7 @@ class EMPS_FactoryWorker
     public function start_service($row) {
         global $emps;
 
-        $command = "nohup ".$row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
+        $command = "cd {$row['path']} && nohup ".$row['command']." >/dev/null 2>&1 < /dev/null & echo $!";
         $out = shell_exec($command);
         echo "OUT: {$out}\r\n";
 
