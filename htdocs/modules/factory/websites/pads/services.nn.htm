@@ -1,0 +1,66 @@
+{{script src="/mjs/factory-websites-pads/services.js" defer=1}}
+
+<h5 class="subhead">Background Services</h5>
+
+
+
+<div id="services-app">
+    <table class="table">
+        <tr>
+            <th width="5%">Id</th>
+            <th width="65%">Command / Path</th>
+            <th width="30%">Status</th>
+        </tr>
+        <template v-for="(row,ri) in lst">
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>
+                    <span class="pull-right">
+                        <button type="button" @click.stop.prevent="edit_row(row)" class="btn btn-info btn-xs">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </button>
+                    </span>
+                    <code>{{ row.command }}</code><br/>
+                    <code>{{ row.path}}</code></td>
+                <td>
+
+                </td>
+            </tr>
+        </template>
+
+    </table>
+
+    <form @submit.stop.prevent="submit_form">
+        <h3 v-if="mode == 'new'">Add a Service:</h3>
+        <h3 v-else>Edit #{{ editrow.id}}:</h3>
+
+        <div class="form-group">
+            <label>Name:</label>
+            <input type="text" v-model="editrow.name" class="form-control" placeholder=""/>
+            <span class="help-block">Name or a short description of the service</span>
+        </div>
+
+        <div class="form-group">
+            <label>Working Directory:</label>
+            <input type="text" v-model="editrow.path" class="form-control" placeholder=""/>
+            <span class="help-block">Absolute path to the working directory of the service</span>
+        </div>
+
+        <div class="form-group">
+            <label>Command:</label>
+            <input type="text" v-model="editrow.command" class="form-control" placeholder=""/>
+            <span class="help-block">The Linux command to call. Will be prepended with <code>exec</code>.</span>
+        </div>
+
+        <p class="text-right">
+            <button v-if="mode == 'new'" type="submit" class="btn btn-primary">Add</button>
+            <template v-else>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button @click.stop.prevent="mode = 'new'" type="button" class="btn btn-warning">Cancel</button>
+            </template>
+
+
+        </p>
+    </form>
+
+</div>

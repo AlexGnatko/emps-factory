@@ -127,3 +127,28 @@ CREATE TEMPORARY TABLE `temp_ef_remote_commands` (
   KEY `dt` (`dt`),
   KEY `cdt` (`cdt`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+-- table
+CREATE TEMPORARY TABLE `temp_ef_services` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL DEFAULT '0',
+  `website_id` bigint NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `path` text NOT NULL,
+  `command` text NOT NULL,
+  `lastrun` bigint NOT NULL,
+  `lastpid` bigint NOT NULL,
+  `runcmd` text NOT NULL,
+  `status` int NOT NULL,
+  `cdt` bigint NOT NULL,
+  `dt` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `website_id` (`website_id`),
+  KEY `name` (`name`),
+  KEY `lastrun` (`lastrun`),
+  KEY `lastpid` (`lastpid`),
+  KEY `status` (`status`),
+  KEY `dt` (`dt`),
+  KEY `cdt` (`cdt`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

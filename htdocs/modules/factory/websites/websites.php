@@ -25,6 +25,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		'install'=>'Installation',
 		'heartbeat'=>'Heartbeat',
         'stats'=>'Stats',
+        'services'=>'Services'
 //		'props'=>'Properties',
 		);
 		

@@ -1304,10 +1304,84 @@ class EMPS_FactoryWorker
 
         }
     }
+
+    public function list_all_services() {
+        global $emps;
+
+        $r = $emps->db->query("select * from ".TP."ef_services order by dt asc");
+        $lst = [];
+        while ($ra = $emps->db->fetch_named($r)) {
+            $lst[] = $ra;
+        }
+        return $lst;
+    }
+
+    public function cmd_by_pid($pid) {
+        $command = "ps -o cmd fp {$pid}";
+        $out = shell_exec($command);
+        return $out;
+    }
+
+    public function service_running($row) {
+        if (!$row['lastpid']) {
+            return false;
+        }
+        $out = $this->cmd_by_pid($row['lastpid']);
+        if ($out == $row['runcmd']) {
+            return true;
+        }
+        return false;
+    }
+
+    public function start_service($row) {
+        global $emps;
+
+        $descriptorspec = array(
+            0 => array("pipe", "r"),
+            1 => array("pipe", "w"),
+            2 => array("pipe", "w"),
+        );
+        $process = proc_open('exec '.$row['command'], $descriptorspec, $pipes, $row['path'], null);
+        if (is_resource($process)) {
+            $status = proc_get_status($process);
+            if ($status['running']) {
+                $pid = $status['pid'];
+                $cmd = $this->cmd_by_pid($pid);
+                $nr = [];
+                $nr['lastpid'] = $pid;
+                $nr['runcmd'] = $cmd;
+                $nr['lastrun'] = time();
+                $emps->db->sql_update_row("ef_services", ['SET' => $nr], "id = {$row['id']}");
+                echo "STARTED THE SERVICE! {$pid}\r\n";
+            }
+        } else {
+            echo "COULD NOT START THE SERVICE!\r\n";
+        }
+    }
+
+    public function maintain_service($row) {
+        $pid = $row['listpid'];
+        if (!$pid || !$this->service_running($row)) {
+            $this->start_service($row);
+        } else {
+            echo "Service is running, no need to do anything.\r\n";
+        }
+    }
+
+    public function services_cycle() {
+        global $emps;
+
+        $lst = $this->list_all_services();
+        foreach ($lst as $row) {
+            echo "Service #{$row['id']}: {$row['name']}\r\n";
+            $this->maintain_service($row);
+        }
+    }
 	
 	public function cycle(){
 		global $emps;
-		
+
+        //$this->services_cycle();
 		$this->heartbeat_cycle();
 		$this->stats_cycle();
         $this->db_stats_cycle(false);
