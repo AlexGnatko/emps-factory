@@ -2,6 +2,7 @@
 
 $emps->page_property("vuejs", true);
 $emps->page_property("toastr", true);
+$emps->page_property("momentjs", true);
 
 if ($_POST['post_add_service']) {
     $payload = $_POST['payload'];
