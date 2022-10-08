@@ -1317,7 +1317,7 @@ class EMPS_FactoryWorker
     }
 
     public function cmd_by_pid($pid) {
-        $command = "ps -o cmd fp {$pid}";
+        $command = "ps -o cmd fp {$pid} | tail -n +2";
         $out = shell_exec($command);
         return $out;
     }
@@ -1330,9 +1330,6 @@ class EMPS_FactoryWorker
             return false;
         }
         $out = $this->cmd_by_pid($row['lastpid']);
-        if (trim($out) == "CMD") {
-            return false;
-        }
         echo "Current CMD {$row['lastpid']}: {$out}\r\n";
         if ($out == $row['runcmd']) {
             return true;
