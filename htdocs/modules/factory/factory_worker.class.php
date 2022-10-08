@@ -1317,7 +1317,7 @@ class EMPS_FactoryWorker
     }
 
     public function cmd_by_pid($pid) {
-        $command = "ps -o cmd fp {$pid} | tail -n +2";
+        $command = "ps -o cmd fp {$pid} | tail -n +1";
         $out = shell_exec($command);
         return $out;
     }
