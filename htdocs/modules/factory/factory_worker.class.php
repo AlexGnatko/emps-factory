@@ -1380,7 +1380,7 @@ class EMPS_FactoryWorker
 	public function cycle(){
 		global $emps;
 
-        //$this->services_cycle();
+        $this->services_cycle();
 		$this->heartbeat_cycle();
 		$this->stats_cycle();
         $this->db_stats_cycle(false);
