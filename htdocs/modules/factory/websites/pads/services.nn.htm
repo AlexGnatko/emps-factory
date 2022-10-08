@@ -1,3 +1,4 @@
+{{script src="/mjs/comp-formats/formats.js" defer=1}}
 {{script src="/mjs/factory-websites-pads/services.js" defer=1}}
 
 <h5 class="subhead">Background Services</h5>
@@ -23,7 +24,10 @@
                     <code>{{ row.command }}</code><br/>
                     <code>{{ row.path}}</code></td>
                 <td>
-
+                    <small>
+                        Last run: {{ row.lastrun|form_local_time}}
+                        Last pid: {{ row.lastpid }}
+                    </small>
                 </td>
             </tr>
         </template>
