@@ -1326,7 +1326,13 @@ class EMPS_FactoryWorker
         if (!$row['lastpid']) {
             return false;
         }
+        if (!file_exists("/proc/{$row['lastpid']}")) {
+            return false;
+        }
         $out = $this->cmd_by_pid($row['lastpid']);
+        if (trim($out) == "CMD") {
+            return false;
+        }
         echo "Current CMD {$row['lastpid']}: {$out}\r\n";
         if ($out == $row['runcmd']) {
             return true;
