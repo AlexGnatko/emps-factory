@@ -1358,6 +1358,8 @@ class EMPS_FactoryWorker
         $nr['lastrun'] = time();
         $emps->db->sql_update_row("ef_services", ['SET' => $nr], "id = {$row['id']}");
         echo "STARTED THE SERVICE! {$pid}\r\n{$cmd}\r\n";
+        echo "Sleeping...\r\n";
+        sleep(3);
     }
 
     public function maintain_service($row) {
@@ -1377,7 +1379,7 @@ class EMPS_FactoryWorker
             echo "Service #{$row['id']}: {$row['name']}\r\n";
             $this->maintain_service($row);
         }
-        sleep(30);
+        sleep(20);
     }
 	
 	public function cycle(){
