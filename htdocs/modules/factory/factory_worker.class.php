@@ -1324,9 +1324,11 @@ class EMPS_FactoryWorker
 
     public function service_running($row) {
         if (!$row['lastpid']) {
+            error_log("SERVICE NOT RUNNING: not lastpid : {$row['lastpid']}");
             return false;
         }
         if (!file_exists("/proc/{$row['lastpid']}")) {
+            error_log("SERVICE NOT RUNNING: no proc/{$row['lastpid']}");
             return false;
         }
         $out = $this->cmd_by_pid($row['lastpid']);
@@ -1334,6 +1336,7 @@ class EMPS_FactoryWorker
         if ($out == $row['runcmd']) {
             return true;
         }
+        error_log("SERVICE NOT RUNNING: not found not matching {$out} = {$row['lastpid']}");
         return false;
     }
 
