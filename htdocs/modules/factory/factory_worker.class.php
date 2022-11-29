@@ -3,6 +3,7 @@
 class EMPS_FactoryWorker
 {
 	public $last_tick = 0;
+	private $last_services_cycle = 0;
 	
 	public function say($s){
 		echo $s."\r\n";
@@ -1374,12 +1375,18 @@ class EMPS_FactoryWorker
     public function services_cycle() {
         global $emps;
 
+        if ($this->last_services_cycle > time() - 20) {
+            return;
+        }
+
+        $this->last_services_cycle = time();
+
         $lst = $this->list_all_services();
         foreach ($lst as $row) {
             echo "Service #{$row['id']}: {$row['name']}\r\n";
             $this->maintain_service($row);
         }
-        sleep(20);
+
     }
 	
 	public function cycle(){
