@@ -1108,7 +1108,7 @@ class EMPS_FactoryWorker
 			}
 			$dt = time() + $interval;
 			$emps->db->query("update ".TP."ef_heartbeat set nedt = $dt where id = ".$ra['id']);
-//			exec("curl http://".$hostname_part.".".$ef->defaults['hostname_short']."/heartbeat/ &");
+			echo "curl http://".$hostname."/heartbeat/\r\n";
 			exec("echo \"curl -L http://".$hostname."/heartbeat/\" | at -M now");
 		}
 		
