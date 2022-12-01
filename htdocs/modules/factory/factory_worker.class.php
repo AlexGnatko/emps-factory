@@ -1006,7 +1006,10 @@ class EMPS_FactoryWorker
 	
 	public function execute_custom_command($cmd, $ra){
 		global $emps;
-		
+
+		$x = explode(" ", $cmd);
+		$cmd = $x[0];
+		$params = $x[1];
 		$payload = $ra['payload'];
 		$data = json_decode($payload, true);
 		
@@ -1061,6 +1064,9 @@ class EMPS_FactoryWorker
 			$GLOBALS['die_now'] = true;
 			$this->say("OK, going to restart...");
 			break;
+        case 'kill-service':
+            $this->kill_service($params);
+            break;
 		}
 		
 		$rv = ob_get_clean();
@@ -1304,6 +1310,29 @@ class EMPS_FactoryWorker
             }
 
         }
+    }
+
+    public function kill_service($params) {
+        $id = intval($params);
+        $row = $this->load_service($id);
+        if ($row) {
+            if ($this->service_running($row)) {
+                exec("kill -9 {$row['lastpid']}");
+                $this->say("Killed service {$id}. Restart pending.");
+            } else {
+                $this->say("Service {$id} is not running.");
+            }
+        }
+    }
+
+    public function load_service($id) {
+        global $emps;
+
+        $row = $emps->db->get_row("ef_services", "id = {$id}");
+        if ($row) {
+            return $row;
+        }
+        return false;
     }
 
     public function list_all_services() {
