@@ -424,10 +424,10 @@ class EMPS_FactoryWorker
 
         $htdocs = $cfg['path'];
 
-        $this->echo_shell("tar pczf {$export_path}/website.tar.gz -C {$htdocs}/../ .");
+        $this->echo_shell("tar pczf {$export_path}/website.tar.gz -C {$htdocs} .");
         $hostname = $cfg['hostname'];
         $uploads_dir = "/srv/upload/".$owner."/".$hostname;
-        $this->echo_shell("tar pczf {$export_path}/uploads.tar.gz -C {$uploads_dir}/../ .");
+        $this->echo_shell("tar pczf {$export_path}/uploads.tar.gz -C {$uploads_dir} .");
 
         $this->echo_shell("mysqldump -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
         "{$cfg['db']['database']} > {$export_path}/{$cfg['db']['database']}.sql");
