@@ -424,15 +424,15 @@ class EMPS_FactoryWorker
 
         $htdocs = $cfg['path'];
 
-        $this->echo_shell("tar pczf {$export_path}/website.tar.gz -C {$htdocs}/../ {$htdocs}");
+        $this->echo_shell("tar pczf --overwrite {$export_path}/website.tar.gz -C {$htdocs}/../ {$htdocs}");
         $hostname = $cfg['hostname'];
         $uploads_dir = "/srv/upload/".$owner."/".$hostname;
-        $this->echo_shell("tar pczf {$export_path}/uploads.tar.gz -C {$uploads_dir}/../ {$uploads_dir}");
+        $this->echo_shell("tar pczf --overwrite {$export_path}/uploads.tar.gz -C {$uploads_dir}/../ {$uploads_dir}");
 
-        $this->echo_shell("mysql -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
+        $this->echo_shell("mysqldump -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
         "{$cfg['db']['database']} > {$export_path}/{$cfg['db']['database']}.sql");
 
-        $this->echo_shell("gzip {$export_path}/{$cfg['db']['database']}.sql");
+        $this->echo_shell("gzip -f {$export_path}/{$cfg['db']['database']}.sql");
 
         file_put_contents("{$export_path}/cfg.txt", $cfg['other_settings']);
     }

@@ -12,7 +12,7 @@
     "secure-http": false
   },
    "require": {
-    "php": ">=8",
+    "php": ">=7.4",
     "algo26-matthias/idna-convert": "*"
   }
 }
