@@ -9,7 +9,7 @@ $emps_start_time = microtime(true);
 // Just a suggestion. Could be turned off on a production server.
 error_reporting(0);
 if($_GET['debug']){
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	error_reporting(E_ERROR | E_WARNING | E_PARSE | E_COMPILE_ERROR );
 }
 
 // Debug mode. Could be turned off in a production environment.

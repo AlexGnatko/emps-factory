@@ -8,7 +8,7 @@ class EMPS_Factory {
 	public $defaults;
 	
 	public $perpage = 25;
-	
+
 	public function save_setting($context_id, $code, $value){
 		global $emps;
 		$x = explode(':', $code);
@@ -162,6 +162,21 @@ class EMPS_Factory {
 		}
 	}
 
+    public function load_website_by_hostname($name){
+        global $emps;
+
+        $ra = $emps->db->get_row("ef_websites", "name = '{$name}' or hostname = '{$name}'");
+        if($ra){
+            $ra = $this->explain_website($ra);
+
+            $cfg = $this->site_defaults($ra);
+            $ra['cfg'] = $cfg;
+
+            return $ra;
+        }else{
+            return false;
+        }
+    }
 	public function list_child_websites($website_id){
 	    global $emps;
 
@@ -229,7 +244,7 @@ class EMPS_Factory {
 		
 		return $id;
 	}
-	
+
 	public function custom_command($command, $website_id, $payload){
 		global $emps, $SET;
 		

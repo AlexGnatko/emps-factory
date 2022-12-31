@@ -29,6 +29,8 @@ $ef->load_defaults();
 
 $emps->select_website();
 
+unlink(EMPS_SCRIPT_PATH."/restart");
+
 while(true){
 	$efw->cycle();
 	if(time() > $off_time){
@@ -37,5 +39,8 @@ while(true){
 	if($GLOBALS['die_now']){
 		break;
 	}
+	if (file_exists(EMPS_SCRIPT_PATH."/restart")) {
+	    break;
+    }
 	sleep(round(rand(1, 5)));
 }

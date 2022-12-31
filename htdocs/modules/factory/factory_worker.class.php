@@ -400,6 +400,43 @@ class EMPS_FactoryWorker
         }
 	}
 
+    public function export_website($data, $ra){
+        global $emps, $ef, $smarty;
+
+        $website_id = $ra['ef_website_id'];
+        if(!$website_id){
+            $this->say("Can't export: you have to select a website!");
+            return false;
+        }
+
+        $wwwdata = $ef->defaults['www_group'];
+
+        $website = $ef->load_website($website_id);
+
+        $cfg = $ef->site_defaults($website);
+
+        $user = $ef->load_user(intval($website['user_id']));
+        $owner = $user['username'];
+
+        $export_path = EMPS_SCRIPT_PATH."/export/{$website_id}";
+
+        $this->create_dir($export_path, 0777, $owner);
+
+        $htdocs = $cfg['path'];
+
+        $this->echo_shell("tar pczf {$export_path}/website.tar.gz -C {$htdocs}/../ {$htdocs}");
+        $hostname = $cfg['hostname'];
+        $uploads_dir = "/srv/upload/".$owner."/".$hostname;
+        $this->echo_shell("tar pczf {$export_path}/uploads.tar.gz -C {$uploads_dir}/../ {$uploads_dir}");
+
+        $this->echo_shell("mysql -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
+        "{$cfg['db']['database']} > {$export_path}/{$cfg['db']['database']}.sql");
+
+        $this->echo_shell("gzip {$export_path}/{$cfg['db']['database']}.sql");
+
+        file_put_contents("{$export_path}/cfg.txt", $cfg['other_settings']);
+    }
+
     public function move_uploads($data, $ra){
         global $emps, $ef, $smarty;
 
@@ -1056,6 +1093,9 @@ class EMPS_FactoryWorker
 			break;
         case 'move-uploads':
             $this->move_uploads($data, $ra);
+            break;
+        case 'export-website':
+            $this->export_website($data, $ra);
             break;
         case 'certbot':
             $this->certbot($data, $ra);
