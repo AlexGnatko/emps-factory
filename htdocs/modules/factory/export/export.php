@@ -30,11 +30,30 @@ $row = $ef->load_website_by_hostname($hostname);
 if ($ss == "start") {
     $id = $ef->custom_command("export-website", $row['id'], "");
 
-    echo "command: {$id}\r\n";
+    $emps->json_ok(["command" => $id]); exit;
 }
 
 if ($ss == "status") {
     $id = intval($sd);
     $cmd = $emps->db->get_row("ef_commands", "id = {$id}");
-    var_dump($cmd);
+
+    $website_id = $cmd['ef_website_id'];
+    $data = [];
+    $data['website_id'] = $website_id;
+    $data['status'] = $cmd['status'];
+
+    $website = $ef->load_website($website_id);
+
+    $cfg = $ef->site_defaults($website);
+
+    $export_path = EMPS_SCRIPT_WEB."/export/{$website_id}";
+
+    if ($cmd['status'] == 10) {
+        $data['htdocs'] = $export_path."/website.tar.gz";
+        $data['uploads'] = $export_path."/uploads.tar.gz";
+        $data['sql'] = $export_path."/{$cfg['db']['database']}.sql.gz";
+        $data['cfg'] = $export_path."/cfg.txt";
+    }
+
+    $emps->json_ok($data); exit;
 }
