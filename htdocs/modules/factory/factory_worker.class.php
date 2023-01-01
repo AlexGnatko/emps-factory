@@ -506,6 +506,8 @@ class EMPS_FactoryWorker
         $this->echo_shell("cd {$git_dir} && wget {$data['git']} && ".
             "tar pxzf {$git_dir}/git.tar.gz -C {$git_name}");
 
+        $this->echo_shell("chown -R {$owner}:{$owner} {$git_dir}");
+
         $extra = file_get_contents($data['cfg']);
 
         $cfg = $data['cfg'];
