@@ -434,6 +434,10 @@ class EMPS_FactoryWorker
 
         $this->echo_shell("gzip -f {$export_path}/{$cfg['db']['database']}.sql");
 
+        $git_name = $hostname.".git";
+        $git_dir = "/opt/git/{$owner}";
+        $this->echo_shell("tar pczf {$export_path}/git.tar.gz -C {$git_dir} ./{$git_name}");
+
         file_put_contents("{$export_path}/cfg.txt", $cfg['other_settings']);
     }
 
@@ -473,19 +477,44 @@ class EMPS_FactoryWorker
         //$data['sql'];
         //$data['cfg'];
 
+        unlink($htdocs."/".$htdocs_file);
+
         $this->echo_shell("cd {$htdocs} && wget {$data['htdocs']} && ".
             "tar pxzf {$htdocs_file} && rm {$htdocs_file}");
         $hostname = $cfg['hostname'];
         $uploads_dir = "/srv/upload/".$owner."/".$hostname;
         $this->create_dir($uploads_dir, 0777, $owner);
+
+        unlink($uploads_dir."/".$uploads_file);
+
         $this->echo_shell("cd {$uploads_dir} && wget {$data['uploads']} && ".
             "tar pxzf {$uploads_file} && rm {$uploads_file}");
 
+        unlink($export_path."/".$sql_file);
+        unlink($export_path."/".$raw_sql_file);
+
         $this->echo_shell("cd {$export_path} && wget {$data['sql']} && gunzip {$sql_file} && ".
             "mysql -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
-            "{$cfg['db']['database']} < {$raw_sql_file}");
+            "{$cfg['db']['database']} < {$raw_sql_file} && rm {$raw_sql_file} && rm {$sql_file}");
+
+        $this->echo_shell("chown -R {$owner}:{$wwwdata} {$uploads_dir}");
+        $this->echo_shell("chmod -R 0777 {$uploads_dir}");
+        $this->echo_shell("chown -R {$owner}:{$wwwdata} {$htdocs}");
+
+        $git_name = $hostname.".git";
+        $git_dir = "/opt/git/{$owner}";
+        $this->echo_shell("cd {$git_dir} && wget {$data['git']} && ".
+            "tar pxzf {$git_dir}/git.tar.gz -C {$git_name}");
 
         $extra = file_get_contents($data['cfg']);
+
+        $cfg = $data['cfg'];
+        $cfg['other_settings'] = $extra;
+
+        $cfg_post = json_encode($cfg);
+        $context_id = $emps->p->get_context(DT_EF_WEBSITE, 1, $website_id);
+        $emps->p->save_settings(['local_cfg' => $cfg_post], $context_id, P_EF_WEBSITE);
+
     }
 
     public function move_uploads($data, $ra){

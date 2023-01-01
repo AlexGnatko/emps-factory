@@ -53,6 +53,7 @@ if ($ss == "status") {
         $data['uploads'] = $export_path."/uploads.tar.gz";
         $data['sql'] = $export_path."/{$cfg['db']['database']}.sql.gz";
         $data['cfg'] = $export_path."/cfg.txt";
+        $data['git'] = $export_path."/git.tar.gz";
     }
 
     $emps->json_ok($data); exit;
