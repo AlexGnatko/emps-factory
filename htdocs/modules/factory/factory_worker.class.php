@@ -1148,6 +1148,9 @@ class EMPS_FactoryWorker
         case 'export-website':
             $this->export_website($data, $ra);
             break;
+        case 'import-website':
+            $this->import_website($data, $ra);
+            break;
         case 'certbot':
             $this->certbot($data, $ra);
             break;
