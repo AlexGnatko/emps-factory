@@ -504,7 +504,7 @@ class EMPS_FactoryWorker
         $git_name = $hostname.".git";
         $git_dir = "/opt/git/{$owner}";
         $this->echo_shell("cd {$git_dir} && wget {$data['git']} && ".
-            "tar pxzf {$git_dir}/git.tar.gz -C {$git_name}");
+            "tar pxzf {$git_dir}/git.tar.gz");
 
         $this->echo_shell("chown -R {$owner}:{$owner} {$git_dir}");
 
