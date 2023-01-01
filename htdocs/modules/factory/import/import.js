@@ -12,6 +12,10 @@ emps_scripts.push(function(){
                 remote_hostname: '',
                 log: "",
                 ls_cache: {},
+                command_id: 0,
+                local_command_id: 0,
+                status: 0,
+                command_payload: {},
             }
         },
         mounted: function(){
@@ -58,13 +62,87 @@ emps_scripts.push(function(){
                         var data = response.data;
 
                         if(data.code == 'OK'){
-                            toastr.success("Import initiated...");
+                            toastr.success("Export initiated...");
+                            that.log = "";
+                            that.add_log("Creating export files at the remote factory...");
+                            that.command_id = data.command;
+                            setTimeout(that.check_status, 500);
                             $("button").blur();
                         } else {
                             toastr.error(data.message);
                         }
                     });
 
+            },
+            check_status: function() {
+                var that = this;
+                axios
+                    .get("./?load_status=1&command=" + this.command_id + "&hostname=" +
+                        this.remote_hostname + "&factory=" + this.remote_factory)
+                    .then(function(response){
+                        var data = response.data;
+
+                        if (data.code == 'OK') {
+                            if (data.status < 10) {
+                                that.log += ".";
+                                setTimeout(that.check_status, 2000);
+                            } else {
+                                that.add_log("\r\nExport done, importing...");
+                                that.command_payload = data;
+                                that.continue_import();
+                            }
+                        }else{
+                            console.log("Error: " + data.message);
+                        }
+                    });
+            },
+            check_local_status: function() {
+                var that = this;
+                axios
+                    .get("./?load_local_status=1&command=" + this.local_command_id)
+                    .then(function(response){
+                        var data = response.data;
+
+                        if (data.code == 'OK') {
+                            if (data.status < 10) {
+                                that.log += ".";
+                                setTimeout(that.check_local_status, 2000);
+                            } else {
+                                toastr.success("Import done!");
+                                that.add_log("\r\nImport done!");
+                            }
+                        }else{
+                            console.log("Error: " + data.message);
+                        }
+                    });
+            },
+            continue_import: function() {
+                var data = {};
+                data.remote_factory = this.remote_factory;
+                data.remote_hostname = this.remote_hostname;
+                data.local_website_id = this.local_website_id;
+                data.import_payload = this.command_payload;
+
+                var that = this;
+
+                axios
+                    .post("./", {post_continue: true, payload: data})
+                    .then(function(response){
+                        var data = response.data;
+
+                        if(data.code == 'OK'){
+                            toastr.success("Import initiated...");
+                            that.add_log("Downloading files to the local factory...");
+                            that.local_command_id = data.command;
+                            setTimeout(that.check_local_status, 500);
+                            $("button").blur();
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    });
+            },
+            add_log: function(msg) {
+                this.log += msg + "\r\n";
             }
         },
         watch: {
