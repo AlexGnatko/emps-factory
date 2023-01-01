@@ -474,7 +474,7 @@ class EMPS_FactoryWorker
         //$data['cfg'];
 
         $this->echo_shell("cd {$htdocs} && wget {$data['htdocs']} && ".
-            "tar pxzf {$htdocs_file} -C ./htdocs && rm {$htdocs_file}");
+            "tar pxzf {$htdocs_file} && rm {$htdocs_file}");
         $hostname = $cfg['hostname'];
         $uploads_dir = "/srv/upload/".$owner."/".$hostname;
         $this->create_dir($uploads_dir, 0777, $owner);
