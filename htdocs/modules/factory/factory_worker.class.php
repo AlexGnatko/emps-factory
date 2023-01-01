@@ -437,6 +437,57 @@ class EMPS_FactoryWorker
         file_put_contents("{$export_path}/cfg.txt", $cfg['other_settings']);
     }
 
+    public function import_website($data, $ra){
+        global $emps, $ef, $smarty;
+
+        $website_id = $ra['ef_website_id'];
+        if(!$website_id){
+            $this->say("Can't export: you have to select a website!");
+            return false;
+        }
+
+        $wwwdata = $ef->defaults['www_group'];
+
+        $website = $ef->load_website($website_id);
+
+        $cfg = $ef->site_defaults($website);
+
+        $user = $ef->load_user(intval($website['user_id']));
+        $owner = $user['username'];
+
+        $export_path = EMPS_SCRIPT_PATH."/export/{$website_id}";
+
+        $this->create_dir($export_path, 0777, $owner);
+
+        $htdocs = $cfg['path'];
+
+        $x = explode("/", $data['htdocs']);
+        $htdocs_file = array_pop($x);
+        $x = explode("/", $data['uploads']);
+        $uploads_file = array_pop($x);
+        $x = explode("/", $data['sql']);
+        $sql_file = array_pop($x);
+        $raw_sql_file = str_replace(".gz", "", $sql_file);
+        //$data['htdocs'];
+        //$data['uploads'];
+        //$data['sql'];
+        //$data['cfg'];
+
+        $this->echo_shell("cd {$htdocs} && wget {$data['htdocs']} && ".
+            "tar pxzf {$htdocs_file} -C ./htdocs && rm {$htdocs_file}");
+        $hostname = $cfg['hostname'];
+        $uploads_dir = "/srv/upload/".$owner."/".$hostname;
+        $this->create_dir($uploads_dir, 0777, $owner);
+        $this->echo_shell("cd {$uploads_dir} && wget {$data['uploads']} && ".
+            "tar pxzf {$uploads_file} && rm {$uploads_file}");
+
+        $this->echo_shell("cd {$export_path} && wget {$data['sql']} && gunzip {$sql_file} && ".
+            "mysql -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
+            "{$cfg['db']['database']} < {$raw_sql_file}");
+
+        $extra = file_get_contents($data['cfg']);
+    }
+
     public function move_uploads($data, $ra){
         global $emps, $ef, $smarty;
 

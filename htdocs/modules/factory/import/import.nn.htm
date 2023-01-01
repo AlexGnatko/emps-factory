@@ -1,0 +1,51 @@
+<h1 class="mt-1 mt-3">Import a website</h1>
+<div id="import-app" style="display: none">
+    <p class="mb-4">
+        The website being imported should be defined in <a href="/factory-websites/">websites</a>.
+        Both EMPS factories should share the value of <code>export_key</code> setting.
+    </p>
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label class="label">Local website:</label>
+                <div class="control">
+                    <div is="selector"
+                         v-model="local_website_id"
+                         title="Websites"
+                         placeholder="Select website"
+                         :search="true"
+                         type="ef_websites">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="field">
+                <label class="label">Remote EMPS hostname:</label>
+                <input type="text" class="input" v-model="remote_factory" placeholder="factory.example.com"/>
+            </div>
+        </div>
+        <div class="column">
+            <div class="field">
+                <label class="label">Remote website hostname:</label>
+                <input type="text" class="input" v-model="remote_hostname" placeholder="website.com"/>
+            </div>
+        </div>
+        <div class="column is-narrow">
+            <div class="field">
+                <label class="label">&nbsp;</label>
+                <button @click.stop.prevent="initiate_import" type="button" class="button is-primary">Import</button>
+            </div>
+        </div>
+    </div>
+
+    <pre>{{ log }}</pre>
+
+</div>
+<div class="app-loading">
+    {{include file="db:inc/spinner"}}
+</div>
+
+{{include file="db:_comp/modal"}}
+{{include file="db:_comp/selector"}}
+{{script src="/mjs/factory-import/import.js" defer=true}}

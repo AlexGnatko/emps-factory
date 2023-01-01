@@ -9,7 +9,7 @@ $secret = $start;
 $real_secret = $emps->get_setting("export_key");
 
 if ($real_secret != $secret) {
-    echo "No access!";
+    $emps->json_error("no_access");
     exit;
 }
 

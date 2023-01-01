@@ -3,6 +3,7 @@
 
 body {
 	overflow-Y:auto;
+	min-height: 100vh;
 }
 
 .btn-inline {

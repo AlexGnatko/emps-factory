@@ -1,4 +1,10 @@
-<body id="pagebg">
+
+{{if $page.css_fw == "bulma"}}
+  <body>
+{{include file="db:page/navbar"}}
+<div class="container">
+{{else}}
+  <body id="pagebg">
 <div class="container">
 <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container" >
@@ -54,3 +60,4 @@
     </div><!-- /.navbar-collapse -->    
   </div>
 </nav>
+{{/if}}
