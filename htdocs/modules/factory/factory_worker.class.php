@@ -510,7 +510,6 @@ class EMPS_FactoryWorker
 
         $extra = file_get_contents($data['cfg']);
 
-        $cfg = $data['cfg'];
         $cfg['other_settings'] = $extra;
 
         $cfg_post = json_encode($cfg);
