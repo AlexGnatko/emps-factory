@@ -503,6 +503,9 @@ class EMPS_FactoryWorker
 
         $git_name = $hostname.".git";
         $git_dir = "/opt/git/{$owner}";
+
+        unlink($git_dir."/git.tar.gz");
+
         $this->echo_shell("cd {$git_dir} && wget {$data['git']} && ".
             "tar pxzf {$git_dir}/git.tar.gz");
 
