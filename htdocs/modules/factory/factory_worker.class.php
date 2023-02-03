@@ -517,7 +517,7 @@ class EMPS_FactoryWorker
 
         $cfg_post = json_encode($cfg);
         $context_id = $emps->p->get_context(DT_EF_WEBSITE, 1, $website_id);
-        $emps->p->save_settings(['local_cfg' => $cfg_post], $context_id, P_EF_WEBSITE);
+        $emps->p->save_properties(['local_cfg' => $cfg_post], $context_id, P_EF_WEBSITE);
 
     }
 
