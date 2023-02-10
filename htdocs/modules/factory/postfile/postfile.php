@@ -28,5 +28,4 @@ if ($postkey == $real_postkey) {
     echo " - DONE\r\n";
 } else {
     echo "NO KEY";
-    echo $real_postkey;
 }
