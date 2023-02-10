@@ -5,7 +5,7 @@ $emps->no_time_limit();
 
 $postkey = $_POST['key'];
 
-$real_postkey = $emps->get_settings("postkey");
+$real_postkey = $emps->get_setting("postkey");
 
 if (!$real_postkey) {
     echo "Undefined post key!\r\n";
