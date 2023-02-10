@@ -22,7 +22,7 @@ if ($postkey == $real_postkey) {
     $rv = shell_exec("chmod 0777 {$tmpfile} && mv {$tmpfile} {$filepath}");
     echo $rv."\r\n";
     if (file_exists($tmpfile)) {
-        echo " - FAILED, DELETING";
+        echo " - FAILED, DELETING {$tmpfile} => {$filepath} ";
         unlink($tmpfile);
     }
     echo " - DONE\r\n";
