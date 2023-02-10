@@ -3,7 +3,7 @@
 $emps->plaintext_response();
 $emps->no_time_limit();
 
-$postkey = $_POST['key'];
+$postkey = $_POST['postkey'];
 
 $real_postkey = $emps->get_setting("postkey");
 
