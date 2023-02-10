@@ -26,4 +26,7 @@ if ($postkey == $real_postkey) {
         unlink($tmpfile);
     }
     echo " - DONE\r\n";
+} else {
+    echo "NO KEY";
+    echo $real_postkey;
 }
