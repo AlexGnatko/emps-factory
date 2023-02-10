@@ -19,7 +19,7 @@ if ($postkey == $real_postkey) {
     $uniq = md5(uniqid(json_encode($_POST).time())).".dat";
     $tmpfile = EMPS_SCRIPT_PATH."/local/temp_c/{$uniq}";
     file_put_contents($tmpfile, $data);
-    $rv = shell_exec("chmod 0777 {$tmpfile} && mv {$tmpfile} {$filepath}");
+    $rv = shell_exec("chmod 0777 {$tmpfile} && mv {$tmpfile} {$filepath} 2>&1");
     echo $rv."\r\n";
     if (file_exists($tmpfile)) {
         echo " - FAILED, DELETING {$tmpfile} => {$filepath} ";
