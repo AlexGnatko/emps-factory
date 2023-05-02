@@ -78,8 +78,8 @@ server {
 
 {{if $ssl}}
 server {
-	listen			443 ssl http2;
-    listen			[::]:443 ssl http2;
+	listen			443 ssl;
+    listen			[::]:443 ssl;
 {{if $letsencrypt}}
 	ssl_certificate /etc/letsencrypt/live/{{$hostname}}/fullchain.pem; # managed by Certbot
 	# path to your cacert.pem
