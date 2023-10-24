@@ -59,7 +59,7 @@ define('EMPS_SHOW_TIMING', false);
 define('EMPS_SHOW_SQL_ERRORS', false);
 
 // session cookie parameters
-define('EMPS_SESSION_COOKIE_LIFETIME', 3600*24*7);
+define('EMPS_SESSION_COOKIE_LIFETIME', {{if $cfg.sc_lifetime}}{{$cfg.sc_lifetime}}{{else}}3600*24*7{{/if}});
 
 define('EMPS_DISPLAY_ERRORS', 1);
 
