@@ -37,6 +37,28 @@
                 <div class="has-text-weight-bold">{{ index.DOMAIN._ip.cols[2]|bytes }}</div>
             </div>
         </div>
+
+        <div class="columns">
+            <div class="column">
+                <h2>Days</h2>
+                <div class="table-container">
+                    <tabe class="table is-bordered">
+                        <tr width="25%">Day</tr>
+                        <tr width="25%">Pages</tr>
+                        <tr width="25%">Hits</tr>
+                        <tr width="25%">Bandwidth</tr>
+                        <tbody>
+                        <tr v-for="(row,ri) in index.DAY">
+                            <td>{{ row.name }}</td>
+                        </tr>
+                        </tbody>
+                    </tabe>
+                </div>
+            </div>
+            <div class="column">
+                <h2>Hours</h2>
+            </div>
+        </div>
     </div>
 
     <p>&nbsp;</p>
