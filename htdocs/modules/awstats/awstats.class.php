@@ -98,5 +98,20 @@ class EMPS_AWStats {
 
         return $index;
     }
+
+    public function dt_to_dperiod($dt) {
+        return date("mY", $dt);
+    }
+
+
+    public function dperiod_to_dt($period) {
+        global $emps;
+
+        $month = mb_substr($period, 0, 2);
+        $year = mb_substr($period, 2, 4);
+        $date = "01.{$month}.{$year} 12:00";
+        $dt = $emps->parse_time($date);
+        return $dt;
+    }
 }
 

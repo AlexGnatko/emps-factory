@@ -10,11 +10,27 @@ if ($emps->auth->credentials("admin")) {
     $smarty->assign("hostname", $hostname);
 
     require_once $emps->page_file_name('_awstats,awstats.class', 'controller');
-
     $aws = new EMPS_AWStats();
 
+    require_once $emps->common_module('datetime/dates.class.php');
+    $dates = new EMPS_Dates();
+
     $aws->hostname = $hostname;
-    $aws->period = date("mY", time());
+    if ($start) {
+        $aws->period = $start;
+    } else {
+        $aws->period = $aws->dt_to_dperiod(time());
+    }
+    $smarty->assign("period", $aws->period);
+    $dt = $aws->dperiod_to_dt($aws->period);
+    $pdt = $dates->prev_period("month", $dt);
+    $ndt = $dates->next_period("month", $dt);
+    $emps->loadvars();
+    $start = $aws->dt_to_dperiod($pdt);
+    $smarty->assign("prev", $emps->elink());
+    $start = $aws->dt_to_dperiod($ndt);
+    $smarty->assign("next", $emps->elink());
+    $emps->loadvars();
 
     if ($_GET['load_index']) {
         $index = $aws->index();
