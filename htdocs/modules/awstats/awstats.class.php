@@ -4,7 +4,7 @@ class EMPS_AWStats {
     public $hostname = "";
 
     public function index() {
-        $index = "TEST";
+        $index = ['test' => "TEST"];
         return $index;
     }
 }

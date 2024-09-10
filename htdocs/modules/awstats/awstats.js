@@ -9,6 +9,7 @@ emps_scripts.push(function(){
         data: function() {
             return {
                 index: {},
+                loading: false,
             };
         },
         mounted: function(){
@@ -25,7 +26,7 @@ emps_scripts.push(function(){
                         that.loading = false;
                         var data = response.data;
                         if (data.code == 'OK') {
-                            that.lst = data.lst;
+                            that.index = data.index;
                         } else {
                             toastr.error(data.message);
                         }
