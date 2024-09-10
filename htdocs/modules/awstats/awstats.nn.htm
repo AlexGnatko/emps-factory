@@ -84,6 +84,34 @@
                     </table>
                 </div>
             </div>
+            <div class="column">
+                <h2>Visitors</h2>
+                <div class="table-container">
+                    <table class="table is-bordered">
+                        <tr>
+                            <td width="20%">Host</td>
+                            <td width="12%" class="has-text-right">Pages</td>
+                            <td width="13%" class="has-text-right">Hits</td>
+                            <td width="10%" class="has-text-right">Bandwidth</td>
+                            <td width="15%" class="has-text-right">Last visit</td>
+                            <td width="15%" class="has-text-right">Last visit start</td>
+                            <td width="25%" class="has-text-right">Last page</td>
+                        </tr>
+
+                        <tbody>
+                        <tr v-for="row in index.VISITOR">
+                            <td>{{ row.name }}</td>
+                            <td class="has-text-right">{{ row.cols[0] }}</td>
+                            <td class="has-text-right">{{ row.cols[1] }}</td>
+                            <td class="has-text-right">{{ row.cols[2]|bytes }}</td>
+                            <td class="has-text-right">{{ row.cols[3]|ltime }}</td>
+                            <td class="has-text-right">{{ row.cols[4]|ltime }}</td>
+                            <td class="has-text-right">{{ row.cols[5] }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
