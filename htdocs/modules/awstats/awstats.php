@@ -19,7 +19,7 @@ if ($emps->auth->credentials("admin")) {
     if ($_GET['load_index']) {
         $index = $aws->index();
         if (!$index) {
-            $emps->json_error("No report for the selected month / website");
+            $emps->json_error("No report for the selected month / website"); exit;
         }
         $emps->json_ok(['index' => $index]); exit;
     }
