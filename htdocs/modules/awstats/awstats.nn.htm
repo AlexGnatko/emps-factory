@@ -217,10 +217,6 @@
                         <tbody>
                         <tr v-for="row in index.BROWSER">
                             <td>{{ row.name }}
-                                <span class="is-pulled-right">
-                                <a class="tag is-info" href="javascript:;" @click.stop.prevent="open_log_cat(row.name)">Log</a>
-                            </span>
-
                             </td>
                             <td class="has-text-right">{{ row.cols[0] }}</td>
                             <td class="has-text-right">{{ row.cols[1] }}</td>

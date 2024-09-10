@@ -47,7 +47,20 @@ if ($emps->auth->credentials("admin")) {
             $log .= shell_exec($cmd);
         }
 
-        $emps->json_ok(['log' => $log, 'cmds' => $cmds]); exit;
+        $ips = [];
+        $x = explode("\n", $log);
+        foreach ($x as $v) {
+            $v = trim($v);
+            $x = explode(" ", $v, 2);
+            $ip = $x[0];
+            $ips[$ip] = $ip;
+        }
+        $ilst = [];
+        foreach ($ips as $ip) {
+            $ilst[] = $ip;
+        }
+
+        $emps->json_ok(['log' => $log, 'ips' => $ips, 'cmds' => $cmds]); exit;
     }
 } else {
     $emps->deny_access("AdminNeeded");
