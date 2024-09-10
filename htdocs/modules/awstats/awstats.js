@@ -11,6 +11,7 @@ emps_scripts.push(function(){
             return {
                 index: {},
                 loading: false,
+                log: "",
             };
         },
         mounted: function(){
