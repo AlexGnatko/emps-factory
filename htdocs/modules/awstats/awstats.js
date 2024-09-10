@@ -12,6 +12,7 @@ emps_scripts.push(function(){
                 index: {},
                 loading: false,
                 log: "",
+                ips: [],
             };
         },
         mounted: function(){
@@ -36,16 +37,21 @@ emps_scripts.push(function(){
             },
             open_log_cat: function(text) {
                 this.log = "Loading...";
+                this.ips = [];
                 this.open_modal("modalLog");
                 axios.get("./?load_log=1&text=" + encodeURIComponent(text))
                     .then(response => {
                         let data = response.data;
                         if (data.code == "OK") {
                             this.log = data.log;
+                            this.ips = data.ips;
                         } else {
                             toastr.error(data.message);
                         }
                     });
+            },
+            open_ip: function(ip) {
+
             }
         }
     });

@@ -263,6 +263,12 @@
 
         <pre ref="logfile" class="logfile">{{ log }}</pre>
 
+        <div class="field">
+            <template v-for="(ip,ii) in ips">
+                <a href="javascript:;" @click.stop.prevent="open_ip(ip)">{{ ip }}</a>
+            </template>
+        </div>
+
         <template slot="actions">
 
         </template>
