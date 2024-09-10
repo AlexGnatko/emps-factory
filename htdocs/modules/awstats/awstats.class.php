@@ -59,9 +59,9 @@ class EMPS_AWStats {
                     $line = trim($line);
                     $x = explode(" ", $line);
                     $code = "_".strval(array_shift($x));
-                    $values[$code] = [];
+                    $values[$code] = ['name' => $code, 'cols' => []];
                     foreach($x as $xv){
-                        $values[$code][] = $xv;
+                        $values[$code]['cols'][] = $xv;
                     }
                 }
                 return $values;
