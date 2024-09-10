@@ -38,4 +38,5 @@ emps_scripts.push(function(){
             }
         }
     });
+    EMPS.load_css('/mjs/awstats/awstats.css' + css_reset);
 });
