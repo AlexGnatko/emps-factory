@@ -37,7 +37,7 @@ emps_scripts.push(function(){
             open_log_cat: function(text) {
                 this.log = "Loading...";
                 this.open_modal("modalLog");
-                axios.get("./?load_log=1&text=" + text)
+                axios.get("./?load_log=1&text=" + encodeURIComponent(text))
                     .then(response => {
                         let data = response.data;
                         if (data.code == "OK") {
