@@ -108,7 +108,7 @@
                             <td class="has-text-right">{{ row.cols[2]|bytes }}</td>
                             <td class="has-text-right">{{ row.cols[3]|ltime }}</td>
                             <td class="has-text-right">{{ row.cols[4]|ltime }}</td>
-                            <td class="has-text-right"><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.cols[5] }}</a></td>
+                            <td><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.cols[5] }}</a></td>
                         </tr>
                         </tbody>
                     </table>
@@ -123,7 +123,6 @@
                         <tr>
                             <th width="30%">URL</th>
                             <th width="12%" class="has-text-right">Pages</th>
-                            <th width="13%" class="has-text-right">Hits</th>
                             <th width="10%" class="has-text-right">Bandwidth</th>
                             <th width="10%" class="has-text-right">Entry</th>
                             <th width="10%" class="has-text-right">Exit</th>
@@ -131,12 +130,11 @@
 
                         <tbody>
                         <tr v-for="row in index.SIDER">
-                            <td class="has-text-right"><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.name }}</a></td>
+                            <td><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.name }}</a></td>
                             <td class="has-text-right">{{ row.cols[0] }}</td>
-                            <td class="has-text-right">{{ row.cols[1] }}</td>
-                            <td class="has-text-right">{{ row.cols[2]|bytes }}</td>
+                            <td class="has-text-right">{{ row.cols[1]|bytes }}</td>
+                            <td class="has-text-right">{{ row.cols[2] }}</td>
                             <td class="has-text-right">{{ row.cols[3] }}</td>
-                            <td class="has-text-right">{{ row.cols[4] }}</td>
 
                         </tr>
                         </tbody>
