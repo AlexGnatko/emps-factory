@@ -4,7 +4,7 @@
 <h1>AWStats: {{$hostname}}</h1>
 
 <div id="awstats-app">
-    <div class="content">
+    <div class="content" v-if="index.GENERAL !== undefined">
         <h2>General</h2>
         <div class="columns is-multiline is-mobile">
             <div class="column is-narrow">
