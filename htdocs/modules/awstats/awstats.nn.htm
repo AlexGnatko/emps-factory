@@ -102,13 +102,13 @@
 
                         <tbody>
                         <tr v-for="row in index.VISITOR">
-                            <td>{{ row.name }}</td>
+                            <td><a :href="'https://geoip.ag38.ru/front/?ip=' + row.name" target="_blank">{{ row.name }}</a></td>
                             <td class="has-text-right">{{ row.cols[0] }}</td>
                             <td class="has-text-right">{{ row.cols[1] }}</td>
                             <td class="has-text-right">{{ row.cols[2]|bytes }}</td>
                             <td class="has-text-right">{{ row.cols[3]|ltime }}</td>
                             <td class="has-text-right">{{ row.cols[4]|ltime }}</td>
-                            <td class="has-text-right">{{ row.cols[5] }}</td>
+                            <td class="has-text-right"><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.cols[5] }}</a></td>
                         </tr>
                         </tbody>
                     </table>
