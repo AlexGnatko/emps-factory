@@ -159,7 +159,11 @@
 
                         <tbody>
                         <tr v-for="row in index.SIDER_404">
-                            <td><a :href="'//{{$hostname}}' + row.name" target="_blank">{{ row.name }}</a></td>
+                            <td><a :href="'//{{$hostname}}' + row.name" target="_blank">{{ row.name }}</a>
+                                <span class="is-pulled-right">
+                                <a class="tag is-info" href="javascript:;" @click.stop.prevent="open_log_cat(row.name)">Log</a>
+                            </span>
+                            </td>
                             <td class="has-text-right">{{ row.cols[0] }}</td>
                             <td>{{ row.cols[1] }}</td>
                         </tr>
