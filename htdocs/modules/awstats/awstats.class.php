@@ -84,7 +84,7 @@ class EMPS_AWStats {
         $this->read_map();
 
         $index = [];
-        $sections = "GENERAL,TIME=24,VISITOR,DOMAIN,DAY=31,ROBOT,WORMS,SESSION,OS,BROWSER,ERRORS,SIDER,SIDER_404";
+        $sections = "GENERAL,TIME=24,VISITOR,DOMAIN,DAY=31,ROBOT,WORMS,SESSION,OS=1000,BROWSER,ERRORS,SIDER,SIDER_404";
         $x = explode(",", $sections);
         foreach ($x as $v) {
             $xx = explode("=", $v);
