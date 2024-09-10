@@ -6,6 +6,7 @@ emps_scripts.push(function(){
     }
     app = new Vue({
         el: '#awstats-app',
+        mixins: [EMPS_common_mixin],
         data: function() {
             return {
                 index: {},
@@ -32,6 +33,9 @@ emps_scripts.push(function(){
                         }
                     });
             },
+            open_log_cat: function() {
+                this.open_modal("modalLog");
+            }
         }
     });
 });

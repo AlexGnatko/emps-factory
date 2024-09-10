@@ -1,4 +1,5 @@
 {{script src="/mjs/comp-formats/formats.js" defer=1}}
+{{script src="/mjs/comp-mixins/common.js" defer=1}}
 {{script src="/mjs/awstats/awstats.js" defer=1}}
 
 <h1>AWStats: {{$hostname}}</h1>
@@ -102,7 +103,10 @@
 
                         <tbody>
                         <tr v-for="row in index.VISITOR">
-                            <td><a :href="'https://geoip.ag38.ru/front/?ip=' + row.name" target="_blank">{{ row.name }}</a></td>
+                            <td><a :href="'https://geoip.ag38.ru/front/?ip=' + row.name" target="_blank">{{ row.name }}</a>
+                            <span class="is-pulled-right">
+                                <a class="tag is-info" href="javascript:;" @click.stop.prevent="open_log_cat(row.name)">Log</a>
+                            </span></td>
                             <td class="has-text-right">{{ row.cols[0] }}</td>
                             <td class="has-text-right">{{ row.cols[1] }}</td>
                             <td class="has-text-right">{{ row.cols[2]|bytes }}</td>
@@ -195,4 +199,15 @@
     <p>&nbsp;</p>
     <hr size="1" />
 
+    <modal id="modalLog" size="wide">
+        <template slot="header">
+            Web server log
+        </template>
+
+        <template slot="actions">
+
+        </template>
+    </modal>
 </div>
+
+{{include file="db:_comp/modal"}}
