@@ -6,6 +6,19 @@ Vue.filter('form_local_time', function (value) {
     return m.format("DD.MM.YYYY HH:mm");
 });
 
+Vue.filter('ltime', function (value) {
+    if (!value) {
+        return "-";
+    }
+    let year = value.substr(0, 4);
+    let month = value.substr(4, 2);
+    let day = value.substr(6, 2);
+    let hour = value.substr(8, 2);
+    let min = value.substr(10, 2);
+    let sec = value.substr(12, 2);
+    return day + "." + month + "." + year + " " + hour + ":" + min + ":" + sec;
+});
+
 Vue.filter('form_only_time', function (value) {
     if (value == 0) {
         return "-";

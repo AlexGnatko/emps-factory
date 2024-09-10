@@ -3,6 +3,7 @@
 if ($emps->auth->credentials("admin")) {
     $emps->page_property("vuejs", 1);
     $emps->page_property("toastr", 1);
+    $emps->page_property("momentjs", 1);
     $emps->page_property("css_fw", "bulma");
 
     $hostname = $key;
