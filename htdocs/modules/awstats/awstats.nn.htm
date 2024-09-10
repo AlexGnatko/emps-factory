@@ -6,10 +6,11 @@
 <div id="awstats-app">
     <div class="content" v-if="index.GENERAL !== undefined">
         <h1>AWStats: {{$hostname}}</h1>
-        <p>Period: {{$period}}
+        <h3>Period: {{$period}}
+            &nbsp;
             <a href="{{$prev}}" class="button is-small"><i class="fa fa-chevron-left"></i></a>
             <a href="{{$next}}" class="button is-small"><i class="fa fa-chevron-right"></i></a>
-        </p>
+        </h3>
         <hr size="1"/>
         <h2>General</h2>
         <div class="columns is-multiline is-mobile">
