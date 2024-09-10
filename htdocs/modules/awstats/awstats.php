@@ -12,9 +12,14 @@ if ($emps->auth->credentials("admin")) {
     $aws = new EMPS_AWStats();
 
     $aws->hostname = $hostname;
+    $aws->period = date("mY", time());
 
     if ($_GET['load_index']) {
-        $emps->json_ok(['index' => $aws->index()]); exit;
+        $index = $aws->index();
+        if (!$index) {
+            $emps->json_error("No report for the selected month / website");
+        }
+        $emps->json_ok(['index' => $index]); exit;
     }
 } else {
     $emps->deny_access("AdminNeeded");
