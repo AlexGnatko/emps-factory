@@ -53,6 +53,9 @@ if ($emps->auth->credentials("admin")) {
             $v = trim($v);
             $x = explode(" ", $v, 2);
             $ip = $x[0];
+            if (!$ip) {
+                continue;
+            }
             $ips[$ip] = $ip;
         }
         $ilst = [];
