@@ -263,9 +263,9 @@
 
         <pre ref="logfile" class="logfile field">{{ log }}</pre>
 
-        <div class="field">
+        <div class="field tags">
             <template v-for="(ip,ii) in ips">
-                <a href="javascript:;" @click.stop.prevent="open_ip(ip)">{{ ip }}</a>
+                <a href="javascript:;" @click.stop.prevent="open_ip(ip)" class="tag is-info">{{ ip }}</a>
             </template>
         </div>
 
