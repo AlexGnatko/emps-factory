@@ -164,6 +164,32 @@
                 </div>
             </div>
         </div>
+        <div class="columns">
+            <div class="column">
+                <h2>Robots</h2>
+                <div class="table-container">
+                    <table class="table is-bordered">
+                        <tr>
+                            <th width="44%">Robot</th>
+                            <th width="14%" class="has-text-right">Hits</th>
+                            <th width="14%" class="has-text-right">Bandwidth</th>
+                            <th width="14%" class="has-text-right">Last visit</th>
+                            <th width="14%" class="has-text-right">Hits on robots.txt</th>
+                        </tr>
+
+                        <tbody>
+                        <tr v-for="row in index.ROBOT">
+                            <td>{{ row.name }}</td>
+                            <td class="has-text-right">{{ row.cols[0] }}</td>
+                            <td class="has-text-right">{{ row.cols[1]|bytes }}</td>
+                            <td class="has-text-right">{{ row.cols[2]|ltime }}</td>
+                            <td class="has-text-right">{{ row.cols[3] }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <p>&nbsp;</p>
