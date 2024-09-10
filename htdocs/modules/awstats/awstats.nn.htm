@@ -9,7 +9,19 @@
         <div class="columns is-multiline">
             <div class="column is-narrow">
                 <div class="field is-size-7">Last updated</div>
-                {{ index.GENERAL._LastUpdate.cols[0]|ltime }}
+                <div class="has-text-weight-bold">{{ index.GENERAL._LastUpdate.cols[0]|ltime }}</div>
+            </div>
+            <div class="column is-narrow">
+                <div class="field is-size-7">Last line</div>
+                <div class="has-text-weight-bold">{{ index.GENERAL._LastLine.cols[0]|ltime }}</div>
+            </div>
+            <div class="column is-narrow">
+                <div class="field is-size-7">Total visits</div>
+                <div class="has-text-weight-bold">{{ index.GENERAL._TotalVisits.cols[0] }}</div>
+            </div>
+            <div class="column is-narrow">
+                <div class="field is-size-7">Total unique</div>
+                <div class="has-text-weight-bold">{{ index.GENERAL._TotalUnique.cols[0] }}</div>
             </div>
         </div>
     </div>
