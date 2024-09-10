@@ -45,10 +45,10 @@
                 <div class="table-container">
                     <table class="table is-bordered">
                         <tr>
-                            <td width="25%">Day</td>
-                            <td width="25%" class="has-text-right">Pages</td>
-                            <td width="25%" class="has-text-right">Hits</td>
-                            <td width="25%" class="has-text-right">Bandwidth</td>
+                            <th width="25%">Day</th>
+                            <th width="25%" class="has-text-right">Pages</th>
+                            <th width="25%" class="has-text-right">Hits</th>
+                            <th width="25%" class="has-text-right">Bandwidth</th>
                         </tr>
 
                         <tbody>
@@ -67,10 +67,10 @@
                 <div class="table-container">
                     <table class="table is-bordered">
                         <tr>
-                            <td width="25%">Hour</td>
-                            <td width="25%" class="has-text-right">Pages</td>
-                            <td width="25%" class="has-text-right">Hits</td>
-                            <td width="25%" class="has-text-right">Bandwidth</td>
+                            <th width="25%">Hour</th>
+                            <th width="25%" class="has-text-right">Pages</th>
+                            <th width="25%" class="has-text-right">Hits</th>
+                            <th width="25%" class="has-text-right">Bandwidth</th>
                         </tr>
 
                         <tbody>
@@ -109,6 +109,35 @@
                             <td class="has-text-right">{{ row.cols[3]|ltime }}</td>
                             <td class="has-text-right">{{ row.cols[4]|ltime }}</td>
                             <td class="has-text-right"><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.cols[5] }}</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <h2>URLs</h2>
+                <div class="table-container">
+                    <table class="table is-bordered">
+                        <tr>
+                            <th width="30%">URL</th>
+                            <th width="12%" class="has-text-right">Pages</th>
+                            <th width="13%" class="has-text-right">Hits</th>
+                            <th width="10%" class="has-text-right">Bandwidth</th>
+                            <th width="10%" class="has-text-right">Entry</th>
+                            <th width="10%" class="has-text-right">Exit</th>
+                        </tr>
+
+                        <tbody>
+                        <tr v-for="row in index.SIDER">
+                            <td class="has-text-right"><a :href="'//{{$hostname}}' + row.cols[5]" target="_blank">{{ row.name }}</a></td>
+                            <td class="has-text-right">{{ row.cols[0] }}</td>
+                            <td class="has-text-right">{{ row.cols[1] }}</td>
+                            <td class="has-text-right">{{ row.cols[2]|bytes }}</td>
+                            <td class="has-text-right">{{ row.cols[3] }}</td>
+                            <td class="has-text-right">{{ row.cols[4] }}</td>
+
                         </tr>
                         </tbody>
                     </table>
