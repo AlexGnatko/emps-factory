@@ -23,6 +23,13 @@
                 <div class="is-size-7">Total unique</div>
                 <div class="has-text-weight-bold">{{ index.GENERAL._TotalUnique.cols[0] }}</div>
             </div>
+
+            <div class="column is-narrow">
+                <div class="is-size-7">Pages</div>
+                <div class="has-text-weight-bold">{{ index.DOMAIN._ip.cols[0] }} pages</div>
+                <div class="has-text-weight-bold">{{ index.DOMAIN._ip.cols[1] }} hits</div>
+                <div class="has-text-weight-bold">{{ index.DOMAIN._ip.cols[2]|bytes }} bandwidth</div>
+            </div>
         </div>
     </div>
 
