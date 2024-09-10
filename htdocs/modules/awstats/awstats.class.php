@@ -58,7 +58,7 @@ class EMPS_AWStats {
                     $line = fgets($fh);
                     $line = trim($line);
                     $x = explode(" ", $line);
-                    $code = strval(array_shift($x));
+                    $code = "_".strval(array_shift($x));
                     $values[$code] = [];
                     foreach($x as $xv){
                         $values[$code][] = $xv;
