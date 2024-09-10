@@ -19,6 +19,16 @@ Vue.filter('ltime', function (value) {
     return day + "." + month + "." + year + " " + hour + ":" + min + ":" + sec;
 });
 
+Vue.filter('ldate', function (value) {
+    if (!value) {
+        return "-";
+    }
+    let year = value.substr(0, 4);
+    let month = value.substr(4, 2);
+    let day = value.substr(6, 2);
+    return day + "." + month + "." + year;
+});
+
 Vue.filter('form_only_time', function (value) {
     if (value == 0) {
         return "-";
