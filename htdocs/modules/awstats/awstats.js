@@ -13,6 +13,7 @@ emps_scripts.push(function(){
                 loading: false,
                 log: "",
                 ips: [],
+                ip: "",
             };
         },
         mounted: function(){
@@ -51,7 +52,8 @@ emps_scripts.push(function(){
                     });
             },
             open_ip: function(ip) {
-
+                this.ip = ip;
+                this.open_modal("modalIP");
             }
         }
     });
