@@ -106,7 +106,7 @@ if ($emps->auth->credentials("admin")) {
         }
 
         $rv = $ef->command_result($command_id);
-        $emps->json(["rv" => $rv]); exit;
+        $emps->json_ok(["rv" => $rv]); exit;
     }
 } else {
     $emps->deny_access("AdminNeeded");
