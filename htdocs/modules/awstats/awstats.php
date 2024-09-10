@@ -27,8 +27,9 @@ if ($emps->auth->credentials("admin")) {
     if ($_GET['load_log']) {
         $text = str_replace("\"", "'", $_GET['text']);
         $filename = "/var/log/nginx/{$hostname}.log";
-        $log = shell_exec("cat {$filename} | grep \"{$text}\"");
-        $emps->json_ok(['log' => $log]); exit;
+        $cmd = "cat {$filename} | grep \"{$text}\"";
+        $log = shell_exec($cmd);
+        $emps->json_ok(['log' => $log, 'cmd' => $cmd]); exit;
     }
 } else {
     $emps->deny_access("AdminNeeded");
