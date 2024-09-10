@@ -4,5 +4,11 @@
 <h1>AWStats: {{$hostname}}</h1>
 
 <div id="awstats-app">
-    {{ index }}
+    <h2>General</h2>
+    <div class="columns is-multiline">
+        <div class="column is-narrow">
+            <div class="field is-size-7">Last updated</div>
+            {{ index.GENERAL._LastUpdate.0 }}
+        </div>
+    </div>
 </div>
