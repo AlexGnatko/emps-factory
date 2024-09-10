@@ -23,6 +23,13 @@ if ($emps->auth->credentials("admin")) {
         }
         $emps->json_ok(['index' => $index]); exit;
     }
+
+    if ($_GET['load_log']) {
+        $text = str_replace("\"", "'", $_GET['text']);
+        $filename = "/var/log/nginx/{$hostname}.log";
+        $log = shell_exec("cat {$filename} | grep \"{$text}\"");
+        $emps->json_ok(['log' => $log]); exit;
+    }
 } else {
     $emps->deny_access("AdminNeeded");
 }

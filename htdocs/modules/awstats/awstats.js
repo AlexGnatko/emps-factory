@@ -34,8 +34,18 @@ emps_scripts.push(function(){
                         }
                     });
             },
-            open_log_cat: function() {
+            open_log_cat: function(text) {
+                this.log = "Loading...";
                 this.open_modal("modalLog");
+                axios.get("./?load_log=1&filter=" + text)
+                    .then(response => {
+                        let data = response.data;
+                        if (data.code == "OK") {
+                            this.log = data.log;
+                        } else {
+                            toastr.error(data.message);
+                        }
+                    });
             }
         }
     });
