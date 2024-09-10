@@ -1,4 +1,5 @@
 <?php
+global $ef;
 
 if ($emps->auth->credentials("admin")) {
     $emps->page_property("vuejs", 1);
@@ -80,6 +81,32 @@ if ($emps->auth->credentials("admin")) {
         }
 
         $emps->json_ok(['log' => $log, 'ips' => $ips, 'cmds' => $cmds]); exit;
+    }
+
+    if ($_GET['checkip']) {
+        $ip = $_GET['ip'];
+        $ip = $aws->sanitize_ip($ip);
+        $command_id = $ef->add_command("iptables -L | grep -E 'DROP.*{$ip}'");
+        $rv = $ef->command_result($command_id);
+        if (strstr($rv, $ip) !== false) {
+            $emps->json_ok(['banned' => true]); exit;
+        } else {
+            $emps->json_ok(['banned' => false]); exit;
+        }
+    }
+
+    if ($_GET['banip']) {
+        $ip = $_GET['ip'];
+        $ip = $aws->sanitize_ip($ip);
+        $mode = intval($_GET['mode']);
+        if ($mode == 1) {
+            $command_id = $ef->add_command("iptables -A INPUT -s {$ip} -j DROP");
+        } else {
+            $command_id = $ef->add_command("iptables -D INPUT -s {$ip} -j DROP");
+        }
+
+        $rv = $ef->command_result($command_id);
+        $emps->json(["rv" => $rv]); exit;
     }
 } else {
     $emps->deny_access("AdminNeeded");

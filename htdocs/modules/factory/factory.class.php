@@ -245,6 +245,22 @@ class EMPS_Factory {
 		return $id;
 	}
 
+	public function command_result($command_id) {
+	    global $emps;
+	    $started = time();
+retry:
+        $row = $emps->db->get_row("ef_commands", "id = {$command_id}");
+        $row = $this->explain_command($row);
+        if ($row['status'] == 10) {
+            return $row['response'];
+        }
+        if (time() - $started > 60) {
+            return "";
+        }
+        sleep(1);
+        goto retry;
+    }
+
 	public function custom_command($command, $website_id, $payload){
 		global $emps, $SET;
 		

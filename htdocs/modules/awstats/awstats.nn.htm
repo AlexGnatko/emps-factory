@@ -288,8 +288,8 @@
             <h2>{{ ip }}</h2>
             <div class="buttons">
                 <a :href="'https://geoip.ag38.ru/front/?ip=' + ip" target="_blank" class="button link">GeoIP: {{ ip }}</a>
-                <button type="button" class="button is-warning">Ban</button>
-                <button type="button" class="button is-info">Unban</button>
+                <button @click.stop.prevent="ban(ip, 1)" type="button" class="button is-warning">Ban</button>
+                <button @click.stop.prevent="ban(ip, 0)" type="button" class="button is-info">Unban</button>
             </div>
         </div>
 

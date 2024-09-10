@@ -113,5 +113,15 @@ class EMPS_AWStats {
         $dt = $emps->parse_time($date);
         return $dt;
     }
+
+    public function sanitize_ip($ip) {
+        $x = explode(".", $ip, 4);
+        $parts = [];
+        foreach ($x as $v) {
+            $v = intval($v);
+            $parts[] = strval($v);
+        }
+        return implode(".", $parts);
+    }
 }
 
