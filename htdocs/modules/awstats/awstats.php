@@ -26,10 +26,28 @@ if ($emps->auth->credentials("admin")) {
 
     if ($_GET['load_log']) {
         $text = str_replace("\"", "'", $_GET['text']);
-        $filename = "/var/log/nginx/{$hostname}.log";
-        $cmd = "cat {$filename} | grep \"{$text}\"";
-        $log = shell_exec($cmd);
-        $emps->json_ok(['log' => $log, 'cmd' => $cmd]); exit;
+        $files = [];
+
+        $files[] = "/var/log/nginx/{$hostname}.log";
+        $files[] = "/var/log/nginx/{$hostname}.log.1";
+        for ($i = 2; $i <= 14; $i++) {
+            $files[] = "/var/log/nginx/{$hostname}.log.{$i}.gz";
+        }
+
+        $log = "";
+        $cmds = [];
+        foreach ($files as $idx => $file) {
+            if ($idx > 1) {
+                $cmd = "zcat {$file} | grep \"{$text}\"";
+            } else {
+                $cmd = "cat {$file} | grep \"{$text}\"";
+            }
+            $cmds[] = $cmd;
+
+            $log .= shell_exec($cmd);
+        }
+
+        $emps->json_ok(['log' => $log, 'cmds' => $cmds]); exit;
     }
 } else {
     $emps->deny_access("AdminNeeded");
