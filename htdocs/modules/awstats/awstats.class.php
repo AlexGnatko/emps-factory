@@ -51,6 +51,9 @@ class EMPS_AWStats {
             $x = explode(" ", $line);
             if($x[0] == 'BEGIN_'.$code){
                 $count = intval($x[1]);
+                if ($code == "OS") {
+                    $count = intval($x[6]);
+                }
                 if ($count > $lines) {
                     $count = $lines;
                 }
