@@ -48,8 +48,9 @@
                         <tr width="25%">Hits</tr>
                         <tr width="25%">Bandwidth</tr>
                         <tbody>
-                        <tr v-for="(row,ri) in index.DAY">
+                        <tr v-for="([ri, row]) in Object.entries(index.DAY)">
                             <td>{{ row.name }}</td>
+                            <td>{{ row }}</td>
                         </tr>
                         </tbody>
                     </tabe>
