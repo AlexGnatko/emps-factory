@@ -49,6 +49,10 @@
 	include /etc/nginx/rewrite-7.2.conf;
 {{elseif $php_version == "7.4"}}
 	include /etc/nginx/rewrite-7.4.conf;
+{{elseif $php_version == "8.1"}}
+	include /etc/nginx/rewrite-8.1.conf;
+{{elseif $php_version == "8.2"}}
+	include /etc/nginx/rewrite-8.2.conf;
 {{else}}
 	include /etc/nginx/rewrite.conf;
 {{/if}}
