@@ -4,13 +4,15 @@
 {{script src="/mjs/awstats-all/all.js" defer=1}}
 
 <div id="awstats-app">
-<h1>AWStats: {{$hostname}}</h1>
-<h2>Period: {{$period}}</h2>
-<h3>
-    {{if $ss == "SIDER_404"}}
-        404 Errors
-    {{/if}}
-</h3>
+    <div class="content">
+        <h1>AWStats: {{$hostname}}</h1>
+        <h2>Period: {{$period}}</h2>
+        <h3>
+            {{if $ss == "SIDER_404"}}
+                404 Errors
+            {{/if}}
+        </h3>
+    </div>
 
 <div class="table-container">
     <table class="table is-bordered">

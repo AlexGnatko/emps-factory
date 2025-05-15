@@ -44,6 +44,9 @@ if ($emps->auth->credentials("admin")) {
         $aws->read_map();
 
         $lst = $aws->read_awstats_section($ss, 10000000);
+        usort($lst, function($a, $b) {
+            return $a['cols'][0] - $b['cols'][0];
+        });
         $smarty->assign("lst", $lst);
         $smarty->assign("ss", $ss);
 
