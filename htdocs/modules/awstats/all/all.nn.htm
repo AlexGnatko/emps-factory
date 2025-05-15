@@ -1,0 +1,45 @@
+{{script src="/mjs/comp-formats/formats.js" defer=1}}
+{{script src="/mjs/comp-mixins/common.js" defer=1}}
+{{script src="/mjs/awstats/common.js" defer=1}}
+{{script src="/mjs/awstats-all/all.js" defer=1}}
+
+<div id="awstats-app">
+<h1>AWStats: {{$hostname}}</h1>
+<h2>Period: {{$period}}</h2>
+<h3>
+    {{if $ss == "SIDER_404"}}
+        404 Errors
+    {{/if}}
+</h3>
+
+<div class="table-container">
+    <table class="table is-bordered">
+        <tr>
+            <th width="44%">URL</th>
+            <th width="12%" class="has-text-right">Hits</th>
+            <th width="44%">Referrer</th>
+        </tr>
+
+        <tbody>
+        <tr v-for="row in lst">
+            <td><a :href="'//{{$hostname}}' + row.name" target="_blank">{{ row.name }}</a>
+                <span class="is-pulled-right">
+                                <a class="tag is-info" href="javascript:;" @click.stop.prevent="open_log_cat(row.name)">Log</a>
+                            </span>
+            </td>
+            <td class="has-text-right">{{ row.cols[0] }}</td>
+            <td>{{ row.cols[1] }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+    <p>&nbsp;</p>
+    <hr size="1" />
+
+    {{include file="db:_awstats,modals"}}
+
+</div>
+<script>
+    var lst = {{$lst|json_encode}};
+</script>

@@ -1,5 +1,6 @@
 {{script src="/mjs/comp-formats/formats.js" defer=1}}
 {{script src="/mjs/comp-mixins/common.js" defer=1}}
+{{script src="/mjs/awstats/common.js" defer=1}}
 {{script src="/mjs/awstats/awstats.js" defer=1}}
 
 
@@ -266,42 +267,7 @@
     <p>&nbsp;</p>
     <hr size="1" />
 
-    <modal id="modalLog" size="full">
-        <template slot="header">
-            Web server log
-        </template>
-
-        <pre ref="logfile" class="logfile field">{{ log }}</pre>
-
-        <div class="field tags">
-            <template v-for="(ip,ii) in ips">
-                <a href="javascript:;" @click.stop.prevent="open_ip(ip)" class="tag is-info">{{ ip }}</a>
-            </template>
-        </div>
-
-        <template slot="actions">
-
-        </template>
-    </modal>
-
-    <modal id="modalIP" size="sm">
-        <template slot="header">
-            IP info
-        </template>
-
-        <div class="content">
-            <h2>{{ ip }}</h2>
-            <div class="buttons">
-                <a :href="'https://geoip.ag38.ru/front/?ip=' + ip" target="_blank" class="button link">GeoIP: {{ ip }}</a>
-                <button @click.stop.prevent="ban(ip, 1)" type="button" class="button is-warning">Ban</button>
-                <button @click.stop.prevent="ban(ip, 0)" type="button" class="button is-info">Unban</button>
-            </div>
-        </div>
-
-        <template slot="actions">
-
-        </template>
-    </modal>
+    {{include file="db:_awstats,modals"}}
 </div>
 
 {{include file="db:_comp/modal"}}

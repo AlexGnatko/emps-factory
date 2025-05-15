@@ -44,8 +44,12 @@ if ($emps->auth->credentials("admin")) {
         $aws->read_map();
 
         $lst = $aws->read_awstats_section($ss, 10000000);
-        var_dump($lst);
+        $smarty->assign("lst", $lst);
+        $smarty->assign("ss", $ss);
+
     }
+
+    require_once $emps->page_file_name('_awstats,common', 'controller');
 } else {
     $emps->deny_access("AdminNeeded");
 }
