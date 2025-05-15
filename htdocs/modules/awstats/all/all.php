@@ -35,6 +35,14 @@ if ($emps->auth->credentials("admin")) {
     $emps->loadvars();
 
     if ($ss) {
+        $filename = $aws->report_filename();
+        if (!$filename) {
+            return false;
+        }
+        $aws->filename = $filename;
+
+        $aws->read_map();
+
         $lst = $aws->read_awstats_section($ss, 10000000);
         var_dump($lst);
     }
