@@ -42,7 +42,7 @@
 	}
 {{else}}
 	{{*PHP*}}
-	include /etc/nginx/deny.conf;
+
 {{if $php_version == "7.0"}}
 	include /etc/nginx/rewrite-7.0.conf;
 {{elseif $php_version == "7.2"}}
@@ -58,6 +58,7 @@
 {{else}}
 	include /etc/nginx/rewrite.conf;
 {{/if}}
+	include /etc/nginx/deny.conf;
 	include /etc/nginx/gzip.conf;
     {{*/PHP*}}
 {{/if}}
@@ -80,6 +81,10 @@ server {
 	listen			80;
     listen			[::]:80;
 {{$smarty.capture.common}}
+
+{{if $cfg.force_https}}
+	return 301 https://$host$request_uri;
+{{/if}}
 }
 
 {{if $ssl}}
