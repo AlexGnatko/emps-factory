@@ -45,7 +45,7 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
         $dt = time() - 24*60*60;
 
         if (!$ra['current_ip'] || $ra['current_ip_dt'] < $dt) {
-            $ra['current_ip'] = shell_exec("dig +short A {$ra['hostname']}");
+            $ra['current_ip'] = shell_exec("getent ahostsv4 {$ra['hostname']} | awk '{ print ".`$1`."; exit }'");
             $emps->p->save_properties(['current_ip' => $ra['current_ip']], $ra['context_id'], "current_ip:c");
             $emps->p->save_properties(['current_ip_dt' => time()], $ra['context_id'], "current_ip_dt:i");
         }
