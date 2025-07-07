@@ -41,7 +41,15 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 		
 		$ra['cfg'] = $ef->site_defaults($ra);
         $ra['hostname_decoded'] = $IDN->convert(mb_strtolower($ra['hostname']));
-		
+
+        $dt = time() - 15*60;
+
+        if (!$ra['current_ip'] || $ra['current_ip_dt'] < $dt) {
+            $ra['current_ip'] = shell_exec("dig +short A {$ra['hostname']}");
+            $emps->p->save_properties(['current_ip' => $ra['current_ip']], $ra['context_id'], "current_ip:c");
+            $emps->p->save_properties(['current_ip_dt' => time()], $ra['context_id'], "current_ip_dt:i");
+        }
+
 		return parent::handle_row($ra);
 	}
 }
