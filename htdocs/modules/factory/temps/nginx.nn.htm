@@ -55,6 +55,8 @@
 	include /etc/nginx/rewrite-8.2.conf;
 {{elseif $php_version == "8.3"}}
 	include /etc/nginx/rewrite-8.3.conf;
+{{elseif $php_version == "8.4"}}
+	include /etc/nginx/rewrite-8.4.conf;
 {{else}}
 	include /etc/nginx/rewrite.conf;
 {{/if}}
