@@ -12,7 +12,7 @@ require_once $emps->page_file_name('_factory,factory_worker.class', 'controller'
 $ef = new EMPS_Factory();
 $efw = new EMPS_FactoryWorker();
 
-if ($emps->auth->credentials("users,logview")) {
+if ($emps->auth->credentials("users")) {
     $emps->page_property("simple", 1);
 
     $website_id = intval($key);
@@ -41,5 +41,5 @@ if ($emps->auth->credentials("users,logview")) {
         $emps->json_ok($data); exit;
     }
 } else {
-    $emps->deny_access("AdminNeeded");
+    $emps->deny_access("UserNeeded");
 }
