@@ -1,0 +1,25 @@
+.logfile {
+    background-color: black;
+    padding: 0.5rem;
+    color: white;
+    overflow-Y:scroll;
+    height: 60vh;
+    position: relative;
+    white-space: break-spaces;
+    word-wrap: break-word;
+}
+
+.logfile.expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+.exbutton {
+    position: sticky;
+    top: 1rem;
+    left: 1rem;
+}

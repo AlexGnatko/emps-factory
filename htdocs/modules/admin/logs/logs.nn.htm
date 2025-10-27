@@ -1,0 +1,17 @@
+<div class="logs-app">
+    <div class="content">
+        <h1>Log file tails<br/>
+        <small>{{$website.hostname}}</small></h1>
+    </div>
+    <div class="tabs is-small">
+        <ul>
+            <template v-for="(slog,li) in logs">
+                <li :class="{'is-active': current_log?.name == slog.name}"><a @click.stop.prevent="select_log(slog)">{{ slog.name }}</a></li>
+            </template>
+        </ul>
+    </div>
+<pre ref="logfile" :class="{'logfile': true, 'expanded': expanded}"><div class="exbutton"><button type="button" @click.stop.prevent="toggle_expanded" class="button"><i class="fa fa-expand"></i></button></div>
+{{ log }}
+</pre>
+</div>
+{{script src="/mjs/admin-logs/logs.js" defer=true}}
