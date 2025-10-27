@@ -23,6 +23,8 @@ if ($emps->auth->credentials("users")) {
         exit;
     }
 
+    $smarty->assign("website", $website);
+
     $hostname = $website['hostname'];
 
     if ($_GET['tick']) {
