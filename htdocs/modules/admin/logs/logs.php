@@ -38,7 +38,7 @@ if ($emps->auth->credentials("users")) {
         $log = shell_exec("tail -n 200 {$logpath}");
         //$log = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x80-\xFF]/', '?', $log);
         $log = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F]/u', '?', $log);
-        $json_data = json_encode(['log' => $log], JSON_INVALID_UTF8_IGNORE);
+        $json_data = json_encode(['log' => $log, 'path' => $logpath], JSON_INVALID_UTF8_IGNORE);
         $data = json_decode($json_data, true);
         $emps->json_ok($data); exit;
     }
