@@ -16,7 +16,7 @@
     </template>
 </modal>
 
-<modal id="modalIP" size="sm">
+<modal id="modalIP" size="">
     <template slot="header">
         IP info
     </template>
@@ -27,6 +27,7 @@
             <a :href="'https://geoip.ag38.ru/front/?ip=' + ip" target="_blank" class="button link">GeoIP: {{ ip }}</a>
             <button @click.stop.prevent="ban(ip, 1)" type="button" class="button is-warning">Ban</button>
             <button @click.stop.prevent="ban(ip, 0)" type="button" class="button is-info">Unban</button>
+            <button @click.stop.prevent="open_log_cat(ip)" type="button" class="button is-link">Log</button>
         </div>
     </div>
 
