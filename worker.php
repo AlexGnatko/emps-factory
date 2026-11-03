@@ -32,6 +32,7 @@ $emps->select_website();
 unlink(EMPS_SCRIPT_PATH."/restart");
 
 while(true){
+    echo "Cycle...\r\n";
 	$efw->cycle();
 	if(time() > $off_time){
 		break;
