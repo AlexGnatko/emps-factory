@@ -13,10 +13,10 @@ if ($emps->auth->credentials("admin")) {
 
     $export_key = $emps->get_setting("export_key");
 
-    if ($_POST['post_initiate']) {
-        $payload = $_POST['payload'];
-        $hostname = $payload['remote_factory'];
-        $website = $payload['remote_hostname'];
+    if ($_POST['post_initiate'] ?? false) {
+        $payload = $_POST['payload'] ?? [];
+        $hostname = $payload['remote_factory'] ?? '';
+        $website = $payload['remote_hostname'] ?? '';
 
         $url = "http://{$hostname}/factory-export/{$website}/{$export_key}/start/";
 
@@ -24,11 +24,11 @@ if ($emps->auth->credentials("admin")) {
 
         $rv = json_decode($rv, true);
 
-        if ($rv['code'] == "OK") {
+        if (($rv['code'] ?? '') == "OK") {
             $emps->json_ok($rv); exit;
         } else {
-            if ($rv['code'] == "Error") {
-                if ($rv['message'] == "no_access") {
+            if (($rv['code'] ?? '') == "Error") {
+                if (($rv['message'] ?? '') == "no_access") {
                     $emps->json_error("Access keys do not match!"); exit;
                 }
             }
@@ -36,21 +36,21 @@ if ($emps->auth->credentials("admin")) {
         }
     }
 
-    if ($_POST['post_continue']) {
-        $payload = $_POST['payload'];
+    if ($_POST['post_continue'] ?? false) {
+        $payload = $_POST['payload'] ?? [];
 
-        $command_payload = $payload['import_payload'];
-        $website_id = $payload['local_website_id'];
+        $command_payload = $payload['import_payload'] ?? [];
+        $website_id = $payload['local_website_id'] ?? 0;
 
         $id = $ef->custom_command("import-website", $website_id, json_encode($command_payload));
 
         $emps->json_ok(["command" => $id]); exit;
     }
 
-    if ($_GET['load_status']) {
-        $hostname = $_GET['factory'];
-        $website = $_GET['hostname'];
-        $command = intval($_GET['command']);
+    if ($_GET['load_status'] ?? false) {
+        $hostname = $_GET['factory'] ?? '';
+        $website = $_GET['hostname'] ?? '';
+        $command = intval($_GET['command'] ?? 0);
 
         $url = "http://{$hostname}/factory-export/{$website}/{$export_key}/status/{$command}/";
 
@@ -60,11 +60,11 @@ if ($emps->auth->credentials("admin")) {
 
         $rv = json_decode($rv, true);
 
-        if ($rv['code'] == "OK") {
+        if (($rv['code'] ?? '') == "OK") {
             $emps->json_ok($rv); exit;
         } else {
-            if ($rv['code'] == "Error") {
-                if ($rv['message'] == "no_access") {
+            if (($rv['code'] ?? '') == "Error") {
+                if (($rv['message'] ?? '') == "no_access") {
                     $emps->json_error("Access keys do not match!"); exit;
                 }
             }
@@ -72,15 +72,15 @@ if ($emps->auth->credentials("admin")) {
         }
     }
 
-    if ($_GET['load_local_status']) {
-        $id = intval($_GET['command']);
+    if ($_GET['load_local_status'] ?? false) {
+        $id = intval($_GET['command'] ?? 0);
 
         $cmd = $emps->db->get_row("ef_commands", "id = {$id}");
 
-        $website_id = $cmd['ef_website_id'];
+        $website_id = $cmd['ef_website_id'] ?? 0;
         $data = [];
         $data['website_id'] = $website_id;
-        $data['status'] = $cmd['status'];
+        $data['status'] = $cmd['status'] ?? null;
 
         $website = $ef->load_website($website_id);
 

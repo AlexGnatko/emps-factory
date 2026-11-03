@@ -27,7 +27,7 @@ while($ra = $emps->db->fetch_named($r)){
 
         foreach($stat as $n => $v){
             if($n != 'period'){
-                $slst[$stat['period']]['stat'][$n] += $v;
+                $slst[$stat['period']]['stat'][$n] = ($slst[$stat['period']]['stat'][$n] ?? 0) + $v;
             }
 
         }
@@ -38,10 +38,10 @@ while($ra = $emps->db->fetch_named($r)){
 foreach($slst as $n => $v) {
     $websites = $v['websites'];
     usort($websites, function ($a, $b) {
-        if ($a['stats']['hits'] > $b['stats']['hits']) {
+        if (($a['stats']['hits'] ?? 0) > ($b['stats']['hits'] ?? 0)) {
             return -1;
         }
-        if ($a['stats']['hits'] < $b['stats']['hits']) {
+        if (($a['stats']['hits'] ?? 0) < ($b['stats']['hits'] ?? 0)) {
             return 1;
         }
         return 0;
@@ -56,9 +56,11 @@ foreach($slst as $n => $v) {
     $slst[$n]['websites'] = $wlst;
 }
 
+$o_stats = null;
+$w_stats = null;
 foreach ($slst as $v) {
-    $o_stats = $v['stat'];
-    $w_stats = $v['websites'][0]['stats'];
+    $o_stats = $v['stat'] ?? null;
+    $w_stats = $v['websites'][0]['stats'] ?? null;
 }
 
 $response = [];

@@ -8,7 +8,7 @@ $emps_start_time = microtime(true);
 
 // Just a suggestion. Could be turned off on a production server.
 error_reporting(0);
-if($_GET['debug']){
+if($_GET['debug'] ?? false){
 	error_reporting(E_ERROR | E_WARNING | E_PARSE | E_COMPILE_ERROR );
 }
 

@@ -36,7 +36,7 @@ while(true){
 	if(time() > $off_time){
 		break;
 	}
-	if($GLOBALS['die_now']){
+	if($GLOBALS['die_now'] ?? false){
 		break;
 	}
 	if (file_exists(EMPS_SCRIPT_PATH."/restart")) {

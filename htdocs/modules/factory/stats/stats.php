@@ -12,7 +12,7 @@ if($emps->auth->credentials("admin")){
         }
         $stats = $ef->list_stats($ra['id']);
         foreach($stats as $stat){
-            if(!$slst[$stat['period']]){
+            if(!isset($slst[$stat['period']])){
                 $slst[$stat['period']] = ['period' => $stat['period'], 'websites' => []];
             }
 
@@ -27,7 +27,7 @@ if($emps->auth->credentials("admin")){
 
             foreach($stat as $n => $v){
                 if($n != 'period'){
-                    $slst[$stat['period']]['stat'][$n] += $v;
+                    $slst[$stat['period']]['stat'][$n] = ($slst[$stat['period']]['stat'][$n] ?? 0) + $v;
                 }
 
             }
@@ -37,10 +37,10 @@ if($emps->auth->credentials("admin")){
     foreach($slst as $n => $v){
         $websites = $v['websites'];
         usort($websites, function($a, $b){
-            if($a['stats']['hits'] > $b['stats']['hits']){
+            if(($a['stats']['hits'] ?? 0) > ($b['stats']['hits'] ?? 0)){
                 return -1;
             }
-            if($a['stats']['hits'] < $b['stats']['hits']){
+            if(($a['stats']['hits'] ?? 0) < ($b['stats']['hits'] ?? 0)){
                 return 1;
             }
             return 0;

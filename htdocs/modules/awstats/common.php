@@ -1,7 +1,7 @@
 <?php
 
-if ($_GET['load_log']) {
-    $text = str_replace("\"", "'", $_GET['text']);
+if ($_GET['load_log'] ?? false) {
+    $text = $_GET['text'] ?? '';
     $files = [];
 
     $files[] = "/var/log/nginx/{$hostname}.log";
@@ -14,9 +14,9 @@ if ($_GET['load_log']) {
     $cmds = [];
     foreach ($files as $idx => $file) {
         if ($idx > 1) {
-            $cmd = "zcat {$file} | grep \"{$text}\"";
+            $cmd = "zcat ".escapeshellarg($file)." | grep -- ".escapeshellarg($text);
         } else {
-            $cmd = "cat {$file} | grep \"{$text}\"";
+            $cmd = "cat ".escapeshellarg($file)." | grep -- ".escapeshellarg($text);
         }
         $cmds[] = $cmd;
 
@@ -42,8 +42,8 @@ if ($_GET['load_log']) {
     $emps->json_ok(['log' => $log, 'ips' => $ips, 'cmds' => $cmds]); exit;
 }
 
-if ($_GET['checkip']) {
-    $ip = $_GET['ip'];
+if ($_GET['checkip'] ?? false) {
+    $ip = $_GET['ip'] ?? '';
     $ip = $aws->sanitize_ip($ip);
     $command_id = $ef->add_command("iptables -L | grep -E 'DROP.*{$ip}'");
     $rv = $ef->command_result($command_id);
@@ -54,10 +54,10 @@ if ($_GET['checkip']) {
     }
 }
 
-if ($_GET['banip']) {
-    $ip = $_GET['ip'];
+if ($_GET['banip'] ?? false) {
+    $ip = $_GET['ip'] ?? '';
     $ip = $aws->sanitize_ip($ip);
-    $mode = intval($_GET['mode']);
+    $mode = intval($_GET['mode'] ?? 0);
     if ($mode == 1) {
         $command_id = $ef->add_command("iptables -A INPUT -s {$ip} -j DROP");
     } else {

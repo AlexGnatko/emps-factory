@@ -44,8 +44,8 @@ class EMPS_WebsitesEditor extends EMPS_ImprovedTableEditor {
 
         $dt = time() - 24*60*60;
 
-        if (!$ra['current_ip'] || $ra['current_ip_dt'] < $dt) {
-            if (!($ra['current_ip_dt'] > $dt)) {
+        if (empty($ra['current_ip']) || ($ra['current_ip_dt'] ?? 0) < $dt) {
+            if (!(($ra['current_ip_dt'] ?? 0) > $dt)) {
                 $ra['current_ip'] = shell_exec("getent ahostsv4 {$ra['hostname']} | awk '{ print ".`$1`."; exit }'");
                 $emps->p->save_properties(['current_ip' => $ra['current_ip']], $ra['context_id'], "current_ip:c");
                 $emps->p->save_properties(['current_ip_dt' => time()], $ra['context_id'], "current_ip_dt:i");
@@ -77,11 +77,11 @@ if ($emps->auth->credentials("admin")) {
 }
 
 if ($can_do) {
-    if($_POST['install_local_php'] && $key){
+    if(($_POST['install_local_php'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         $data = array();
-        if($_POST['overwrite']){
+        if($_POST['overwrite'] ?? false){
             $data['overwrite'] = true;
         }else{
             $data['overwrite'] = false;
@@ -106,19 +106,19 @@ if ($can_do) {
         $data['file_name'] = $file_name;
         $data['htdocs'] = $cfg['path'];
         $data['www_dir'] = $row['www_dir'];
-        $data['owner'] = $row['user']['username'];
+        $data['owner'] = $row['user']['username'] ?? '';
 
         $ef->custom_command("install-local-php", $row['id'], json_encode($data));
         $ef->set_status($row['context_id'], array("local_php"=>"started"));
         $emps->redirect_elink();exit();
     }
 
-    if($_POST['post_pem'] && $key){
+    if(($_POST['post_pem'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
-            $file_name = $ef->temporary_file("pemfile-".$row['id'], $_POST['pemfile']);
-            $key_file_name = $ef->temporary_file("keyfile-".$row['id'], $_POST['keyfile']);
+            $file_name = $ef->temporary_file("pemfile-".$row['id'], $_POST['pemfile'] ?? '');
+            $key_file_name = $ef->temporary_file("keyfile-".$row['id'], $_POST['keyfile'] ?? '');
             $data = array();
             $data['file_name'] = $file_name;
             $data['key_file_name'] = $key_file_name;
@@ -131,7 +131,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['copy_ssl'] && $key){
+    if(($_POST['copy_ssl'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -145,7 +145,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['setup_git'] && $key){
+    if(($_POST['setup_git'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -160,7 +160,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['install_httpd'] && $key){
+    if(($_POST['install_httpd'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -175,7 +175,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['install_mysql'] && $key){
+    if(($_POST['install_mysql'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -190,7 +190,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['init_website'] && $key){
+    if(($_POST['init_website'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -205,7 +205,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['certbot'] && $key){
+    if(($_POST['certbot'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -220,7 +220,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['setup_awstats'] && $key){
+    if(($_POST['setup_awstats'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -235,7 +235,7 @@ if ($can_do) {
         }
     }
 
-    if($_POST['move_uploads'] && $key){
+    if(($_POST['move_uploads'] ?? false) && $key){
         $row = $ef->load_website(intval($key));
 
         if($row){
@@ -251,7 +251,7 @@ if ($can_do) {
     }
 }
 
-if($_POST['hostname']){
+if($_POST['hostname'] ?? false){
 	$_REQUEST['name'] = $_POST['hostname'];
 }
 
@@ -261,7 +261,7 @@ if(isset($_GET['set_closed'])){
     $_SESSION['websites_closed'] = $_GET['set_closed'];
 }
 
-$smarty->assign("status_closed", $_SESSION['websites_closed']);
+$smarty->assign("status_closed", $_SESSION['websites_closed'] ?? 0);
 
 $ited->where = " where 1=1 ";
 
@@ -269,7 +269,7 @@ if ($ClientMode) {
     $ited->where .= " and user_id = {$emps->auth->USER_ID} ";
 }
 
-if($_SESSION['websites_closed']){
+if($_SESSION['websites_closed'] ?? false){
     $ited->where .= " and status = 50 ";
 }else{
     $ited->where .= " and status <> 50 ";

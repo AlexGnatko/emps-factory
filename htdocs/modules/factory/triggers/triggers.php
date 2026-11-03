@@ -2,7 +2,7 @@
 
 if ($emps->auth->credentials("admin")) {
 
-    if ($_POST['post_create']) {
+    if ($_POST['post_create'] ?? false) {
         $nr = $_POST;
         $nr['user_id'] = $emps->auth->USER_ID;
         $nr['apikey'] = md5(json_encode($nr).time());
@@ -10,7 +10,7 @@ if ($emps->auth->credentials("admin")) {
         $emps->redirect_elink(); exit;
     }
 
-    if ($_GET['delete']) {
+    if ($_GET['delete'] ?? false) {
         $id = intval($_GET['delete']);
         $emps->db->query("delete from ".TP."ef_remote_commands where id = {$id}");
         $emps->redirect_elink(); exit;

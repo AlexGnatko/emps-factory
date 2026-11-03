@@ -4,8 +4,8 @@ $emps->page_property("vuejs", true);
 $emps->page_property("toastr", true);
 $emps->page_property("momentjs", true);
 
-if ($_POST['post_add_service']) {
-    $payload = $_POST['payload'];
+if ($_POST['post_add_service'] ?? false) {
+    $payload = $_POST['payload'] ?? [];
     $nr = $payload;
     $nr['user_id'] = $emps->auth->USER_ID;
     $nr['website_id'] = $this->ref_id;
@@ -15,17 +15,17 @@ if ($_POST['post_add_service']) {
     $emps->json_ok([]); exit;
 }
 
-if ($_POST['post_save_service']) {
-    $payload = $_POST['payload'];
+if ($_POST['post_save_service'] ?? false) {
+    $payload = $_POST['payload'] ?? [];
     $nr = [];
     $emps->copy_values($nr, $payload, "path,command,name");
-    $id = $payload['id'];
+    $id = $payload['id'] ?? 0;
     $emps->db->sql_update_row("ef_services", ['SET' => $nr], "id = {$id}");
 
     $emps->json_ok([]); exit;
 }
 
-if ($_GET['load_list']) {
+if ($_GET['load_list'] ?? false) {
     $r = $emps->db->query("select * from ".TP."ef_services where website_id = {$this->ref_id} order by id asc");
     $lst = [];
     while ($ra = $emps->db->fetch_named($r)) {

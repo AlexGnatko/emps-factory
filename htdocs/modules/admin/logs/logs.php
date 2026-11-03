@@ -27,10 +27,10 @@ if ($emps->auth->credentials("users")) {
 
     $hostname = $website['hostname'];
 
-    if ($_GET['tick']) {
+    if ($_GET['tick'] ?? false) {
 
         $logpath = "/var/log/nginx/{$hostname}.log";
-        if ($_GET['path']) {
+        if ($_GET['path'] ?? false) {
             if ($_GET['path'] == "error") {
                 $logpath = "/var/log/nginx/{$hostname}.error.log";
             }

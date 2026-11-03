@@ -39,7 +39,7 @@ class EMPS_UsersEditor extends EMPS_ImprovedTableEditor {
 	}
 }
 
-if($_POST['ensure_linux_user'] && $key){
+if(($_POST['ensure_linux_user'] ?? false) && $key){
 	$row = $ef->load_user(intval($key));
 	
 	if($row){
@@ -53,7 +53,7 @@ if($_POST['ensure_linux_user'] && $key){
 	}
 }
 
-if($_POST['ensure_mysql_user'] && $key){
+if(($_POST['ensure_mysql_user'] ?? false) && $key){
 	$row = $ef->load_user(intval($key));
 	
 	if($row){
@@ -67,7 +67,7 @@ if($_POST['ensure_mysql_user'] && $key){
 	}
 }
 
-if($_POST['authorized_keys'] && $key){
+if(($_POST['authorized_keys'] ?? false) && $key){
 	$row = $ef->load_user(intval($key));
 	
 	if($row){

@@ -8,6 +8,9 @@ class EMPS_Factory {
 	public $defaults;
 	
 	public $perpage = 25;
+		public $user_filter = null;
+		public $stats_period = null;
+		public $stats_from_period = null;
 
 	public function save_setting($context_id, $code, $value){
 		global $emps;
@@ -28,7 +31,7 @@ class EMPS_Factory {
 	
 		$ra = $emps->p->read_properties(array(), $context_id);	
 		
-		if($ra['status_data']){
+		if($ra['status_data'] ?? false){
 			$data = json_decode($ra['status_data'], true);
 		}else{
 			$data = array();
@@ -46,25 +49,25 @@ class EMPS_Factory {
 
 		$rv = json_decode($data, true);
 		$rv['php_version'] = PHP_VERSION;
-		$rv['self'] = $_SERVER['HTTP_HOST'];
-		$rv['self_ip'] = $_SERVER['SERVER_ADDR'];
+		$rv['self'] = $_SERVER['HTTP_HOST'] ?? '';
+		$rv['self_ip'] = $_SERVER['SERVER_ADDR'] ?? '';
 		
-		if(!$rv['main_path']){
+		if(empty($rv['main_path'])){
 			$rv['main_path'] = '/srv/www';
 		}
-		if(!$rv['lighttpd_conf_path']){
+		if(empty($rv['lighttpd_conf_path'])){
 			$rv['lighttpd_conf_path'] = '/etc/lighttpd';
 		}
-		if(!$rv['nginx_conf_path']){
+		if(empty($rv['nginx_conf_path'])){
 			$rv['nginx_conf_path'] = '/etc/nginx';
 		}
-		if(!$rv['server_type']){
+		if(empty($rv['server_type'])){
 			$rv['server_type'] = 'nginx';
 		}
-		if(!$rv['git_path']){
+		if(empty($rv['git_path'])){
 			$rv['git_path'] = '/opt/git';
 		}
-		if(!$rv['www_group']){
+		if(empty($rv['www_group'])){
 			$rv['www_group'] = 'www-data';
 		}
 		
@@ -79,7 +82,7 @@ class EMPS_Factory {
 		$ra['context_id'] = $emps->p->get_context(DT_USER, 1, $ra['id']);
 		$ra = $emps->p->read_properties($ra, $ra['context_id']);
 		
-		if($ra['cfg']){
+		if($ra['cfg'] ?? false){
 			$ra['cfg'] = json_decode($ra['cfg'], true);
 		}
 		
@@ -105,41 +108,41 @@ class EMPS_Factory {
 		$ra['context_id'] = $emps->p->get_context(DT_EF_WEBSITE, 1, $ra['id']);
 		$ra = $emps->p->read_properties($ra, $ra['context_id']);
 		
-		if($ra['user_id']){
+		if($ra['user_id'] ?? false){
 			$user = $emps->auth->load_user(intval($ra['user_id']));
 			if($user){
 				$ra['user'] = $this->explain_user($user);
 			}
 		}
 		
-		if($ra['www_dir_alt']){
+		if($ra['www_dir_alt'] ?? false){
 			$ra['www_dir'] = $ra['www_dir_alt'];
 		}else{
-			if(!$ra['www_dir']){
+			if(empty($ra['www_dir'])){
 				$ra['www_dir'] = $ra['www_dir_alt'];
-				if(!$ra['www_dir']){
-					$prefix = $ra['user']['www_dir'];
+				if(empty($ra['www_dir'])){
+					$prefix = $ra['user']['www_dir'] ?? '';
 					if(!$prefix){
 						$prefix = $this->defaults['main_path'];
 					}
-					$ra['www_dir'] = $prefix.'/'.$ra['user']['username'].'/'.$ra['hostname'];
+					$ra['www_dir'] = $prefix.'/'.($ra['user']['username'] ?? '').'/'.$ra['hostname'];
 				}
 			}
 		}
 		
-		if(!$ra['htdocs']){
+		if(empty($ra['htdocs'])){
 			$ra['htdocs'] = 'htdocs';
 		}
 		
-		if(!$ra['git_repo']){
-			$ra['git_repo'] = $ra['user']['username'].'@'.$this->defaults['hostname'].':'.$this->defaults['git_path'].'/'.$ra['user']['username'].'/'.$ra['hostname'].'.git';
+		if(empty($ra['git_repo'])){
+			$ra['git_repo'] = ($ra['user']['username'] ?? '').'@'.($this->defaults['hostname'] ?? '').':'.$this->defaults['git_path'].'/'.($ra['user']['username'] ?? '').'/'.$ra['hostname'].'.git';
 		}
 		
-		if($ra['local_cfg']){
+		if($ra['local_cfg'] ?? false){
 			$ra['cfg'] = json_decode($ra['local_cfg'], true);
 		}
 		
-		if($ra['status_data']){
+		if($ra['status_data'] ?? false){
 			$ra['sd'] = json_decode($ra['status_data'], true);		
 		}
 		
@@ -279,44 +282,44 @@ retry:
 	public function site_defaults($ra){
 		global $emps;
 		
-		$cfg = $ra['cfg'];
+		$cfg = $ra['cfg'] ?? [];
 		
-		if(!$cfg['hostname']){
+		if(empty($cfg['hostname'])){
 			$cfg['hostname'] = $ra['hostname'];
 		}
-        if(!$cfg['emps_version']){
-            $cfg['emps_version'] = $ra['emps_version'];
+        if(empty($cfg['emps_version'])){
+            $cfg['emps_version'] = $ra['emps_version'] ?? null;
         }
-        if ($ra['emps_version']) {
-		    $cfg['emps_version'] = $ra['emps_version'];
+        if ($ra['emps_version'] ?? false) {
+		    $cfg['emps_version'] = $ra['emps_version'] ?? null;
         }
-		if(!$cfg['path']){
-			$cfg['path'] = $ra['www_dir'].'/'.$ra['htdocs'];
+		if(empty($cfg['path'])){
+			$cfg['path'] = ($ra['www_dir'] ?? '').'/'.($ra['htdocs'] ?? '');
 		}
-		if(!$cfg['db']['user']){
-			$cfg['db']['user'] = $ra['user']['username'];
+		if(empty($cfg['db']['user'])){
+			$cfg['db']['user'] = $ra['user']['username'] ?? null;
 		}
-		if(!$cfg['db']['password']){
-			$cfg['db']['password'] = $ra['user']['cfg']['mysql_password'];
+		if(empty($cfg['db']['password'])){
+			$cfg['db']['password'] = $ra['user']['cfg']['mysql_password'] ?? null;
 		}
-		if(!$cfg['db']['host']){
+		if(empty($cfg['db']['host'])){
 			$cfg['db']['host'] = 'localhost';
 		}
 		
-		if(!$cfg['include_path']){
+		if(empty($cfg['include_path'])){
 			$cfg['include_path'] = $this->defaults['main_path'].'/lib';
 		}
 		
 		//$cfg['awstats_url'] = "http://awstats.".$this->defaults['hostname_short']."/cgi-bin/awstats.pl?config=".$cfg['hostname'];
         $cfg['awstats_url'] = "/awstats/".$cfg['hostname']."/";
 		
-		$cfg['prefix'] = $ra['prefix'];
+		$cfg['prefix'] = $ra['prefix'] ?? null;
 		
-		if(!$cfg['prefix']){
+		if(empty($cfg['prefix'])){
 			$cfg['prefix'] = '00';
 		}
 		
-		if(!$cfg['hostname_regex']){
+		if(empty($cfg['hostname_regex'])){
 			$cfg['hostname_regex'] = $this->regex_escape($cfg['hostname']);
 		}
 
@@ -327,7 +330,7 @@ retry:
             $cfg['error_log'] = 1;
         }
 
-		$cfg['username'] = $ra['user']['username'];
+		$cfg['username'] = $ra['user']['username'] ?? null;
 		
 		return $cfg;
 	}
@@ -335,13 +338,13 @@ retry:
 	public function user_defaults($ra){
 		global $emps;
 
-		if(!$ra['userdir']){
-			$ra['userdir'] = $this->defaults['home'].'/'.$ra['username'];
+		if(empty($ra['userdir'])){
+			$ra['userdir'] = ($this->defaults['home'] ?? '').'/'.$ra['username'];
 		}
 		
 		$ra['home'] = $ra['userdir'];
 		
-		if(!$ra['www_dir']){
+		if(empty($ra['www_dir'])){
 			$ra['www_dir'] = $this->defaults['main_path'].'/'.$ra['username'];			
 		}
 	
@@ -407,24 +410,24 @@ retry:
     }
 
     public function analyse_stats($stat){
-        $class = $this->stats_class_by_visits($stat['visits']);
+        $class = $this->stats_class_by_visits($stat['visits'] ?? 0);
 
-	    if($stat['visits'] > 0){
-            $stat['pages_by_visits'] = $stat['pages'] / $stat['visits'];
+	    if(($stat['visits'] ?? 0) > 0){
+            $stat['pages_by_visits'] = ($stat['pages'] ?? 0) / $stat['visits'];
             if($stat['pages_by_visits'] > 0){
                 $pv_class = pow($stat['pages_by_visits'] / 3, 1/2);
                 $class *= $pv_class;
             }
         }
-	    if($stat['pages'] > 0){
-            $stat['hits_by_pages'] = $stat['hits'] / $stat['pages'];
+	    if(($stat['pages'] ?? 0) > 0){
+            $stat['hits_by_pages'] = ($stat['hits'] ?? 0) / $stat['pages'];
             if($stat['hits_by_pages'] > 0) {
                 $hp_class = pow($stat['hits_by_pages'] / 5, 1/3);
                 $class *= $hp_class;
             }
         }
-	    if($stat['hits'] > 0){
-            $stat['bw_by_hits'] = ($stat['bw'] * 1024) / $stat['hits'];
+	    if(($stat['hits'] ?? 0) > 0){
+            $stat['bw_by_hits'] = (($stat['bw'] ?? 0) * 1024) / $stat['hits'];
             if($stat['bw_by_hits'] > 0) {
                 $bh_class = pow($stat['bw_by_hits'] / 50, 1/5);
                 $class *= $bh_class;
@@ -442,10 +445,10 @@ retry:
     }
 
     public function analyse_db_stats($stat){
-	    $class = pow($stat['count_star'] / 1000000, 1/2);
+	    $class = pow(($stat['count_star'] ?? 0) / 1000000, 1/2);
 
-	    if($stat['count_star'] > 0){
-            $stat['sr_cs'] = $stat['sum_rows'] / $stat['count_star'];
+	    if(($stat['count_star'] ?? 0) > 0){
+            $stat['sr_cs'] = ($stat['sum_rows'] ?? 0) / $stat['count_star'];
             if($stat['sr_cs'] > 0){
                 $cs_class = pow($stat['sr_cs'] / 10, 1/3);
                 $class *= $cs_class;

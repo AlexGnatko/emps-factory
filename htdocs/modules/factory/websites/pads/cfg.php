@@ -5,7 +5,7 @@ $this->handle_view_row();
 
 $cfg = $ef->site_defaults($this->row);
 
-if($_GET['preview_local_php']){
+if($_GET['preview_local_php'] ?? false){
 	$emps->no_smarty = true;
 	header("Content-Type: text/plain; charset=utf-8");
 	
@@ -18,8 +18,8 @@ if($_GET['preview_local_php']){
 
 	echo $text;
 }else{
-	if($_POST['post_save']){
-		$cfg = array_merge($cfg, $_REQUEST['cfg']);
+	if($_POST['post_save'] ?? false){
+		$cfg = array_merge($cfg, $_REQUEST['cfg'] ?? []);
 		$_POST['local_cfg'] = $_REQUEST['local_cfg'] = json_encode($cfg);
 	}
 	

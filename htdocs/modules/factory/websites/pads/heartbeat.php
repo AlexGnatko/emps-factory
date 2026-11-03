@@ -6,7 +6,7 @@ $this->handle_view_row();
 
 $row = $this->row;
 
-if($_GET['enable']){
+if($_GET['enable'] ?? false){
 	$hb = $emps->db->get_row("ef_heartbeat", "ef_website_id = ".$row['id']);
 	if(!$hb){
 		$SET = array();
@@ -22,7 +22,7 @@ if($_GET['enable']){
 	$emps->redirect_elink();exit();
 }
 
-if($_GET['disable']){
+if($_GET['disable'] ?? false){
 	$hb = $emps->db->get_row("ef_heartbeat", "ef_website_id = ".$row['id']);
 	if($hb){
 		$SET = array();
@@ -43,8 +43,8 @@ $smarty->assign("hb", $hb);
 $cfg = $ef->site_defaults($this->row);
 $smarty->assign("cfg", $cfg);
 
-if($_POST['post_save']){
-	$cfg['heartbeat_interval'] = $_POST['heartbeat_interval'];
+if($_POST['post_save'] ?? false){
+	$cfg['heartbeat_interval'] = $_POST['heartbeat_interval'] ?? null;
 	$_POST['local_cfg'] = $_REQUEST['local_cfg'] = json_encode($cfg);
 }
 

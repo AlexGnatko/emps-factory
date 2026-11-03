@@ -130,7 +130,7 @@ class EMPS_FactoryWorker
 		
 		$this->say("User: ".$username);
 		
-		$keys = $user['authorized_keys_idx'];
+		$keys = $user['authorized_keys_idx'] ?? [];
 		
 		$text = "";
 		foreach($keys as $v){
@@ -184,7 +184,7 @@ class EMPS_FactoryWorker
 		
 		$username = $user['username'];
 		$this->say("User: ".$username);
-		$password = $user['cfg']['mysql_password'];
+		$password = $user['cfg']['mysql_password'] ?? '';
 		
 		$fail = false;
 		
@@ -231,7 +231,7 @@ class EMPS_FactoryWorker
 		
 		$username = $user['username'];
 		$this->say("User: ".$username);
-		$password = $user['cfg']['linux_password'];
+		$password = $user['cfg']['linux_password'] ?? '';
 		
 		$def = $ef->user_defaults($user);
 		
@@ -243,7 +243,7 @@ class EMPS_FactoryWorker
 			exec("echo ".$username.":".$password." | chpasswd");
 		}else{
 			// user does not exist
-			$this->echo_shell("useradd -b ".$ef->defaults['home']." -f -1 -G ".$ef->defaults['www_group']." -m -U ".$username);
+			$this->echo_shell("useradd -b ".($ef->defaults['home'] ?? '')." -f -1 -G ".$ef->defaults['www_group']." -m -U ".$username);
 			sleep(1);
 			
 			$rc = shell_exec("grep -c '^".$username.":' /etc/passwd");
@@ -280,7 +280,7 @@ class EMPS_FactoryWorker
 		
 		$cfg = $ef->site_defaults($website);
 		
-		$database_name = $cfg['db']['database'];
+		$database_name = $cfg['db']['database'] ?? '';
 		
 		$failed = false;
 		
@@ -327,12 +327,12 @@ class EMPS_FactoryWorker
 		
 			$username = $user['username'];
 			$this->say("User: ".$username);
-			$password = $user['cfg']['linux_password'];
+			$password = $user['cfg']['linux_password'] ?? '';
 			
 			$hostname = $cfg['hostname'];
 			$x = explode(".", $hostname);
 			array_pop($x);
-			$hostname_short = implode(".", $x).'.'.$ef->defaults['hostname_short'];
+			$hostname_short = implode(".", $x).'.'.($ef->defaults['hostname_short'] ?? '');
 			
 			$this->say("Using hostname: ".$hostname_short);
 			
@@ -416,7 +416,7 @@ class EMPS_FactoryWorker
         $cfg = $ef->site_defaults($website);
 
         $user = $ef->load_user(intval($website['user_id']));
-        $owner = $user['username'];
+        $owner = $user['username'] ?? '';
 
         $export_path = EMPS_SCRIPT_PATH."/export/{$website_id}";
 
@@ -429,16 +429,19 @@ class EMPS_FactoryWorker
         $uploads_dir = "/srv/upload/".$owner."/".$hostname;
         $this->echo_shell("tar pczf {$export_path}/uploads.tar.gz -C {$uploads_dir} .");
 
-        $this->echo_shell("mysqldump -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
-        "{$cfg['db']['database']} > {$export_path}/{$cfg['db']['database']}.sql");
+        $mysql_password = $user['cfg']['mysql_password'] ?? '';
+        $db_name = $cfg['db']['database'] ?? '';
 
-        $this->echo_shell("gzip -f {$export_path}/{$cfg['db']['database']}.sql");
+        $this->echo_shell("mysqldump -u {$user['username']} -p{$mysql_password} ".
+        "{$db_name} > {$export_path}/{$db_name}.sql");
+
+        $this->echo_shell("gzip -f {$export_path}/{$db_name}.sql");
 
         $git_name = $hostname.".git";
         $git_dir = "/opt/git/{$owner}";
         $this->echo_shell("tar pczf {$export_path}/git.tar.gz -C {$git_dir} ./{$git_name}");
 
-        file_put_contents("{$export_path}/cfg.txt", $cfg['other_settings']);
+        file_put_contents("{$export_path}/cfg.txt", $cfg['other_settings'] ?? '');
     }
 
     public function import_website($data, $ra){
@@ -457,7 +460,7 @@ class EMPS_FactoryWorker
         $cfg = $ef->site_defaults($website);
 
         $user = $ef->load_user(intval($website['user_id']));
-        $owner = $user['username'];
+        $owner = $user['username'] ?? '';
 
         $export_path = EMPS_SCRIPT_PATH."/export/{$website_id}";
 
@@ -493,9 +496,12 @@ class EMPS_FactoryWorker
         unlink($export_path."/".$sql_file);
         unlink($export_path."/".$raw_sql_file);
 
+        $mysql_password = $user['cfg']['mysql_password'] ?? '';
+        $db_name = $cfg['db']['database'] ?? '';
+
         $this->echo_shell("cd {$export_path} && wget {$data['sql']} && gunzip {$sql_file} && ".
-            "mysql -u {$user['username']} -p{$user['cfg']['mysql_password']} ".
-            "{$cfg['db']['database']} < {$raw_sql_file} && rm {$raw_sql_file} && rm {$sql_file}");
+            "mysql -u {$user['username']} -p{$mysql_password} ".
+            "{$db_name} < {$raw_sql_file} && rm {$raw_sql_file} && rm {$sql_file}");
 
         $this->echo_shell("chown -R {$owner}:{$wwwdata} {$uploads_dir}");
         $this->echo_shell("chmod -R 0777 {$uploads_dir}");
@@ -539,7 +545,7 @@ class EMPS_FactoryWorker
         $htdocs = $cfg['path'];
 
         $user = $ef->load_user(intval($website['user_id']));
-        $owner = $user['username'];
+        $owner = $user['username'] ?? '';
 
         $failed = false;
 
@@ -591,7 +597,7 @@ class EMPS_FactoryWorker
 		
 		$website = $ef->load_website($website_id);
 		$cfg = $website['cfg'];
-		$owner = $website['user']['username'];
+		$owner = $website['user']['username'] ?? '';
 		$wwwdata = $ef->defaults['www_group'];
 		
 		$server_type = $ef->defaults['server_type'];
@@ -612,7 +618,7 @@ class EMPS_FactoryWorker
 			$host_regex = $this->regex_escape($hostname);
 		}
 		$smarty->assign("hostname_escaped", $host_regex);
-		$smarty->assign("upper_host", $this->regex_escape($ef->defaults['hostname_short']));
+		$smarty->assign("upper_host", $this->regex_escape($ef->defaults['hostname_short'] ?? ''));
 		$smarty->assign("hostname_part", $this->regex_escape($hostname_part));
 		$smarty->assign("htdocs", $www_dir.'/htdocs');
         $smarty->assign("www_dir", $www_dir);
@@ -624,19 +630,20 @@ class EMPS_FactoryWorker
         if ($cfg['emps_version'] == "Node") {
             $smarty->assign("node_name", str_replace("-", "_",
                 str_replace(".", "_", $hostname)));
-            $smarty->assign("node_upstream", $website['cfg']['upstream']);
+            $smarty->assign("node_upstream", $website['cfg']['upstream'] ?? null);
         }
 
         $smarty->assign("cfg", $website['cfg']);
 		$smarty->assign("error_log", $website['cfg']['error_log']);
         $smarty->assign("access_log", $website['cfg']['access_log']);
 
-        $smarty->assign("php_version", $website['cfg']['php_version']);
+        $smarty->assign("php_version", $website['cfg']['php_version'] ?? null);
 		
-		$smarty->assign("ssl", $website['sd']['ssl_mode']);
-		$this->say("SSL mode: ".$website['sd']['ssl_mode']);
+		$ssl_mode = $website['sd']['ssl_mode'] ?? null;
+			$smarty->assign("ssl", $ssl_mode);
+		$this->say("SSL mode: ".$ssl_mode);
 
-		$smarty->assign("letsencrypt", $website['sd']['letsencrypt']);
+		$smarty->assign("letsencrypt", $website['sd']['letsencrypt'] ?? null);
 		
 		$prefix = $cfg['prefix'];
 		
@@ -667,7 +674,7 @@ class EMPS_FactoryWorker
 				$ef->set_status($website['context_id'], array("setup_httpd"=>"failed"));
 			}
 			
-			if($website['sd']['ssl_mode']){
+			if($ssl_mode){
 				// copy default pem files
 				$conf_path = $ef->defaults['nginx_conf_path'];
 				$certs_path = $conf_path.'/ssl';
@@ -705,7 +712,7 @@ class EMPS_FactoryWorker
 		$website = $ef->load_website($website_id);
 		$cfg = $website['cfg'];
 
-		$owner = $website['user']['username'];
+		$owner = $website['user']['username'] ?? '';
 		$wwwdata = $ef->defaults['www_group'];
 		
 		$failed = false;
@@ -725,7 +732,7 @@ class EMPS_FactoryWorker
 			$pem_path = $certs_path.'/'.$hostname.'.pem';
 			$results = shell_exec("openssl verify -CAfile ".$file_name." ".$file_name);
 			$x = explode(": ", $results, 2);
-			if(trim($x[1]) == "OK"){
+			if(trim($x[1] ?? '') == "OK"){
 				$this->say("openssl verify - OK");
 				$this->move_file($file_name, $pem_path, 0600, $wwwdata);
 			}else{
@@ -747,7 +754,7 @@ class EMPS_FactoryWorker
 			
 			$results = shell_exec("openssl verify -CAfile ".$comb_name." ".$comb_name);
 			$x = explode(": ", $results, 2);
-			if(trim($x[1]) == "OK"){
+			if(trim($x[1] ?? '') == "OK"){
 				$this->say("openssl verify - OK");
 				$this->move_file($file_name, $pem_path, 0600, $wwwdata);
 				$this->move_file($key_file_name, $key_path, 0600, $wwwdata);
@@ -786,7 +793,7 @@ class EMPS_FactoryWorker
         $hostname = $cfg['hostname'];
 
         $www = "";
-        if ($cfg['certbot_www'] == 1) {
+        if (($cfg['certbot_www'] ?? 0) == 1) {
             $www = ",www.{$hostname}";
         }
 
@@ -823,7 +830,7 @@ class EMPS_FactoryWorker
 
         $website = $ef->load_website($website_id);
         $cfg = $website['cfg'];
-        $owner = $website['user']['username'];
+        $owner = $website['user']['username'] ?? '';
 
         $failed = false;
 
@@ -850,7 +857,7 @@ class EMPS_FactoryWorker
                 $dst_key_path = $certs_path.'/'.$child_hostname.'.key';
                 $dst_comb_path = $certs_path.'/'.$child_hostname.'.comb';
 
-                $child_owner = $child['user']['username'];
+                $child_owner = $child['user']['username'] ?? '';
 
                 $this->copy_file($key_path, $dst_key_path, 0755, $child_owner);
                 $this->copy_file($pem_path, $dst_pem_path, 0755, $child_owner);
@@ -883,7 +890,7 @@ class EMPS_FactoryWorker
 		
 		$website = $ef->load_website($website_id);
 		$cfg = $website['cfg'];
-		$owner = $website['user']['username'];
+		$owner = $website['user']['username'] ?? '';
 		
 		$htdocs = $cfg['path'];
 		
@@ -956,7 +963,7 @@ class EMPS_FactoryWorker
 			return false;
 		}
 		
-		$overwrite = ($data['overwrite'])?true:false;
+		$overwrite = ($data['overwrite'] ?? false)?true:false;
 		if(!$overwrite){
 			$this->say("(Without overwritting)");
 		}else{
@@ -965,7 +972,7 @@ class EMPS_FactoryWorker
 		
 		$website = $ef->load_website($website_id);
 		$cfg = $website['cfg'];
-		$owner = $website['user']['username'];
+		$owner = $website['user']['username'] ?? '';
 		
 		$parent_website = $ef->load_website($website['parent_website_id']);
 		
@@ -1130,7 +1137,7 @@ class EMPS_FactoryWorker
 
 		$x = explode(" ", $cmd);
 		$cmd = $x[0];
-		$params = $x[1];
+		$params = $x[1] ?? '';
 		$payload = $ra['payload'];
 		$data = json_decode($payload, true);
 		
@@ -1235,7 +1242,7 @@ class EMPS_FactoryWorker
 			$cfg = $website['cfg'];
 			$hostname = $cfg['hostname'];
 			$hostname_part = $this->hostname_part($hostname);
-			$interval = intval($cfg['heartbeat_interval']);
+			$interval = intval($cfg['heartbeat_interval'] ?? 0);
 			if(!$interval){
 				$interval = 60;
 			}
@@ -1247,7 +1254,7 @@ class EMPS_FactoryWorker
 		
 		if($this->last_tick < (time() - 60)){
 			$this->last_tick = time();
-			$homedir = $ef->defaults['home'];
+			$homedir = $ef->defaults['home'] ?? '';
 			$list = file_get_contents($homedir."/heartbeat.conf");
 			$x = explode("\n", $list);
 			foreach($x as $v){
@@ -1268,18 +1275,18 @@ class EMPS_FactoryWorker
 	        $line = fgets($fh);
 	        $x = explode(" ", $line);
 	        if($x[0] == 'BEGIN_MAP'){
-	            $count = intval($x[1]);
+	            $count = intval($x[1] ?? 0);
 	            $map = [];
 	            for($i = 0; $i < $count; $i++){
 	                $line = fgets($fh);
 	                $x = explode(" ", $line);
-	                $map[$x[0]] = intval($x[1]);
+	                $map[$x[0]] = intval($x[1] ?? 0);
                 }
-                $pos = $map['POS_'.$code];
+                $pos = $map['POS_'.$code] ?? 0;
 	            fseek($fh, $pos, SEEK_SET);
             }
             if($x[0] == 'BEGIN_'.$code){
-	            $count = intval($x[1]);
+	            $count = intval($x[1] ?? 0);
 	            $values = [];
                 for($i = 0; $i < $count; $i++){
                     $line = fgets($fh);
@@ -1329,11 +1336,11 @@ class EMPS_FactoryWorker
             $domain = $this->read_awstats_section($fh, "DOMAIN");
             if($domain){
                 $vars = [];
-                $vars['unique'] = $general['TotalUnique'][0];
-                $vars['visits'] = $general['TotalVisits'][0];
-                $vars['pages'] = $domain['ip'][0];
-                $vars['hits'] = $domain['ip'][1];
-                $vars['bw'] = $domain['ip'][2] / (1024*1024);
+                $vars['unique'] = $general['TotalUnique'][0] ?? 0;
+                $vars['visits'] = $general['TotalVisits'][0] ?? 0;
+                $vars['pages'] = $domain['ip'][0] ?? 0;
+                $vars['hits'] = $domain['ip'][1] ?? 0;
+                $vars['bw'] = ($domain['ip'][2] ?? 0) / (1024*1024);
 
                 $this->save_stats_vars(date("Ym", $dt), $stat['id'], $vars);
             }
@@ -1403,8 +1410,8 @@ class EMPS_FactoryWorker
 	    global $emps;
 
         $props = $emps->p->read_properties([], $emps->website_ctx);
-	    $last_db_stats = intval($props["_last_db_stats"]);
-        $last_db_stats_delete = intval($props["_last_db_stats_delete"]);
+	    $last_db_stats = intval($props["_last_db_stats"] ?? 0);
+        $last_db_stats_delete = intval($props["_last_db_stats_delete"] ?? 0);
 
 //	    echo $last_db_stats;
 
@@ -1576,7 +1583,7 @@ class EMPS_FactoryWorker
 			gc_collect_cycles();
 			clearstatcache();
 			
-			if($GLOBALS['die_now']){
+			if($GLOBALS['die_now'] ?? false){
 				break;
 			}
 		}

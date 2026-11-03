@@ -22,16 +22,16 @@ while($ra = $emps->db->fetch_named($r)){
         $slst[$period]['databases'][$ra['database']]['name'] = $ra['database'];
         $slst[$period]['databases'][$ra['database']]['stats'][$ra['code']] = intval($ra['value']);
     }
-    $slst[$period]['stat'][$ra['code']] += intval($ra['value']);
+    $slst[$period]['stat'][$ra['code']] = ($slst[$period]['stat'][$ra['code']] ?? 0) + intval($ra['value']);
 }
 
 foreach($slst as $n => $v){
-    $databases = $v['databases'];
+    $databases = $v['databases'] ?? [];
     usort($databases, function($a, $b){
-        if($a['stats']['count_star'] > $b['stats']['count_star']){
+        if(($a['stats']['count_star'] ?? 0) > ($b['stats']['count_star'] ?? 0)){
             return -1;
         }
-        if($a['stats']['count_star'] < $b['stats']['count_star']){
+        if(($a['stats']['count_star'] ?? 0) < ($b['stats']['count_star'] ?? 0)){
             return 1;
         }
         return 0;
@@ -47,10 +47,10 @@ $o_stat = [];
 $d_stat = [];
 foreach ($slst as $row) {
     foreach($row['stat'] as $n => $v) {
-        $o_stat[$n] += $v;
+        $o_stat[$n] = ($o_stat[$n] ?? 0) + $v;
     }
-    foreach($row['databases'][0]['stats'] as $n => $v) {
-        $d_stat[$n] += $v;
+    foreach(($row['databases'][0]['stats'] ?? []) as $n => $v) {
+        $d_stat[$n] = ($d_stat[$n] ?? 0) + $v;
     }
 }
 

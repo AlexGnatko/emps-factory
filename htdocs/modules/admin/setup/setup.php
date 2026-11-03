@@ -1,7 +1,7 @@
 <?php
 
 if($emps->auth->credentials("admin")){
-	if($_POST['post_update']){
+	if($_POST['post_update'] ?? false){
 		$vals = $_POST;
 		unset($vals['post_update']);
 		$data = json_encode($vals);

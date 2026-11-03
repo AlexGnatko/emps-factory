@@ -2,8 +2,8 @@
 
 if($emps->auth->credentials("users")){
     if ($emps->auth->credentials("admin")) {
-        if($_POST['post_add_command']){
-            $ef->add_command($_POST['command']);
+        if($_POST['post_add_command'] ?? false){
+            $ef->add_command($_POST['command'] ?? '');
             $emps->redirect_elink();exit();
         }
         $smarty->assign("AdminMode", 1);

@@ -22,11 +22,11 @@ class EMPS_AWStats {
             $line = fgets($fh);
             $x = explode(" ", $line);
             if(trim($x[0]) == 'BEGIN_MAP'){
-                $count = intval($x[1]);
+                $count = intval($x[1] ?? 0);
                 for($i = 0; $i < $count; $i++){
                     $line = fgets($fh);
                     $x = explode(" ", $line);
-                    $map[$x[0]] = intval($x[1]);
+                    $map[$x[0]] = intval($x[1] ?? 0);
                 }
             }
             if(trim($x[0]) == 'END_MAP'){
@@ -40,7 +40,7 @@ class EMPS_AWStats {
     public function read_awstats_section($code, $lines = 10) {
         $fh = fopen($this->filename, "rb");
         rewind($fh);
-        $offset = $this->map['POS_'.$code];
+        $offset = $this->map['POS_'.$code] ?? 0;
         if (!$offset) {
             return false;
         }
@@ -50,9 +50,9 @@ class EMPS_AWStats {
             $line = fgets($fh);
             $x = explode(" ", $line);
             if($x[0] == 'BEGIN_'.$code){
-                $count = intval($x[1]);
+                $count = intval($x[1] ?? 0);
                 if ($code == "OS") {
-                    $count = intval($x[6]);
+                    $count = intval($x[6] ?? 0);
                 }
                 if ($count > $lines) {
                     $count = $lines;
@@ -89,7 +89,7 @@ class EMPS_AWStats {
         foreach ($x as $v) {
             $xx = explode("=", $v);
             $v = $xx[0];
-            $lines = $xx[1];
+            $lines = $xx[1] ?? 0;
             if (!$lines) {
                 $lines = 10;
             }

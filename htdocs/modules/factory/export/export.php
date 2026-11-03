@@ -28,7 +28,7 @@ $hostname = $emps->db->sql_escape($key);
 $row = $ef->load_website_by_hostname($hostname);
 
 if ($ss == "start") {
-    $id = $ef->custom_command("export-website", $row['id'], "");
+    $id = $ef->custom_command("export-website", $row['id'] ?? 0, "");
 
     $emps->json_ok(["command" => $id]); exit;
 }
@@ -37,10 +37,10 @@ if ($ss == "status") {
     $id = intval($sd);
     $cmd = $emps->db->get_row("ef_commands", "id = {$id}");
 
-    $website_id = $cmd['ef_website_id'];
+    $website_id = $cmd['ef_website_id'] ?? 0;
     $data = [];
     $data['website_id'] = $website_id;
-    $data['status'] = $cmd['status'];
+    $data['status'] = $cmd['status'] ?? null;
 
     $website = $ef->load_website($website_id);
 
@@ -48,10 +48,10 @@ if ($ss == "status") {
 
     $export_path = EMPS_SCRIPT_WEB."/export/{$website_id}";
 
-    if ($cmd['status'] == 10) {
+    if (($cmd['status'] ?? null) == 10) {
         $data['htdocs'] = $export_path."/website.tar.gz";
         $data['uploads'] = $export_path."/uploads.tar.gz";
-        $data['sql'] = $export_path."/{$cfg['db']['database']}.sql.gz";
+        $data['sql'] = $export_path."/".($cfg['db']['database'] ?? '').".sql.gz";
         $data['cfg'] = $export_path."/cfg.txt";
         $data['git'] = $export_path."/git.tar.gz";
     }

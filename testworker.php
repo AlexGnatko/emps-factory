@@ -30,7 +30,7 @@ while(true){
     if(time() > $off_time){
         break;
     }
-    if($GLOBALS['die_now']){
+    if($GLOBALS['die_now'] ?? false){
         break;
     }
     sleep(2);

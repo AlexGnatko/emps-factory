@@ -33,7 +33,7 @@ if ($emps->auth->credentials("admin")) {
     $smarty->assign("next", $emps->elink());
     $emps->loadvars();
 
-    if ($_GET['load_index']) {
+    if ($_GET['load_index'] ?? false) {
         $index = $aws->index();
         if (!$index) {
             $emps->json_error("No report for the selected month / website"); exit;

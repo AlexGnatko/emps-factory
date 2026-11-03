@@ -11,11 +11,11 @@
   "config": {
     "secure-http": false,
     "platform": {
-      "php": "7.4"
+      "php": "8.2"
     }
   },
    "require": {
-    "php": ">=7.4",
+    "php": ">=8.2",
     "algo26-matthias/idna-convert": "*"
   }
 }

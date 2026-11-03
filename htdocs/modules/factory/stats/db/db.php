@@ -14,16 +14,16 @@ if($emps->auth->credentials("admin")){
         $slst[$period]['period'] = $period;
         $slst[$period]['databases'][$ra['database']]['name'] = $ra['database'];
         $slst[$period]['databases'][$ra['database']]['stats'][$ra['code']] = $ra['value'];
-        $slst[$period]['stat'][$ra['code']] += $ra['value'];
+        $slst[$period]['stat'][$ra['code']] = ($slst[$period]['stat'][$ra['code']] ?? 0) + $ra['value'];
     }
 
     foreach($slst as $n => $v){
         $databases = $v['databases'];
         usort($databases, function($a, $b){
-            if($a['stats']['count_star'] > $b['stats']['count_star']){
+            if(($a['stats']['count_star'] ?? 0) > ($b['stats']['count_star'] ?? 0)){
                 return -1;
             }
-            if($a['stats']['count_star'] < $b['stats']['count_star']){
+            if(($a['stats']['count_star'] ?? 0) < ($b['stats']['count_star'] ?? 0)){
                 return 1;
             }
             return 0;

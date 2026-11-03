@@ -6,7 +6,7 @@ $this->handle_view_row();
 
 $row = $this->row;
 
-if($_GET['enable']){
+if($_GET['enable'] ?? false){
     $hb = $emps->db->get_row("ef_stats", "ef_website_id = ".$row['id']);
     if(!$hb){
         $SET = array();
@@ -22,7 +22,7 @@ if($_GET['enable']){
     $emps->redirect_elink();exit();
 }
 
-if($_GET['disable']){
+if($_GET['disable'] ?? false){
     $hb = $emps->db->get_row("ef_stats", "ef_website_id = ".$row['id']);
     if($hb){
         $SET = array();
@@ -40,4 +40,4 @@ if($hb){
 
 $smarty->assign("stats", $hb);
 
-$smarty->assign("stat_list", $ef->list_stats($hb['id']));
+$smarty->assign("stat_list", $ef->list_stats($hb['id'] ?? 0));
