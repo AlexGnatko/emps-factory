@@ -104,7 +104,7 @@ if($emps_worker_mode){
 $emps_db_config = array(
 	'host' => 'localhost',
 	'database' => 'user_emps_factory',
-	'user' => 'root',
+	'user' => 'factory',
 	'password' => 'rootPassW0rd',
 	'charset' => 'utf8');
 }

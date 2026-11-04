@@ -10,7 +10,7 @@ Requires=mysql.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/php -f /srv/www/emps-factory/worker.php
+ExecStart=/usr/bin/php8.2 -f /srv/www/emps-factory/worker.php
 KillMode=process
 Restart=always
 RestartSec=5
