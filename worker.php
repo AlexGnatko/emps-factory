@@ -6,10 +6,10 @@
 $emps_start_time = microtime(true);
 
 set_time_limit(0);
-ini_set('display_errors', true);
+ini_set('display_errors', false);
 ini_set('memory_limit', -1);
 
-error_reporting(E_ALL);
+error_reporting(E_ERROR);
 
 $emps_worker_mode = true;
 
