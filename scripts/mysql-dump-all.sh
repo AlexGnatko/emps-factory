@@ -12,7 +12,7 @@
 
 set -uo pipefail
 
-BACKUP_ROOT="/var/backups/mysql"   # where dumps are stored
+BACKUP_ROOT="/srv/backups/mysql"   # where dumps are stored
 KEEP_DAYS=14                       # how many days to keep dumps
 LOG_FILE="/var/log/mysql-dump-all.log"
 
