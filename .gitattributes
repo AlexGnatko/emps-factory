@@ -1,0 +1,14 @@
+*.service text eol=lf
+* text eol=lf
+*.woff2 binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.webp binary

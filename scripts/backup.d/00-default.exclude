@@ -1,0 +1,17 @@
+# Shipped defaults for files-backup.sh. install.sh OVERWRITES this file on every
+# upgrade, so do not edit it: add your own NN-name.exclude file next to it.
+#
+# tar wildcard patterns, one per line, matched at any depth. The backup
+# directory itself (BackupRoot and local targets) is always excluded
+# automatically, and so is any folder containing a .nobackup file.
+
+# Rebuildable: Composer, Node and Bower packages, caches, compiled templates
+*/vendor
+*/node_modules
+*/bower_components
+*/cache
+*/temp_c
+
+# Logs and temporary files
+*.log
+*.tmp

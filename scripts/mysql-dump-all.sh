@@ -1,27 +1,59 @@
 #!/bin/bash
 #
-# Daily per-database MySQL dumps, one .sql.gz file per database
+# Periodic per-database MySQL dumps, one .sql.gz file per database
 # (equivalent of Webmin's "Backup databases"), importable via phpMyAdmin.
 #
-# Run as root: the connection uses the unix socket (auth_socket),
-# so no password is needed.
+# Usage:
+#   mysql-dump-all.sh [--force]
 #
-# Installation:
+#   --force   dump now even if the last dump is younger than DumpPeriod
+#
+# Dumps go to <BackupRoot>/mysql/YYYY-MM-DD_HHMM/<database>.sql.gz, are
+# copied to every enabled Target and pruned to KeepPrevious dumps.
+# All settings live in /etc/emps-factory/factory.conf (see conf/factory.conf):
+# DumpPeriod, KeepPrevious, MysqlExcludeDb, MysqlOnlyDb, Target blocks, ...
+#
+# Run as root: the connection uses the unix socket (auth_socket), so no
+# password is needed.
+#
+# Installation (scripts/install.sh does this) and scheduling:
 #   install -m 700 mysql-dump-all.sh /usr/local/sbin/mysql-dump-all.sh
-#   echo '30 3 * * * root /usr/local/sbin/mysql-dump-all.sh' > /etc/cron.d/mysql-dump-all
+#   emps-factory-cron.sh --install     # writes /etc/cron.d/emps-factory
 
 set -uo pipefail
 
-BACKUP_ROOT="/srv/backups/mysql"   # where dumps are stored
-KEEP_DAYS=14                       # how many days to keep dumps
-LOG_FILE="/var/log/mysql-dump-all.log"
+for _d in "${EF_LIB:-/usr/local/lib/emps-factory}" "$(dirname "$(readlink -f "$0")")/lib"; do
+  [ -r "$_d/common.sh" ] && { . "$_d/common.sh"; break; }
+done
+type ef_conf_load >/dev/null 2>&1 || { echo "ERROR: common.sh not found" >&2; exit 1; }
 
-# Databases to skip (system schemas). Remove 'mysql' from the list
-# if you also want to back up MySQL accounts and grants.
-EXCLUDE_REGEX='^(information_schema|performance_schema|sys|mysql)$'
+FORCE=0
+case "${1:-}" in
+  "") ;;
+  --force) FORCE=1 ;;
+  -h|--help) sed -n '3,19p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+  *) echo "usage: $0 [--force]" >&2; exit 1 ;;
+esac
 
-# Connection: root over the unix socket, no password.
-MYSQL_CONN=(--protocol=socket -uroot)
+umask 077
+ef_conf_load
+
+BACKUP_ROOT="$(ef_get backuproot /srv/backups)"
+BACKUP_DIR="$BACKUP_ROOT/mysql"
+LOG_FILE="$(ef_get mysqllogfile /var/log/mysql-dump-all.log)"
+ef_log_to "$LOG_FILE"
+
+PERIOD="$(ef_get dumpperiod 1d)"
+PERIOD_S="$(ef_period_seconds "$PERIOD")" || ef_die "bad DumpPeriod '$PERIOD' (use 8h, 12h, 1d, 1w ...)"
+KEEP="$(ef_get keepprevious 14)"
+[[ "$KEEP" =~ ^[0-9]+$ ]] || ef_die "bad KeepPrevious '$KEEP' (expected a number)"
+
+# Connection: root over the unix socket unless a defaults file is given.
+if [ -n "$(ef_get mysqldefaultsfile)" ]; then
+  MYSQL_CONN=(--defaults-extra-file="$(ef_get mysqldefaultsfile)")
+else
+  MYSQL_CONN=(--protocol=socket -u"$(ef_get mysqluser root)")
+fi
 
 # Dump options:
 #  --single-transaction   consistent InnoDB dump without locking tables
@@ -51,33 +83,66 @@ DUMP_OPTS=(
   --default-character-set=utf8mb4
 )
 
-# Set to 1 if dumps must be importable into older MySQL 5.7 / MariaDB:
-# MySQL 8 dumps may contain the utf8mb4_0900_ai_ci collation, which those
-# servers do not know. The script replaces it with utf8mb4_general_ci,
-# which exists everywhere.
+# MySQL 8 dumps may contain the utf8mb4_0900_ai_ci collation, which MySQL 5.7
+# and MariaDB do not know. With MysqlLegacyCollation yes it is replaced by
+# utf8mb4_general_ci, which exists everywhere.
 LEGACY_COLLATION_FIX=0
+ef_bool "$(ef_get mysqllegacycollation no)" && LEGACY_COLLATION_FIX=1
 
 ###############################################################################
 
-umask 077
-log() { echo "$(date '+%F %T') $*" | tee -a "$LOG_FILE"; }
+# Does this database need a dump?
+db_wanted() {
+  local db="$1" p only=0
+  case "$db" in information_schema|performance_schema|sys) return 1 ;; esac
+  if [ "$db" = mysql ] && ! ef_bool "$(ef_get mysqlincludegrants no)"; then return 1; fi
+  while IFS= read -r p; do
+    # shellcheck disable=SC2053   # the pattern is meant to be a glob
+    [[ "$db" == $p ]] && return 1
+  done < <(ef_list mysqlexcludedb)
+  while IFS= read -r p; do
+    only=1
+    # shellcheck disable=SC2053
+    [[ "$db" == $p ]] && return 0
+  done < <(ef_list mysqlonlydb)
+  [ "$only" -eq 0 ]
+}
 
 # Prevent concurrent runs
-exec 9>/var/lock/mysql-dump-all.lock
-flock -n 9 || { log "Already running, exiting"; exit 1; }
+ef_lock mysql-dump-all
 
-DEST="$BACKUP_ROOT/$(date +%F)"
-mkdir -p "$DEST" || { log "ERROR: cannot create $DEST"; exit 1; }
-chmod 700 "$BACKUP_ROOT" "$DEST"
+mkdir -p "$BACKUP_DIR" || ef_die "cannot create $BACKUP_DIR"
+chmod 700 "$BACKUP_ROOT" "$BACKUP_DIR"
 
-DBS=$(mysql "${MYSQL_CONN[@]}" -N -B -e 'SHOW DATABASES') || {
-  log "ERROR: failed to get the database list"; exit 1; }
+# Skip if the newest dump is younger than 90% of DumpPeriod, so that a cron
+# that fires more often than DumpPeriod (or a double run) does no harm.
+LATEST="$(ef_list_dumps "$BACKUP_DIR" | tail -n 1)"
+if [ "$FORCE" -ne 1 ] && [ -n "$LATEST" ]; then
+  AGE=$(( $(date +%s) - $(ef_dump_epoch "$LATEST") ))
+  if [ "$AGE" -lt $(( PERIOD_S * 9 / 10 )) ]; then
+    ef_log "SKIP last dump $LATEST is only $((AGE / 60)) min old (DumpPeriod $PERIOD)"
+    exit 0
+  fi
+fi
+
+STAMP="$(date +%F_%H%M)"
+DEST="$BACKUP_DIR/$STAMP"
+[ -e "$DEST" ] && ef_die "$DEST already exists"
+rm -rf -- "$DEST.partial"
+mkdir -p "$DEST.partial" || ef_die "cannot create $DEST.partial"
+chmod 700 "$DEST.partial"
+
+DB_LIST=$(mysql "${MYSQL_CONN[@]}" -N -B -e 'SHOW DATABASES') || {
+  rm -rf -- "$DEST.partial"; ef_die "failed to get the database list"; }
+mapfile -t DBS <<< "$DB_LIST"
 
 fail=0
-for db in $DBS; do
-  [[ "$db" =~ $EXCLUDE_REGEX ]] && continue
+failed_dbs=()
+for db in "${DBS[@]}"; do
+  [ -n "$db" ] || continue
+  db_wanted "$db" || continue
 
-  out="$DEST/$db.sql.gz"
+  out="$DEST.partial/$db.sql.gz"
   tmp="$out.tmp"
 
   if [ "$LEGACY_COLLATION_FIX" = 1 ]; then
@@ -90,19 +155,24 @@ for db in $DBS; do
   fi
 
   # Dump into a temp file first and only rename it if mysqldump succeeded
-  # and the archive is intact, so a broken dump never replaces a good one.
+  # and the archive is intact, so a broken dump never ends up under its real name.
   if [ "${PIPESTATUS[0]}" -eq 0 ] && gzip -t "$tmp" 2>/dev/null; then
     mv -f "$tmp" "$out"
-    log "OK   $db ($(du -h "$out" | cut -f1))"
+    ef_log "OK   $db ($(du -h "$out" | cut -f1))"
   else
     rm -f "$tmp"
-    log "FAIL $db"
+    ef_err "FAIL $db"
+    failed_dbs+=("$db")
     fail=1
   fi
 done
 
-# Remove old dump directories
-find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -mtime +"$KEEP_DAYS" \
-  -exec rm -rf {} + 2>/dev/null
+# The dump directory gets its final name only when the run is over; a FAILED
+# file lists the databases that could not be dumped.
+if [ "${#failed_dbs[@]}" -gt 0 ]; then printf '%s\n' "${failed_dbs[@]}" > "$DEST.partial/FAILED"; fi
+mv -- "$DEST.partial" "$DEST" || ef_die "cannot rename $DEST.partial"
+
+ef_prune_local "$BACKUP_DIR" "$KEEP"
+ef_push_all mysql "$DEST" "$STAMP" "$KEEP" keepprevious || fail=1
 
 exit $fail

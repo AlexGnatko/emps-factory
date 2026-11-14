@@ -31,8 +31,31 @@ $emps->select_website();
 
 unlink(EMPS_SCRIPT_PATH."/restart");
 
+// Is the database connection still usable? A lost connection (MySQL crashed or
+// was restarted behind our back) cannot be recovered here: the worker exits and
+// systemd starts a fresh one, which connects again.
+function ef_db_alive(&$error = ""){
+	global $emps;
+	try {
+		$r = $emps->db->query("select 1");
+		if(!$r){
+			$error = (string)$emps->db->sql_error();
+			return false;
+		}
+		$emps->db->free($r);
+	} catch (\Throwable $e) {
+		$error = $e->getMessage();
+		return false;
+	}
+	return true;
+}
+
 while(true){
-    echo "Cycle...\r\n";
+//    echo "Cycle...\r\n";
+	if(!ef_db_alive($db_error)){
+		echo "MySQL connection lost ({$db_error}), exiting; systemd will start a new worker\r\n";
+		exit(1);
+	}
 	$efw->cycle();
 	if(time() > $off_time){
 		break;

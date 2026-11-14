@@ -1,0 +1,12 @@
+# Shipped defaults for files-backup.sh. install.sh OVERWRITES this file on every
+# upgrade, so do not edit it: add your own NN-name.include file next to it.
+#
+# One absolute path per line. Missing paths are skipped with a warning.
+# A line "- /path" removes an earlier entry (exact match), e.g. in 50-local.include:
+#     - /home
+# To drop a subfolder of an entry use an .exclude file instead.
+
+/etc
+/srv
+/home
+/var/spool/cron

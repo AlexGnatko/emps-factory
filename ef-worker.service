@@ -1,18 +1,34 @@
-# Systemd script (Ubuntu 16+)
-# Place this systemd script to /lib/systemd/system
-
-[Install]
-WantedBy=multi-user.target
+# Systemd unit for the EMPS Factory worker (Ubuntu 16+).
+# Install: cp ef-worker.service /etc/systemd/system/
+#          systemctl daemon-reload && systemctl enable --now ef-worker
+#          (run "systemctl enable" again after changing the [Install] section)
+# Check:   systemd-analyze verify /etc/systemd/system/ef-worker.service
+#
+# worker.php exits by design (every 2 hours, when htdocs/restart appears, or on
+# die_now); Restart=always starts it again.
+#
+# MySQL link: a stop or restart of mysql.service stops or restarts the worker as
+# well (PartOf=), and every start of mysql.service starts the worker (the
+# mysql.service in WantedBy=). So the worker always comes back after a mysql
+# package upgrade or restart, with a fresh database connection. A plain
+# "systemctl reload mysql" does not touch the worker.
 
 [Unit]
 Description=EMPS Factory Worker Service
-Requires=mysql.service
+Wants=mysql.service
+After=mysql.service
+PartOf=mysql.service
+# never give up restarting
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
+WorkingDirectory=/srv/www/emps-factory
 ExecStart=/usr/bin/php8.2 -f /srv/www/emps-factory/worker.php
+# Only the worker itself is stopped; services and commands it started survive restarts
 KillMode=process
 Restart=always
 RestartSec=5
-StartLimitIntervalSec=5
-StartLimitBurst=50
+
+[Install]
+WantedBy=multi-user.target mysql.service
