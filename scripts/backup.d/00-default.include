@@ -10,3 +10,5 @@
 /srv
 /home
 /var/spool/cron
+/opt/git
+

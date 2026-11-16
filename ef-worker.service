@@ -24,7 +24,8 @@ StartLimitIntervalSec=0
 [Service]
 Type=simple
 WorkingDirectory=/srv/www/emps-factory
-ExecStart=/usr/bin/php8.2 -f /srv/www/emps-factory/worker.php
+# /usr/bin/php is the default PHP CLI of the server; pin a version with e.g. /usr/bin/php8.4
+ExecStart=/usr/bin/php -f /srv/www/emps-factory/worker.php
 # Only the worker itself is stopped; services and commands it started survive restarts
 KillMode=process
 Restart=always
