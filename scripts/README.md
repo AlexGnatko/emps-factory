@@ -121,7 +121,10 @@ backup.d/
 * `*.include`: one absolute path per line. `- /path` removes an earlier entry
   (exact match). Missing paths are skipped with a warning.
 * `*.exclude`: tar wildcard patterns, matched at any depth. Use these to cut a
-  subfolder out of an included path.
+  subfolder out of an included path. In tar, `*` also matches `/`, so
+  `*/thumb/*.dat` would drop `thumb/sub/x.dat` too. Start a line with `= ` to make
+  `*` stop at `/`: `= */thumb/*.dat` removes only `.dat` files lying directly
+  in a folder named `thumb`.
 * `BackupRoot` and local target folders are always excluded, so backups never
   contain older backups. A folder holding a `.nobackup` file is skipped.
 

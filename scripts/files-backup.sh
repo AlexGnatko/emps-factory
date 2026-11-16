@@ -14,7 +14,7 @@
 #
 # What is archived comes from /etc/emps-factory/backup.d/ (BackupDir):
 #   *.include   one absolute path per line; "- /path" removes an earlier entry
-#   *.exclude   tar wildcard patterns
+#   *.exclude   tar wildcard patterns; "= pattern" makes * not match "/"
 # Files are read in name order. 00-default.* ships with the tools and is
 # overwritten on upgrade; add your own as 50-name.include / 50-name.exclude.
 #
@@ -105,6 +105,20 @@ inc_remove() {
 # verify_archive FILE: is the finished archive readable?
 verify_archive() {
   if [ "${#TESTC[@]}" -eq 0 ]; then tar -tf "$1" >/dev/null 2>&1; else "${TESTC[@]}" "$1" 2>/dev/null; fi
+}
+
+# Exclude entries starting with "= " are strict: "*" does not cross "/" there
+# (tar's default lets "*" match slashes). The option order matters to tar, so
+# the two kinds go into two files with the matching option in front of each.
+write_excludes() {   # write_excludes DIR -> exclude.list (raw), sets XOPTS
+  local d="$1" x
+  printf '%s\n' "${EXC[@]}" > "$d/exclude.list"
+  : > "$d/x.normal"; : > "$d/x.strict"
+  for x in "${EXC[@]}"; do
+    if [[ "$x" == "= "* ]]; then printf '%s\n' "$(_trim "${x#= }")" >> "$d/x.strict"
+    else printf '%s\n' "$x" >> "$d/x.normal"; fi
+  done
+  XOPTS=(--wildcards-match-slash -X "$d/x.normal" --no-wildcards-match-slash -X "$d/x.strict")
 }
 
 build_lists() {
@@ -216,12 +230,12 @@ if [ "$DEBUG_RUN" -eq 1 ]; then
   WORK="$(mktemp -d /tmp/files-backup.XXXXXX)" || ef_die "cannot create a temp dir"
   trap 'rm -rf "$WORK"' EXIT
   printf '%s\n' "${INC[@]}" > "$WORK/include.list"
-  printf '%s\n' "${EXC[@]}" > "$WORK/exclude.list"
+  write_excludes "$WORK"
   DOPTS=(--numeric-owner)
   [ -n "$EXCLUDE_TAG" ] && DOPTS+=("--exclude-tag-all=$EXCLUDE_TAG")
   [ "$ONE_FS" -eq 1 ] && DOPTS+=(--one-file-system)
   # a pipe, not /dev/null: GNU tar skips reading file contents when writing to /dev/null
-  bytes="$(tar -cf - "${DOPTS[@]}" -X "$WORK/exclude.list" -T "$WORK/include.list" 2>"$WORK/tar.err" | wc -c)"
+  bytes="$(tar -cf - "${DOPTS[@]}" "${XOPTS[@]}" -T "$WORK/include.list" 2>"$WORK/tar.err" | wc -c)"
   trc="${PIPESTATUS[0]}"
   [ "$trc" -le 1 ] || { echo "FAIL tar exited with $trc:"; head -n 5 "$WORK/tar.err"; bad=1; }
   echo "Maximum archive size: $(human "$bytes") ($bytes bytes, uncompressed tar)"
@@ -273,13 +287,13 @@ STAMP="$(date +%F_%H%M)"
 WORK="$(mktemp -d /tmp/files-backup.XXXXXX)" || ef_die "cannot create a temp dir"
 trap 'rm -rf "$WORK"' EXIT
 printf '%s\n' "${INC[@]}" > "$WORK/include.list"
-printf '%s\n' "${EXC[@]}" > "$WORK/exclude.list"
+write_excludes "$WORK"
 
 # -X must come before -T: tar ignores exclude options given after the file list.
 TAR_OPTS=(--numeric-owner)
 [ -n "$EXCLUDE_TAG" ] && TAR_OPTS+=("--exclude-tag-all=$EXCLUDE_TAG")
 [ "$ONE_FS" -eq 1 ] && TAR_OPTS+=(--one-file-system)
-TAR_CMD=(tar -cf - "${TAR_OPTS[@]}" -X "$WORK/exclude.list" -T "$WORK/include.list")
+TAR_CMD=(tar -cf - "${TAR_OPTS[@]}" "${XOPTS[@]}" -T "$WORK/include.list")
 
 # tar exits 1 when files changed while being read (normal on live sites): a
 # warning; 2 or more is a failure.
