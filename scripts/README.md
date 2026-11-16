@@ -35,7 +35,8 @@ for rclone targets.
 ```bash
 mysql-dump-all.sh [--force]            # dump now; --force ignores DumpPeriod
 mysql-load-dump.sh [-y] <archive> [database]
-files-backup.sh [--force] [--list]     # --list prints the final include/exclude lists
+files-backup.sh [--force] [--list] [--debug-run]  # --list: show include/exclude lists;
+                                       # --debug-run: test targets, print max archive size
 emps-factory-cron.sh                   # print the crontab
 emps-factory-cron.sh --install         # write /etc/cron.d/emps-factory
 emps-factory-cron.sh --remove          # delete it

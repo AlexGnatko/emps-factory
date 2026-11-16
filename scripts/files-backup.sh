@@ -3,10 +3,14 @@
 # Archive the server's files (sites, configs...) into one tar archive.
 #
 # Usage:
-#   files-backup.sh [--force] [--list]
+#   files-backup.sh [--force] [--list] [--debug-run]
 #
 #   --force   back up now even if the last backup is younger than FilesPeriod
 #   --list    print the final include and exclude lists and exit
+#   --debug-run  dry run: test that every target is writable (writes and removes a
+#             tiny file), measure the files that would be archived and print the
+#             maximum archive size (uncompressed) next to the free space. No backup
+#             is made and nothing is pruned.
 #
 # What is archived comes from /etc/emps-factory/backup.d/ (BackupDir):
 #   *.include   one absolute path per line; "- /path" removes an earlier entry
@@ -28,13 +32,14 @@ for _d in "${EF_LIB:-/usr/local/lib/emps-factory}" "$(dirname "$(readlink -f "$0
 done
 type ef_conf_load >/dev/null 2>&1 || { echo "ERROR: common.sh not found" >&2; exit 1; }
 
-FORCE=0; LIST_ONLY=0
+FORCE=0; LIST_ONLY=0; DEBUG_RUN=0
 for a in "$@"; do
   case "$a" in
     --force) FORCE=1 ;;
     --list)  LIST_ONLY=1 ;;
-    -h|--help) sed -n '3,22p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    *) echo "usage: $0 [--force] [--list]" >&2; exit 1 ;;
+    --debug-run) DEBUG_RUN=1 ;;
+    -h|--help) sed -n '3,27p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "usage: $0 [--force] [--list] [--debug-run]" >&2; exit 1 ;;
   esac
 done
 
@@ -149,6 +154,81 @@ if [ "$LIST_ONLY" -eq 1 ]; then
   echo "# include"; [ "${#INC[@]}" -gt 0 ] && printf '%s\n' "${INC[@]}"
   echo "# exclude"; printf '%s\n' "${EXC[@]}"
   exit 0
+fi
+
+###############################################################################
+# --debug-run: targets writable? how big can the archive get?
+###############################################################################
+
+if [ "$DEBUG_RUN" -eq 1 ]; then
+  human() { numfmt --to=iec --suffix=B "$1" 2>/dev/null || echo "$1 B"; }
+  free_of() { df -PB1 "$1" 2>/dev/null | awk 'NR==2{print $4}'; }
+  bad=0
+  TEST="ef-debug-run-$$.tmp"
+
+  echo "== Lists"
+  build_lists
+  echo "include: ${#INC[@]} paths, exclude: ${#EXC[@]} patterns, compression: $COMP"
+
+  echo "== Targets"
+  if [ "$LOCAL_COPY" -eq 1 ]; then
+    mkdir -p "$BACKUP_DIR" 2>/dev/null
+    if echo test > "$BACKUP_DIR/$TEST" 2>/dev/null; then
+      rm -f "$BACKUP_DIR/$TEST"
+      fb="$(free_of "$BACKUP_DIR")"
+      echo "OK   local copy $BACKUP_DIR: writable, free $(human "${fb:-0}")"
+    else
+      echo "FAIL local copy $BACKUP_DIR: not writable"; bad=1
+    fi
+  else
+    echo "     FilesLocalCopy no: nothing is kept in $BACKUP_ROOT"
+  fi
+  TFREE=()
+  for t in $(ef_targets_for files); do
+    case "$(ef_tget "$t" type)" in
+      local)
+        base="$(ef_expand "$(ef_tget "$t" path)")"
+        if [ -z "$base" ]; then echo "FAIL $t: Path is not set"; bad=1; continue; fi
+        ef_target_ready "$t" "$base" 2>&1 | sed 's/^[0-9-]* [0-9:]* /     /' ; [ "${PIPESTATUS[0]}" -eq 0 ] || { bad=1; continue; }
+        if mkdir -p "$base/files" 2>/dev/null && echo test > "$base/files/$TEST" 2>/dev/null; then
+          rm -f "$base/files/$TEST"
+          fb="$(free_of "$base/files")"
+          echo "OK   $t (local $base): writable, free $(human "${fb:-0}")"
+        else
+          echo "FAIL $t (local $base): not writable"; bad=1
+        fi ;;
+      rclone)
+        if ! command -v rclone >/dev/null 2>&1; then echo "FAIL $t: rclone is not installed"; bad=1; continue; fi
+        base="$(ef_expand "$(ef_tget "$t" remote)")"
+        read -r -a flags <<< "$(ef_tget "$t" rcloneflags)"
+        if echo test | _ef_rclone rcat "${flags[@]}" "$base/files/$TEST" 2>/dev/null \
+           && _ef_rclone deletefile "${flags[@]}" "$base/files/$TEST" 2>/dev/null; then
+          echo "OK   $t (rclone $base): wrote and removed a test file (free space: check on the storage side)"
+        else
+          echo "FAIL $t (rclone $base): cannot write a test file"; bad=1
+        fi ;;
+      *) echo "FAIL $t: unknown Type"; bad=1 ;;
+    esac
+  done
+
+  echo "== Size (reading every file once, this can take a while)"
+  [ "${#INC[@]}" -gt 0 ] || ef_die "the include list is empty (check $LISTS_DIR)"
+  WORK="$(mktemp -d /tmp/files-backup.XXXXXX)" || ef_die "cannot create a temp dir"
+  trap 'rm -rf "$WORK"' EXIT
+  printf '%s\n' "${INC[@]}" > "$WORK/include.list"
+  printf '%s\n' "${EXC[@]}" > "$WORK/exclude.list"
+  DOPTS=(--numeric-owner)
+  [ -n "$EXCLUDE_TAG" ] && DOPTS+=("--exclude-tag-all=$EXCLUDE_TAG")
+  [ "$ONE_FS" -eq 1 ] && DOPTS+=(--one-file-system)
+  # a pipe, not /dev/null: GNU tar skips reading file contents when writing to /dev/null
+  bytes="$(tar -cf - "${DOPTS[@]}" -X "$WORK/exclude.list" -T "$WORK/include.list" 2>"$WORK/tar.err" | wc -c)"
+  trc="${PIPESTATUS[0]}"
+  [ "$trc" -le 1 ] || { echo "FAIL tar exited with $trc:"; head -n 5 "$WORK/tar.err"; bad=1; }
+  echo "Maximum archive size: $(human "$bytes") ($bytes bytes, uncompressed tar)"
+  [ "${COMP,,}" = none ] || echo "With $COMP the real archive will be smaller, so this is the upper limit"
+  echo "Keeping $KEEP backups needs up to $(human $(( bytes * KEEP ))) on each target"
+  [ "$bad" -eq 0 ] && echo "RESULT: OK" || echo "RESULT: PROBLEMS FOUND"
+  exit "$bad"
 fi
 
 ###############################################################################
