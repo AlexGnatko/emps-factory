@@ -161,15 +161,20 @@ mkdir -p "$BACKUP_DIR" || ef_die "cannot create $BACKUP_DIR"
 chmod 700 "$BACKUP_ROOT" "$BACKUP_DIR"
 
 # Local history is what the skip-guard looks at; without local copies ask the
-# rclone target instead.
+# target (a directory or an rclone remote) instead.
 if [ "$LOCAL_COPY" -eq 1 ]; then
   LATEST="$(ef_list_dumps "$BACKUP_DIR" | tail -n 1)"
 else
   LATEST=""
   STREAM_T="$(ef_targets_for files | head -n 1)"
   if [ -n "$STREAM_T" ]; then
-    LATEST="$(_ef_rclone lsf --dirs-only "$(ef_expand "$(ef_tget "$STREAM_T" remote)")/files" 2>/dev/null \
-              | sed 's#/$##' | grep -E "$EF_DUMP_NAME_RE" | LC_ALL=C sort | tail -n 1)"
+    case "$(ef_tget "$STREAM_T" type)" in
+      local)
+        LATEST="$(ef_list_dumps "$(ef_expand "$(ef_tget "$STREAM_T" path)")/files" | tail -n 1)" ;;
+      rclone)
+        LATEST="$(_ef_rclone lsf --dirs-only "$(ef_expand "$(ef_tget "$STREAM_T" remote)")/files" 2>/dev/null \
+                  | sed 's#/$##' | grep -E "$EF_DUMP_NAME_RE" | LC_ALL=C sort | tail -n 1)" ;;
+    esac
   fi
 fi
 if [ "$FORCE" -ne 1 ] && [ -n "$LATEST" ]; then
@@ -228,31 +233,67 @@ if [ "$LOCAL_COPY" -eq 1 ]; then
     fail=1
   fi
 else
-  # Streaming: tar | compressor | rclone rcat, no local copy
+  # Streaming, no local copy: tar | compressor straight into the target
   mapfile -t TS < <(ef_targets_for files)
   [ "${#TS[@]}" -eq 1 ] || ef_die "FilesLocalCopy no needs exactly one enabled target for files (found ${#TS[@]})"
   t="${TS[0]}"
-  [ "$(ef_tget "$t" type)" = rclone ] || ef_die "FilesLocalCopy no needs an rclone target, '$t' is not"
-  command -v rclone >/dev/null 2>&1 || ef_die "rclone is not installed"
-  base="$(ef_expand "$(ef_tget "$t" remote)")"
-  read -r -a flags <<< "$(ef_tget "$t" rcloneflags)"
+  ttype="$(ef_tget "$t" type)"
   tkeep="$(ef_tget "$t" fileskeepprevious "$KEEP")"
   [[ "$tkeep" =~ ^[0-9]+$ ]] || ef_die "bad FilesKeepPrevious '$tkeep' for target $t"
-  dst="$base/files/$STAMP/files.$EXT"
 
-  "${TAR_CMD[@]}" 2>"$WORK/tar.err" | "${COMPRESS[@]}" | _ef_rclone rcat "${flags[@]}" "$dst"
-  st=("${PIPESTATUS[@]}")
-  bytes="$(_ef_rclone size --json "${flags[@]}" "$base/files/$STAMP" 2>/dev/null | sed -n 's/.*"bytes": *\([0-9]*\).*/\1/p')"
-  if tar_ok "${st[0]}" && [ "${st[1]}" -eq 0 ] && [ "${st[2]}" -eq 0 ] && [ "${bytes:-0}" -gt 0 ]; then
-    [ "${st[0]}" -eq 1 ] && ef_log "WARN tar: some files changed while being read"
-    ef_log "OK   streamed to $t: $dst ($bytes bytes, ${#INC[@]} paths)"
-    _ef_prune_rclone "$base" files "$tkeep" "${flags[@]}"
-  else
-    ef_err "FAIL streaming to $t (tar ${st[0]}, $COMP ${st[1]}, rcat ${st[2]}, $bytes bytes at target)"
-    head -n 5 "$WORK/tar.err" >&2
-    _ef_rclone purge "${flags[@]}" "$base/files/$STAMP" >/dev/null 2>&1
-    fail=1
-  fi
+  case "$ttype" in
+    local)
+      # Into a directory, e.g. a mounted NAS or SSHFS folder (see RequireMount)
+      base="$(ef_expand "$(ef_tget "$t" path)")"
+      [ -n "$base" ] || ef_die "target $t: Path is not set"
+      ef_target_ready "$t" "$base" || exit 1
+      tdir="$base/files"; dest="$tdir/$STAMP"
+      [ -e "$dest" ] && ef_die "$dest already exists"
+      rm -rf -- "$dest.partial"
+      mkdir -p "$dest.partial" || ef_die "cannot create $dest.partial"
+      out="$dest.partial/files.$EXT"
+
+      "${TAR_CMD[@]}" 2>"$WORK/tar.err" | "${COMPRESS[@]}" > "$out.tmp"
+      st=("${PIPESTATUS[@]}")
+      if tar_ok "${st[0]}" && [ "${st[1]}" -eq 0 ] && verify_archive "$out.tmp"; then
+        mv -f "$out.tmp" "$out"
+        [ "${st[0]}" -eq 1 ] && ef_log "WARN tar: some files changed while being read"
+        ef_log "OK   files.$EXT written to $t: $dest ($(du -h "$out" | cut -f1), ${#INC[@]} paths)"
+        cp "$WORK/include.list" "$WORK/exclude.list" "$dest.partial/"
+        mv -- "$dest.partial" "$dest" || ef_die "cannot rename $dest.partial"
+        ef_prune_local "$tdir" "$tkeep"
+      else
+        ef_err "FAIL writing to $t (tar ${st[0]}, $COMP ${st[1]})"
+        head -n 5 "$WORK/tar.err" >&2
+        rm -rf -- "$dest.partial"
+        fail=1
+      fi
+      ;;
+    rclone)
+      # tar | compressor | rclone rcat
+      command -v rclone >/dev/null 2>&1 || ef_die "rclone is not installed"
+      base="$(ef_expand "$(ef_tget "$t" remote)")"
+      read -r -a flags <<< "$(ef_tget "$t" rcloneflags)"
+      dst="$base/files/$STAMP/files.$EXT"
+
+      "${TAR_CMD[@]}" 2>"$WORK/tar.err" | "${COMPRESS[@]}" | _ef_rclone rcat "${flags[@]}" "$dst"
+      st=("${PIPESTATUS[@]}")
+      bytes="$(_ef_rclone size --json "${flags[@]}" "$base/files/$STAMP" 2>/dev/null | sed -n 's/.*"bytes": *\([0-9]*\).*/\1/p')"
+      if tar_ok "${st[0]}" && [ "${st[1]}" -eq 0 ] && [ "${st[2]}" -eq 0 ] && [ "${bytes:-0}" -gt 0 ]; then
+        [ "${st[0]}" -eq 1 ] && ef_log "WARN tar: some files changed while being read"
+        ef_log "OK   streamed to $t: $dst ($bytes bytes, ${#INC[@]} paths)"
+        _ef_prune_rclone "$base" files "$tkeep" "${flags[@]}"
+      else
+        ef_err "FAIL streaming to $t (tar ${st[0]}, $COMP ${st[1]}, rcat ${st[2]}, $bytes bytes at target)"
+        head -n 5 "$WORK/tar.err" >&2
+        _ef_rclone purge "${flags[@]}" "$base/files/$STAMP" >/dev/null 2>&1
+        fail=1
+      fi
+      ;;
+    *)
+      ef_die "target $t has unknown Type '$ttype' (expected local or rclone)"
+      ;;
+  esac
 fi
 
 exit $fail

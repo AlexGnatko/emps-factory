@@ -28,7 +28,7 @@ EF_KNOWN_GLOBAL=" backuproot rcloneconfig dumpperiod keepprevious mysqluser
   backupexcludetag backuponefilesystem
   cronmysql cronfiles cronoffsetminute cronstarthour
   cronfilesoffsetminute cronfilesstarthour cronmailto "
-EF_KNOWN_TARGET=" type path remote keepprevious fileskeepprevious kinds enabled rcloneflags "
+EF_KNOWN_TARGET=" type path requiremount remote keepprevious fileskeepprevious kinds enabled rcloneflags "
 
 declare -A EF_S=()    # "scope|key" -> last value (scope is empty for globals)
 declare -A EF_L=()    # "scope|key" -> all values, newline separated
@@ -274,6 +274,21 @@ _ef_prune_rclone() {
   done
 }
 
+# ef_target_ready TARGET DIR: a local target is usable only if its RequireMount
+# path (if set) is a mount point and DIR exists. This keeps an unmounted NAS or
+# SSHFS folder from being filled silently on the local disk.
+ef_target_ready() {
+  local t="$1" dir="$2" m
+  m="$(ef_expand "$(ef_tget "$t" requiremount)")"
+  if [ -n "$m" ] && ! mountpoint -q "$m"; then
+    ef_err "FAIL target $t: $m is not mounted"; return 1
+  fi
+  if [ ! -d "$dir" ]; then
+    ef_err "FAIL target $t: $dir does not exist (is it mounted?)"; return 1
+  fi
+  return 0
+}
+
 # ef_push_all KIND SRC_DIR STAMP GLOBAL_KEEP KEEP_KEY
 #   Copy SRC_DIR to <target>/KIND/STAMP on every enabled target that takes KIND
 #   and prune each target to its KEEP_KEY (KeepPrevious / FilesKeepPrevious)
@@ -290,8 +305,10 @@ ef_push_all() {
       local)
         base="$(ef_expand "$(ef_tget "$t" path)")"
         if [ -z "$base" ]; then ef_err "FAIL target $t: Path is not set"; rc=1; continue; fi
+        ef_target_ready "$t" "$base" || { rc=1; continue; }
         dst="$base/$kind/$stamp"
-        if mkdir -p "$base/$kind" && cp -a -- "$src" "$dst.partial" && mv -- "$dst.partial" "$dst"; then
+        # cp -R, not -a: network file systems such as SSHFS refuse to keep the owner
+        if mkdir -p "$base/$kind" && cp -R -- "$src" "$dst.partial" && mv -- "$dst.partial" "$dst"; then
           ef_log "PUSH $t (local): $dst"
           ef_prune_local "$base/$kind" "$keep"
         else

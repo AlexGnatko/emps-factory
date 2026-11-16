@@ -89,7 +89,7 @@ Keyword value         # or  Keyword = value
 | `BackupDefaults` | Use the shipped `00-default.*` lists | `yes` |
 | `BackupExcludeTag` | Skip any directory containing this file | `.nobackup` |
 | `BackupOneFileSystem` | Do not cross into other mounted file systems | `no` |
-| `FilesLocalCopy` | `no` = stream straight to one rclone target, no local archive | `yes` |
+| `FilesLocalCopy` | `no` = stream straight to the one files target (rclone or local/mounted directory), no archive in `BackupRoot` | `yes` |
 | `RcloneConfig` | rclone config for all rclone targets | `/etc/emps-factory/rclone.conf` |
 | `CronMysql`, `CronFiles` | Which jobs `emps-factory-cron.sh` writes | `yes` |
 | `CronOffsetMinute`, `CronStartHour` | Minute / first hour of the MySQL job | `17`, `3` |
@@ -99,7 +99,7 @@ Keyword value         # or  Keyword = value
 
 Target options: `Type` (`local` or `rclone`), `Path` (local) or `Remote`
 (rclone), `KeepPrevious`, `FilesKeepPrevious`, `Kinds` (`mysql`, `files`; default
-both), `Enabled yes|no`, `RcloneFlags`. `%h` in a path or remote is replaced
+both), `Enabled yes|no`, `RcloneFlags`, `RequireMount` (local only: refuse to write unless this path is a mount point, e.g. `/mnt/nas`). `%h` in a path or remote is replaced
 with the host name. Targets get the same `mysql/<timestamp>/` and
 `files/<timestamp>/` layout as the local copy.
 
@@ -183,7 +183,7 @@ Skip one old site (`backup.d/50-local.exclude`):
 To change the shipped excludes themselves (for example to keep `*.log`), set
 `BackupDefaults no` and write your own complete lists.
 
-Plain tar instead of zstd, and no local copy on a small disk (stream to S3 only):
+Plain tar instead of zstd, and no local copy on a small disk (stream to S3 or to a mounted NAS/SSHFS folder):
 
 ```
 BackupCompression none
