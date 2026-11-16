@@ -5,10 +5,12 @@
 # run it from time to time and report problems.
 #
 # Usage:
-#   backup-check.sh [--json] [--no-remote]
+#   backup-check.sh [--json] [--no-remote] [--output FILE]
 #
 #   --json       print one JSON object instead of "name: value" lines
 #   --no-remote  skip the targets (no rclone calls, no network); local checks only
+#   --output FILE  write the result to FILE (atomically, mode 644) instead of the
+#                  screen, so that a reader never sees a half-written file
 #
 # Exit code: 0 = ok, 1 = warnings, 2 = critical problems, 3 = the check itself
 # could not run (bad config). The "status:" line says the same in words:
@@ -49,15 +51,23 @@ for _d in "${EF_LIB:-/usr/local/lib/emps-factory}" "$(dirname "$(readlink -f "$0
 done
 type ef_conf_load >/dev/null 2>&1 || { echo "status: error"; echo "error: common.sh not found"; exit 3; }
 
-JSON=0; REMOTE=1
-for a in "$@"; do
+JSON=0; REMOTE=1; OUT=""
+while [ $# -gt 0 ]; do
+  a="$1"; shift
   case "$a" in
     --json) JSON=1 ;;
     --no-remote) REMOTE=0 ;;
-    -h|--help) sed -n '3,37p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    *) echo "usage: $0 [--json] [--no-remote]" >&2; exit 3 ;;
+    --output) [ $# -gt 0 ] || { echo "usage: --output FILE" >&2; exit 3; }; OUT="$1"; shift ;;
+    -h|--help) sed -n '3,39p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "usage: $0 [--json] [--no-remote] [--output FILE]" >&2; exit 3 ;;
   esac
 done
+
+if [ -n "$OUT" ]; then
+  exec 3>&1                                  # keep the real stdout for messages
+  exec >"$OUT.tmp" || { echo "cannot write $OUT.tmp" >&2; exit 3; }
+  trap 'chmod 644 "$OUT.tmp"; mv -f "$OUT.tmp" "$OUT"' EXIT
+fi
 
 ###############################################################################
 # Output

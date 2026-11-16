@@ -28,7 +28,8 @@ EF_KNOWN_GLOBAL=" backuproot rcloneconfig dumpperiod keepprevious mysqluser
   backupexcludetag backuponefilesystem
   cronmysql cronfiles cronoffsetminute cronstarthour
   cronfilesoffsetminute cronfilesstarthour cronmailto
-  checkagepercent checksizedroppercent checkminfreepercent checkintegrity checkremote "
+  checkagepercent checksizedroppercent checkminfreepercent checkintegrity checkremote
+  croncheck croncheckperiod croncheckoffsetminute croncheckstarthour checkoutputfile "
 EF_KNOWN_TARGET=" type path requiremount remote keepprevious fileskeepprevious kinds enabled rcloneflags "
 
 declare -A EF_S=()    # "scope|key" -> last value (scope is empty for globals)

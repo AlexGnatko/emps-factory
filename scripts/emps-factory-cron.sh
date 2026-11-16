@@ -7,9 +7,12 @@
 #   emps-factory-cron.sh --install    write /etc/cron.d/emps-factory
 #   emps-factory-cron.sh --remove     delete /etc/cron.d/emps-factory
 #
-# Jobs: mysql-dump-all.sh (DumpPeriod, CronMysql) and files-backup.sh
-# (FilesPeriod, CronFiles). Other options: CronOffsetMinute, CronStartHour,
-# CronFilesOffsetMinute, CronFilesStartHour, CronMailTo. Re-run with --install
+# Jobs: mysql-dump-all.sh (DumpPeriod, CronMysql), files-backup.sh
+# (FilesPeriod, CronFiles) and backup-check.sh (CronCheckPeriod 6h, CronCheck;
+# its JSON result goes to CheckOutputFile, /var/log/backup-check.json). Other
+# options: CronOffsetMinute, CronStartHour,
+# CronFilesOffsetMinute, CronFilesStartHour, CronCheckOffsetMinute,
+# CronCheckStartHour, CronMailTo. Re-run with --install
 # after changing any of them.
 #
 # Schedule rules for a period:
@@ -85,6 +88,11 @@ generate() {
   if ef_bool "$(ef_get cronfiles yes)"; then
     job_line "File backups" "$(ef_get filesperiod 1d)" \
       "$(ef_get cronfilesoffsetminute 47)" "$(ef_get cronfilesstarthour 4)" files-backup.sh
+  fi
+  if ef_bool "$(ef_get croncheck yes)"; then
+    job_line "Backup health check" "$(ef_get croncheckperiod 6h)" \
+      "$(ef_get croncheckoffsetminute 0)" "$(ef_get croncheckstarthour 0)" \
+      "backup-check.sh --json --output $(ef_get checkoutputfile /var/log/backup-check.json)"
   fi
 }
 

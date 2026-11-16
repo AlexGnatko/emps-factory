@@ -38,7 +38,7 @@ mysql-dump-all.sh [--force]            # dump now; --force ignores DumpPeriod
 mysql-load-dump.sh [-y] <archive> [database]
 files-backup.sh [--force] [--list] [--debug-run]  # --list: show include/exclude lists;
                                        # --debug-run: test targets, print max archive size
-backup-check.sh [--json] [--no-remote]  # health check, machine-readable (see below)
+backup-check.sh [--json] [--no-remote] [--output FILE]  # health check (see "Health check")
 emps-factory-cron.sh                   # print the crontab
 emps-factory-cron.sh --install         # write /etc/cron.d/emps-factory
 emps-factory-cron.sh --remove          # delete it
@@ -98,9 +98,11 @@ Keyword value         # or  Keyword = value
 | `CheckSizeDropPercent` | `backup-check.sh`: warn if a backup is smaller than this % of the previous one | `50` |
 | `CheckMinFreePercent` | `backup-check.sh`: warn below this % free disk space (critical below half) | `10` |
 | `CheckIntegrity`, `CheckRemote` | `backup-check.sh`: `gzip -t` the newest local dump; check the targets | `yes`, `yes` |
-| `CronMysql`, `CronFiles` | Which jobs `emps-factory-cron.sh` writes | `yes` |
+| `CronMysql`, `CronFiles`, `CronCheck` | Which jobs `emps-factory-cron.sh` writes | `yes` |
 | `CronOffsetMinute`, `CronStartHour` | Minute / first hour of the MySQL job | `17`, `3` |
 | `CronFilesOffsetMinute`, `CronFilesStartHour` | The same for the file backup job | `47`, `4` |
+| `CronCheckPeriod`, `CronCheckOffsetMinute`, `CronCheckStartHour` | The same for the health check job | `6h`, `0`, `0` |
+| `CheckOutputFile` | Where the cron job writes the check's JSON result | `/var/log/backup-check.json` |
 | `CronMailTo` | Where cron mails script errors | none |
 | `MysqlLogFile`, `FilesLogFile` | Log files | see above |
 
@@ -268,6 +270,7 @@ It makes no changes. It looks at:
 backup-check.sh               # "name: value" lines
 backup-check.sh --json        # one JSON object
 backup-check.sh --no-remote   # local checks only, no rclone calls
+backup-check.sh --json --output /var/log/backup-check.json   # to a file, written atomically
 ```
 
 Exit code: 0 ok, 1 warnings, 2 critical, 3 the check could not run (bad config).
@@ -291,5 +294,21 @@ values are top-level keys with the same names. Settings (all optional):
 `CheckIntegrity` (yes), `CheckRemote` (yes).
 
 A backup may be `CheckAgePercent` % of its period old (plus 30 minutes) before it
-counts as too old: with `DumpPeriod 12h` that is 18 h 30 min. Run it from cron
-every few hours, for example `0 */6 * * * root /usr/local/sbin/backup-check.sh --json > /var/run/backup-check.json`.
+counts as too old: with `DumpPeriod 12h` that is 18 h 30 min.
+
+`emps-factory-cron.sh --install` also schedules this check (`CronCheck yes`,
+every `CronCheckPeriod`, default `6h`) and writes the JSON atomically to
+`CheckOutputFile` (`/var/log/backup-check.json`), so that EMPS Factory only has
+to read that file and report when `status` is not `ok`:
+
+```
+0 0,6,12,18 * * * root /usr/local/sbin/backup-check.sh --json --output /var/log/backup-check.json >/dev/null
+```
+
+The file survives a reboot. A missing file means the check has never run (the
+first run is at most 6 hours after installing the cron job; run it by hand to
+get the file at once). The file's `checked_at_epoch` tells how old the result is:
+a reader should complain when it is much older than the check period (more than
+about 7 hours with the default `6h`), because that means the check itself no
+longer runs. The file is readable by everyone (mode 644) and holds only sizes,
+dates and database names.
