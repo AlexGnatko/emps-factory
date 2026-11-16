@@ -37,6 +37,7 @@ mysql-dump-all.sh [--force]            # dump now; --force ignores DumpPeriod
 mysql-load-dump.sh [-y] <archive> [database]
 files-backup.sh [--force] [--list] [--debug-run]  # --list: show include/exclude lists;
                                        # --debug-run: test targets, print max archive size
+backup-check.sh [--json] [--no-remote]  # health check, machine-readable (see below)
 emps-factory-cron.sh                   # print the crontab
 emps-factory-cron.sh --install         # write /etc/cron.d/emps-factory
 emps-factory-cron.sh --remove          # delete it
@@ -220,3 +221,48 @@ mysql-load-dump.sh -y shop.sql.gz shop_copy
   sites) are logged but do not fail the backup; real read errors do.
 * Only one run of each script at a time (`flock`).
 * `vendor/` (Composer) is excluded by default; restore it with `composer install`.
+
+## Health check
+
+`backup-check.sh` checks that the backups are really there and fresh, and prints
+the result so that another program (EMPS Factory, cron, monitoring) can read it.
+It makes no changes. It looks at:
+
+* local MySQL dumps: age as per `DumpPeriod`, no `FAILED` marker, no empty or
+  corrupt file, no database missing compared with the previous dump, size not
+  suddenly much smaller, no abandoned `.partial` directory;
+* local file archives (with `FilesLocalCopy yes`);
+* every enabled `Target`, for MySQL and files: reachable (and mounted), newest
+  backup fresh as per the schedule, size sane, a MySQL backup has as many files
+  as the local dump of the same moment;
+* free disk space, and that the cron file exists.
+
+```
+backup-check.sh               # "name: value" lines
+backup-check.sh --json        # one JSON object
+backup-check.sh --no-remote   # local checks only, no rclone calls
+```
+
+Exit code: 0 ok, 1 warnings, 2 critical, 3 the check could not run (bad config).
+The first line is `status: ok|warn|crit|error`, followed by `problems: N` and one
+`problem.N: crit: ...` line per problem, then all measured values, for example:
+
+```
+status: warn
+problems: 1
+problem.1: warn: target adman files: newest backup 2026-11-10_0447 is 6d 3h old (allowed 4d 13h)
+mysql.local.latest: 2026-11-16_1517
+mysql.local.age_seconds: 3600
+mysql.local.databases: 2
+mysql.target.adman.reachable: yes
+files.target.adman.bytes: 16456095038
+```
+
+In JSON the problems are an array of `{"level": ..., "message": ...}` and the
+values are top-level keys with the same names. Settings (all optional):
+`CheckAgePercent` (150), `CheckSizeDropPercent` (50), `CheckMinFreePercent` (10),
+`CheckIntegrity` (yes), `CheckRemote` (yes).
+
+A backup may be `CheckAgePercent` % of its period old (plus 30 minutes) before it
+counts as too old: with `DumpPeriod 12h` that is 18 h 30 min. Run it from cron
+every few hours, for example `0 */6 * * * root /usr/local/sbin/backup-check.sh --json > /var/run/backup-check.json`.
