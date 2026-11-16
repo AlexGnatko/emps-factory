@@ -21,6 +21,7 @@ install -m 700 mysql-load-dump.sh   /usr/local/sbin/mysql-load-dump.sh
 install -m 700 files-backup.sh      /usr/local/sbin/files-backup.sh
 install -m 700 emps-factory-cron.sh /usr/local/sbin/emps-factory-cron.sh
 install -m 700 backup-check.sh      /usr/local/sbin/backup-check.sh
+install -m 700 tar-du.sh            /usr/local/sbin/tar-du.sh
 
 install -d -m 755 /usr/local/lib/emps-factory
 install -m 644 lib/common.sh /usr/local/lib/emps-factory/common.sh

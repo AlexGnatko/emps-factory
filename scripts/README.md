@@ -8,6 +8,7 @@ They run as root and are configured through `/etc/emps-factory/`.
 | `mysql-dump-all.sh` | Dumps every MySQL database into its own `.sql.gz`, prunes old dumps, copies them to the configured targets |
 | `mysql-load-dump.sh` | Loads a `.tar.gz`, `.sql.gz` or `.sql` dump into a database |
 | `files-backup.sh` | Archives `/srv`, `/etc` and other paths into one tar archive (zstd, gzip or plain), copies or streams it to the targets |
+| `backup-check.sh` | Health check: are the backups fresh, complete and reachable? Prints `name: value` lines or JSON for monitoring |
 | `emps-factory-cron.sh` | Generates `/etc/cron.d/emps-factory` from the configuration |
 | `tar-du.sh` | Shows how much space each directory takes inside a (huge) tar archive |
 | `lib/common.sh` | Shared library: config parser, logging, locking, retention, targets |
@@ -93,6 +94,10 @@ Keyword value         # or  Keyword = value
 | `BackupOneFileSystem` | Do not cross into other mounted file systems | `no` |
 | `FilesLocalCopy` | `no` = stream straight to the one files target (rclone or local/mounted directory), no archive in `BackupRoot` | `yes` |
 | `RcloneConfig` | rclone config file to use (empty = rclone's own default, `~/.config/rclone/rclone.conf` of root) | empty |
+| `CheckAgePercent` | `backup-check.sh`: a backup may be this % of its period old (+30 min) before it is critical | `150` |
+| `CheckSizeDropPercent` | `backup-check.sh`: warn if a backup is smaller than this % of the previous one | `50` |
+| `CheckMinFreePercent` | `backup-check.sh`: warn below this % free disk space (critical below half) | `10` |
+| `CheckIntegrity`, `CheckRemote` | `backup-check.sh`: `gzip -t` the newest local dump; check the targets | `yes`, `yes` |
 | `CronMysql`, `CronFiles` | Which jobs `emps-factory-cron.sh` writes | `yes` |
 | `CronOffsetMinute`, `CronStartHour` | Minute / first hour of the MySQL job | `17`, `3` |
 | `CronFilesOffsetMinute`, `CronFilesStartHour` | The same for the file backup job | `47`, `4` |
@@ -210,6 +215,28 @@ Restore a dump into a database:
 mysql-load-dump.sh /srv/backups/mysql/2026-11-14_0317/shop.sql.gz
 mysql-load-dump.sh -y shop.sql.gz shop_copy
 ```
+
+### Setting up an S3 (rclone) target
+
+`Remote adman:my-bucket/%h` means: the rclone remote `adman`, bucket `my-bucket`,
+folder = host name. The remote itself lives in rclone's own config, not in the
+Factory config:
+
+```bash
+apt install rclone                    # not the snap: it cannot read /srv and /etc
+rclone config                         # n, name "adman", type s3 (Amazon S3 Compliant), provider Other,
+                                      # access key, secret key, endpoint; acl private
+rclone lsd adman:                     # lists your buckets: the connection works
+echo test | rclone rcat adman:my-bucket/test/hello.txt
+rclone ls adman:my-bucket/test && rclone purge adman:my-bucket/test
+files-backup.sh --debug-run           # the same test through the Factory scripts
+```
+
+The bucket must exist already. If uploads fail with `IllegalLocationConstraint`
+(or the provider refuses to create the bucket), run
+`rclone config update adman no_check_bucket=true region=`. If the config lives
+in another file, set `RcloneConfig /path/to/rclone.conf`. The remote's keys are
+secrets: keep the file `chmod 600`.
 
 ## Notes
 
