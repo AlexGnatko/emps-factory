@@ -243,7 +243,12 @@ ef_prune_local() {
 # Backup targets (Target blocks in the config)
 ###############################################################################
 
-_ef_rclone() { rclone --config "$(ef_get rcloneconfig /etc/emps-factory/rclone.conf)" "$@"; }
+# Uses rclone's own default config (/root/.config/rclone/rclone.conf) unless
+# RcloneConfig names another file.
+_ef_rclone() {
+  local cfg; cfg="$(ef_get rcloneconfig "")"
+  if [ -n "$cfg" ]; then rclone --config "$cfg" "$@"; else rclone "$@"; fi
+}
 
 # ef_targets_for KIND: enabled targets that take this kind of backup (mysql, files)
 ef_targets_for() {

@@ -91,7 +91,7 @@ Keyword value         # or  Keyword = value
 | `BackupExcludeTag` | Skip any directory containing this file | `.nobackup` |
 | `BackupOneFileSystem` | Do not cross into other mounted file systems | `no` |
 | `FilesLocalCopy` | `no` = stream straight to the one files target (rclone or local/mounted directory), no archive in `BackupRoot` | `yes` |
-| `RcloneConfig` | rclone config for all rclone targets | `/etc/emps-factory/rclone.conf` |
+| `RcloneConfig` | rclone config file to use (empty = rclone's own default, `~/.config/rclone/rclone.conf` of root) | empty |
 | `CronMysql`, `CronFiles` | Which jobs `emps-factory-cron.sh` writes | `yes` |
 | `CronOffsetMinute`, `CronStartHour` | Minute / first hour of the MySQL job | `17`, `3` |
 | `CronFilesOffsetMinute`, `CronFilesStartHour` | The same for the file backup job | `47`, `4` |

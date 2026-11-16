@@ -179,6 +179,7 @@ if [ "$DEBUG_RUN" -eq 1 ]; then
   free_of() { df -PB1 "$1" 2>/dev/null | awk 'NR==2{print $4}'; }
   bad=0
   TEST="ef-debug-run-$$.tmp"
+  DBG_ERR="$(mktemp /tmp/files-backup-dbg.XXXXXX)"
 
   echo "== Lists"
   build_lists
@@ -215,11 +216,11 @@ if [ "$DEBUG_RUN" -eq 1 ]; then
         if ! command -v rclone >/dev/null 2>&1; then echo "FAIL $t: rclone is not installed"; bad=1; continue; fi
         base="$(ef_expand "$(ef_tget "$t" remote)")"
         read -r -a flags <<< "$(ef_tget "$t" rcloneflags)"
-        if echo test | _ef_rclone rcat "${flags[@]}" "$base/files/$TEST" 2>/dev/null \
-           && _ef_rclone deletefile "${flags[@]}" "$base/files/$TEST" 2>/dev/null; then
+        if echo test | _ef_rclone rcat "${flags[@]}" "$base/files/$TEST" 2>"$DBG_ERR" \
+           && _ef_rclone deletefile "${flags[@]}" "$base/files/$TEST" 2>>"$DBG_ERR"; then
           echo "OK   $t (rclone $base): wrote and removed a test file (free space: check on the storage side)"
         else
-          echo "FAIL $t (rclone $base): cannot write a test file"; bad=1
+          echo "FAIL $t (rclone $base): cannot write a test file"; head -n 5 "$DBG_ERR" | sed 's/^/       /'; bad=1
         fi ;;
       *) echo "FAIL $t: unknown Type"; bad=1 ;;
     esac
@@ -241,6 +242,7 @@ if [ "$DEBUG_RUN" -eq 1 ]; then
   echo "Maximum archive size: $(human "$bytes") ($bytes bytes, uncompressed tar)"
   [ "${COMP,,}" = none ] || echo "With $COMP the real archive will be smaller, so this is the upper limit"
   echo "Keeping $KEEP backups needs up to $(human $(( bytes * KEEP ))) on each target"
+  rm -f "$DBG_ERR"
   [ "$bad" -eq 0 ] && echo "RESULT: OK" || echo "RESULT: PROBLEMS FOUND"
   exit "$bad"
 fi
