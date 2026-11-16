@@ -12,6 +12,7 @@
 */cache
 */.cache
 */temp_c
+= */thumb/*.dat
 
 # Logs and temporary files
 *.log
