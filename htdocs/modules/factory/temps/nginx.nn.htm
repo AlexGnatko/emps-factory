@@ -9,7 +9,7 @@
 {{/if}}
 
 {{if $access_log}}
-	access_log		/var/log/nginx/{{$hostname}}.log awstats;
+	access_log		/var/log/nginx/{{$hostname}}.log awstats if=$emps_log;
 {{else}}
 	access_log		off;
 {{/if}}
@@ -78,6 +78,11 @@ upstream {{$node_name}} {
 	server {{$node_upstream}};
 }
 {{/if}}
+
+map "$host$request_uri" $emps_log {
+default 1;
+include {{$www_dir}}/nginx-nolog/*.map;
+}
 
 server {
 	listen			80;
