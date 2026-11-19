@@ -9,7 +9,7 @@
 {{/if}}
 
 {{if $access_log}}
-	access_log		/var/log/nginx/{{$hostname}}.log awstats if=$emps_log;
+	access_log		/var/log/nginx/{{$hostname}}.log awstats if=$logmap_{{$hostname|lower|regex_replace:'/[^a-z0-9]+/':'_'}};
 {{else}}
 	access_log		off;
 {{/if}}
@@ -79,7 +79,7 @@ upstream {{$node_name}} {
 }
 {{/if}}
 
-map "$host$request_uri" $emps_log {
+map "$host$request_uri" $logmap_{{$hostname|lower|regex_replace:'/[^a-z0-9]+/':'_'}} {
 default 1;
 include {{$www_dir}}/nginx-nolog/*.map;
 }
